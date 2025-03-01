@@ -54,10 +54,12 @@ TEST_SRCS = ft_printf_test_utils.c \
             ptr_tests_extended.c \
             unsigned_tests_extended.c \
             hex_tests_extended.c \
-            special_flags_tester.c
+            special_flags_tester.c \
+            basic_test.c \
+            ultimate_tester.c \
+            ft_printf_ultimate_controller.c
 
 # Object files
-OBJS = $(patsubst %.c,$(OBJ_DIR)/%.o,$(TEST_SRCS))
 PRINTF_OBJS = $(patsubst $(PRINTF_DIR)/%.c,$(OBJ_DIR)/%.o,$(PRINTF_SRCS))
 OBJ_UTILS = $(OBJ_DIR)/ft_printf_test_utils.o
 
@@ -74,21 +76,25 @@ TESTERS = ft_printf_tester \
           ptr_tests_extended \
           unsigned_tests_extended \
           hex_tests_extended \
-          special_flags_tester
+          special_flags_tester \
+          basic_test \
+          ultimate_tester \
+          ultimate_tester_extended
 
 # Libraries
 LIBFT = $(LIBFT_DIR)/libft.a
 
-# All target - build all executables
+# Default target - ensure we build all testers first
 all: $(OBJ_DIR) $(PROGRAM_DIR) $(LIBFT) $(TESTERS)
+	@echo "All test programs have been compiled. Use 'make controller' to run the test controller."
 
 # Create obj directory
 $(OBJ_DIR):
-	mkdir -p $(OBJ_DIR)
+	@mkdir -p $(OBJ_DIR)
 
 # Create program directory
 $(PROGRAM_DIR):
-	mkdir -p $(PROGRAM_DIR)
+	@mkdir -p $(PROGRAM_DIR)
 
 # Build libft
 $(LIBFT):
@@ -129,43 +135,55 @@ ft_printf_debug_tester_simple: $(OBJ_DIR)/ft_printf_debug_tester_simple.o $(OBJ_
 ft_printf_stress_tester: $(OBJ_DIR)/ft_printf_stress_tester.o $(OBJ_UTILS) $(PRINTF_OBJS) $(LIBFT)
 	$(CC) $(CFLAGS) -o $(PROGRAM_DIR)/$@ $^ $(LIBFT)
 
-# Character tests - remove auto-execution
+# Character tests
 char_tests: $(OBJ_DIR)/char_tests.o $(OBJ_UTILS) $(PRINTF_OBJS) $(LIBFT)
 	$(CC) $(CFLAGS) -o $(PROGRAM_DIR)/$@ $^ $(LIBFT)
 
-# Extended character tests - remove auto-execution
+# Extended character tests
 char_tests_extended: $(OBJ_DIR)/char_tests_extended.o $(OBJ_UTILS) $(PRINTF_OBJS) $(LIBFT)
 	$(CC) $(CFLAGS) -o $(PROGRAM_DIR)/$@ $^ $(LIBFT)
 
-# String tests - remove auto-execution
+# String tests
 string_tests_extended: $(OBJ_DIR)/string_tests_extended.o $(OBJ_UTILS) $(PRINTF_OBJS) $(LIBFT)
 	$(CC) $(CFLAGS) -o $(PROGRAM_DIR)/$@ $^ $(LIBFT)
 
-# Integer tests - remove auto-execution
+# Integer tests
 int_tests_extended: $(OBJ_DIR)/int_tests_extended.o $(OBJ_UTILS) $(PRINTF_OBJS) $(LIBFT)
 	$(CC) $(CFLAGS) -o $(PROGRAM_DIR)/$@ $^ $(LIBFT)
 
-# Pointer extended tests - remove auto-execution
+# Pointer extended tests
 ptr_tests_extended: $(OBJ_DIR)/ptr_tests_extended.o $(OBJ_UTILS) $(PRINTF_OBJS) $(LIBFT)
 	$(CC) $(CFLAGS) -o $(PROGRAM_DIR)/$@ $^ $(LIBFT)
 
-# Unsigned integer tests - remove auto-execution
+# Unsigned integer tests
 unsigned_tests_extended: $(OBJ_DIR)/unsigned_tests_extended.o $(OBJ_UTILS) $(PRINTF_OBJS) $(LIBFT)
 	$(CC) $(CFLAGS) -o $(PROGRAM_DIR)/$@ $^ $(LIBFT)
 
-# Hexadecimal tests - remove auto-execution
+# Hexadecimal tests
 hex_tests_extended: $(OBJ_DIR)/hex_tests_extended.o $(OBJ_UTILS) $(PRINTF_OBJS) $(LIBFT)
 	$(CC) $(CFLAGS) -o $(PROGRAM_DIR)/$@ $^ $(LIBFT)
 
-# Flag combinations tester - remove auto-execution
+# Flag combinations tester
 flag_combinations_tester: $(OBJ_DIR)/flag_combinations_tester.o $(OBJ_UTILS) $(PRINTF_OBJS) $(LIBFT)
 	$(CC) $(CFLAGS) -o $(PROGRAM_DIR)/$@ $^ $(LIBFT)
 
-# Special flags tester - remove auto-execution
+# Special flags tester
 special_flags_tester: $(OBJ_DIR)/special_flags_tester.o $(OBJ_UTILS) $(PRINTF_OBJS) $(LIBFT)
 	$(CC) $(CFLAGS) -o $(PROGRAM_DIR)/$@ $^ $(LIBFT)
 
-# Run tests with shortcut commands (KEEP these for convenience but they'll only run when explicitly called)
+# Basic test
+basic_test: $(OBJ_DIR)/basic_test.o $(PRINTF_OBJS) $(LIBFT)
+	$(CC) $(CFLAGS) -o $(PROGRAM_DIR)/$@ $^ $(LIBFT)
+
+# Rule for the ultimate tester
+ultimate_tester: $(OBJ_DIR)/ultimate_tester.o $(OBJ_UTILS) $(PRINTF_OBJS) $(LIBFT)
+	$(CC) $(CFLAGS) -o $(PROGRAM_DIR)/$@ $^ $(LIBFT)
+
+# Rule for the ultimate_tester_extended (controller)
+ultimate_tester_extended: $(OBJ_DIR)/ft_printf_ultimate_controller.o $(OBJ_UTILS) $(PRINTF_OBJS) $(LIBFT)
+	$(CC) $(CFLAGS) -o $(PROGRAM_DIR)/$@ $^ $(LIBFT)
+
+# Run tests with shortcut commands
 simple: ft_printf_debug_tester_simple
 	./$(PROGRAM_DIR)/ft_printf_debug_tester_simple
 
@@ -184,6 +202,23 @@ char: char_tests
 chars_ex: char_tests_extended
 	./$(PROGRAM_DIR)/char_tests_extended
 
+ultimate: ultimate_tester
+	./$(PROGRAM_DIR)/ultimate_tester
+
+# Add shortcut command to run the controller
+extended: ensure_testers ultimate_tester_extended
+	./$(PROGRAM_DIR)/ultimate_tester_extended
+
+# Another alias for the controller
+controller: ensure_testers ultimate_tester_extended
+	./$(PROGRAM_DIR)/ultimate_tester_extended
+
+# Add explicit targets for each test program to ensure they're built
+# This prevents the controller from trying to run programs that don't exist
+ensure_testers: $(TESTERS)
+	@echo "All test programs built successfully."
+	@ls -la $(PROGRAM_DIR)
+
 # Run all tests
 test: $(TESTERS)
 	@echo "Running all tests..."
@@ -192,4 +227,4 @@ test: $(TESTERS)
 		./$(PROGRAM_DIR)/$$tester || true; \
 	done
 
-.PHONY: all clean fclean re simple debug stress flags char chars_ex test
+.PHONY: all clean fclean re simple debug stress flags char chars_ex ultimate test extended controller
