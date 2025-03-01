@@ -1,146 +1,195 @@
-NAME			=	libftprintf.a
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: syzygy <syzygy@student.42.fr>              +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2024/05/20 12:00:00 by syzygy            #+#    #+#              #
+#    Updated: 2024/05/20 12:00:00 by syzygy           ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
 
-CC				=	gcc
-CFLAGS			=	-Wall -Wextra -Werror
-AR				=	ar
-ARFLAGS 		=	rcs
-RM				=	rm -rf
+# Compiler and flags
+CC = gcc
+CFLAGS = -Wall -Wextra -Werror
+INCLUDES = -I../
 
-SRC_DIR			=	..
-SRC				=	ft_printf ft_print_char ft_print_str ft_print_hex ft_print_int ft_print_ptr ft_print_unsigned ft_nbr_len ft_flags ft_flags_utils ft_print_flag ft_printf_itoa ft_printf_utoa ft_printf_xtoa
-SRCS 			=	$(addsuffix .c, $(SRC))
+# Directories
+OBJ_DIR = obj
+PROGRAM_DIR = program
+SRC_DIR = .
+PRINTF_DIR = ..
+LIBFT_DIR = ../libft
 
-OBJ_DIR			=	obj
-OBJS			=	$(SRCS:%.c=$(OBJ_DIR)/%.o)
+# Source files for ft_printf
+PRINTF_SRCS = $(PRINTF_DIR)/ft_printf.c \
+              $(PRINTF_DIR)/ft_print_char.c \
+              $(PRINTF_DIR)/ft_print_str.c \
+              $(PRINTF_DIR)/ft_print_hex.c \
+              $(PRINTF_DIR)/ft_print_int.c \
+              $(PRINTF_DIR)/ft_print_ptr.c \
+              $(PRINTF_DIR)/ft_print_unsigned.c \
+              $(PRINTF_DIR)/ft_nbr_len.c \
+              $(PRINTF_DIR)/ft_flags.c \
+              $(PRINTF_DIR)/ft_flags_utils.c \
+              $(PRINTF_DIR)/ft_print_flag.c \
+              $(PRINTF_DIR)/ft_printf_itoa.c \
+              $(PRINTF_DIR)/ft_printf_utoa.c \
+              $(PRINTF_DIR)/ft_printf_xtoa.c \
+              $(PRINTF_DIR)/ft_print_width.c \
+              $(PRINTF_DIR)/ft_print_nbr.c
 
-LIBFT_PATH		=	$(SRC_DIR)/libft
-LIBFT			=	$(LIBFT_PATH)/libft.a
+# Source files for testers
+TEST_SRCS = ft_printf_test_utils.c \
+            ft_printf_tester.c \
+            ft_printf_debug_tester.c \
+            ft_printf_debug_tester_simple.c \
+            ft_printf_stress_tester.c \
+            flag_combinations_tester.c \
+            char_tests.c \
+            char_tests_extended.c \
+            string_tests_extended.c \
+            int_tests_extended.c \
+            ptr_tests_extended.c \
+            unsigned_tests_extended.c \
+            hex_tests_extended.c \
+            special_flags_tester.c
 
-TEST_SRCS		=	$(wildcard *.c)
-TEST_OBJS		=	$(TEST_SRCS:%.c=$(OBJ_DIR)/%.o)
-TEST_EXECUTABLES =	$(filter-out $(OBJ_DIR)/char_tests.o $(OBJ_DIR)/pointer_debug.o $(OBJ_DIR)/pointer_test.o, $(TEST_SRCS:%.c=%))
+# Object files
+OBJS = $(patsubst %.c,$(OBJ_DIR)/%.o,$(TEST_SRCS))
+PRINTF_OBJS = $(patsubst $(PRINTF_DIR)/%.c,$(OBJ_DIR)/%.o,$(PRINTF_SRCS))
+OBJ_UTILS = $(OBJ_DIR)/ft_printf_test_utils.o
 
-$(OBJ_DIR)/%.o:		$(SRC_DIR)/%.c
-					@mkdir -p $(OBJ_DIR)
-					$(CC) $(CFLAGS) -c $< -o $@
+# Testing executables
+TESTERS = ft_printf_tester \
+          ft_printf_debug_tester \
+          ft_printf_debug_tester_simple \
+          ft_printf_stress_tester \
+          flag_combinations_tester \
+          char_tests \
+          char_tests_extended \
+          string_tests_extended \
+          int_tests_extended \
+          ptr_tests_extended \
+          unsigned_tests_extended \
+          hex_tests_extended \
+          special_flags_tester
 
-$(OBJ_DIR)/%.o:		%.c
-					@mkdir -p $(OBJ_DIR)
-					$(CC) $(CFLAGS) -c $< -o $@
+# Libraries
+LIBFT = $(LIBFT_DIR)/libft.a
 
-all:				$(TEST_EXECUTABLES) char_tests pointer_debug pointer_test
+# All target - build all executables
+all: $(OBJ_DIR) $(PROGRAM_DIR) $(LIBFT) $(TESTERS)
 
-bonus:				all
-
-$(NAME):			$(LIBFT) $(OBJ_DIR) $(OBJS)
-					cp	$(LIBFT) $(NAME)
-					$(AR) $(ARFLAGS) $(NAME) $(OBJS)
-
-$(LIBFT):
-					make -C $(LIBFT_PATH) all
-
+# Create obj directory
 $(OBJ_DIR):
-					mkdir -p $(OBJ_DIR)
+	mkdir -p $(OBJ_DIR)
 
+# Create program directory
+$(PROGRAM_DIR):
+	mkdir -p $(PROGRAM_DIR)
+
+# Build libft
+$(LIBFT):
+	$(MAKE) -C $(LIBFT_DIR)
+
+# Compile ft_printf source files
+$(OBJ_DIR)/%.o: $(PRINTF_DIR)/%.c
+	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+
+# Compile test source files
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
+	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+
+# Clean targets
 clean:
-					make -C $(LIBFT_PATH) clean
-					$(RM) $(OBJ_DIR)
-					rm -f $(TEST_OBJS)
+	rm -rf $(OBJ_DIR)
 
-fclean:				clean
-					make -C $(LIBFT_PATH) fclean
-					$(RM) $(TEST_EXECUTABLES) $(OBJS) char_tests pointer_debug pointer_test
+fclean: clean
+	rm -rf $(PROGRAM_DIR)
 
-re:					fclean all
+re: fclean all
 
-$(TEST_EXECUTABLES): %: $(OBJ_DIR)/%.o $(OBJS) $(LIBFT)
-					$(CC) $(CFLAGS) -o $@ $^ $(LIBFT)
+# Individual test runners with explicit rules to preserve target logic
 
-# Individual test targets
-test:				$(OBJ_DIR)/test.o $(OBJS) $(LIBFT)
-					$(CC) $(CFLAGS) -o test $(OBJ_DIR)/test.o $(OBJS) $(LIBFT)
-					./test
+# Basic tester
+ft_printf_tester: $(OBJ_DIR)/ft_printf_tester.o $(OBJ_UTILS) $(PRINTF_OBJS) $(LIBFT)
+	$(CC) $(CFLAGS) -o $(PROGRAM_DIR)/$@ $^ $(LIBFT)
 
-ultimate:			$(OBJ_DIR)/ft_printf_ultimate_tester.o $(OBJS) $(LIBFT)
-					$(CC) $(CFLAGS) -o ft_printf_ultimate_tester $(OBJ_DIR)/ft_printf_ultimate_tester.o $(OBJS) $(LIBFT)
-					./ft_printf_ultimate_tester
+# Debug tester
+ft_printf_debug_tester: $(OBJ_DIR)/ft_printf_debug_tester.o $(OBJ_UTILS) $(PRINTF_OBJS) $(LIBFT)
+	$(CC) $(CFLAGS) -o $(PROGRAM_DIR)/$@ $^ $(LIBFT)
 
-tester:				$(OBJ_DIR)/ft_printf_tester.o $(OBJS) $(LIBFT)
-					$(CC) $(CFLAGS) -o ft_printf_tester $(OBJ_DIR)/ft_printf_tester.o $(OBJS) $(LIBFT)
-					./ft_printf_tester
+# Simple debug tester
+ft_printf_debug_tester_simple: $(OBJ_DIR)/ft_printf_debug_tester_simple.o $(OBJ_UTILS) $(PRINTF_OBJS) $(LIBFT)
+	$(CC) $(CFLAGS) -o $(PROGRAM_DIR)/$@ $^ $(LIBFT)
 
-fixed:				$(OBJ_DIR)/ft_printf_tester_fixed.o $(OBJS) $(LIBFT)
-					$(CC) $(CFLAGS) -o ft_printf_tester_fixed $(OBJ_DIR)/ft_printf_tester_fixed.o $(OBJS) $(LIBFT)
-					./ft_printf_tester_fixed
+# Stress tester
+ft_printf_stress_tester: $(OBJ_DIR)/ft_printf_stress_tester.o $(OBJ_UTILS) $(PRINTF_OBJS) $(LIBFT)
+	$(CC) $(CFLAGS) -o $(PROGRAM_DIR)/$@ $^ $(LIBFT)
 
-stress:				$(OBJ_DIR)/ft_printf_stress_tester.o $(OBJS) $(LIBFT)
-					$(CC) $(CFLAGS) -o ft_printf_stress_tester $(OBJ_DIR)/ft_printf_stress_tester.o $(OBJS) $(LIBFT)
-					./ft_printf_stress_tester
+# Character tests - remove auto-execution
+char_tests: $(OBJ_DIR)/char_tests.o $(OBJ_UTILS) $(PRINTF_OBJS) $(LIBFT)
+	$(CC) $(CFLAGS) -o $(PROGRAM_DIR)/$@ $^ $(LIBFT)
 
-debug:				$(OBJ_DIR)/ft_printf_debug_tester.o $(OBJS) $(LIBFT)
-					$(CC) $(CFLAGS) -o ft_printf_debug_tester $(OBJ_DIR)/ft_printf_debug_tester.o $(OBJS) $(LIBFT)
-					./ft_printf_debug_tester
+# Extended character tests - remove auto-execution
+char_tests_extended: $(OBJ_DIR)/char_tests_extended.o $(OBJ_UTILS) $(PRINTF_OBJS) $(LIBFT)
+	$(CC) $(CFLAGS) -o $(PROGRAM_DIR)/$@ $^ $(LIBFT)
 
-simple:				$(OBJ_DIR)/ft_printf_debug_tester_simple.o $(OBJS) $(LIBFT)
-					$(CC) $(CFLAGS) -o ft_printf_debug_tester_simple $(OBJ_DIR)/ft_printf_debug_tester_simple.o $(OBJS) $(LIBFT)
-					./ft_printf_debug_tester_simple
+# String tests - remove auto-execution
+string_tests_extended: $(OBJ_DIR)/string_tests_extended.o $(OBJ_UTILS) $(PRINTF_OBJS) $(LIBFT)
+	$(CC) $(CFLAGS) -o $(PROGRAM_DIR)/$@ $^ $(LIBFT)
 
-pointer_debug:		$(OBJ_DIR)/pointer_debug.o $(OBJS) $(LIBFT)
-					$(CC) $(CFLAGS) -o pointer_debug $(OBJ_DIR)/pointer_debug.o $(OBJS) $(LIBFT)
-					./pointer_debug
+# Integer tests - remove auto-execution
+int_tests_extended: $(OBJ_DIR)/int_tests_extended.o $(OBJ_UTILS) $(PRINTF_OBJS) $(LIBFT)
+	$(CC) $(CFLAGS) -o $(PROGRAM_DIR)/$@ $^ $(LIBFT)
 
-pointer_test:		$(OBJ_DIR)/pointer_test.o $(OBJS) $(LIBFT)
-					$(CC) $(CFLAGS) -o pointer_test $(OBJ_DIR)/pointer_test.o $(OBJS) $(LIBFT)
-					./pointer_test
+# Pointer extended tests - remove auto-execution
+ptr_tests_extended: $(OBJ_DIR)/ptr_tests_extended.o $(OBJ_UTILS) $(PRINTF_OBJS) $(LIBFT)
+	$(CC) $(CFLAGS) -o $(PROGRAM_DIR)/$@ $^ $(LIBFT)
 
-char_tests:			$(OBJ_DIR)/char_tests.o $(OBJS) $(LIBFT)
-					$(CC) $(CFLAGS) -o char_tests $(OBJ_DIR)/char_tests.o $(OBJS) $(LIBFT)
-					./char_tests
+# Unsigned integer tests - remove auto-execution
+unsigned_tests_extended: $(OBJ_DIR)/unsigned_tests_extended.o $(OBJ_UTILS) $(PRINTF_OBJS) $(LIBFT)
+	$(CC) $(CFLAGS) -o $(PROGRAM_DIR)/$@ $^ $(LIBFT)
 
-# Add extended character tests
-char_tests_extended:	$(OBJ_DIR)/char_tests_extended.o $(OBJS) $(LIBFT)
-					$(CC) $(CFLAGS) -o char_tests_extended $(OBJ_DIR)/char_tests_extended.o $(OBJS) $(LIBFT)
-					./char_tests_extended
+# Hexadecimal tests - remove auto-execution
+hex_tests_extended: $(OBJ_DIR)/hex_tests_extended.o $(OBJ_UTILS) $(PRINTF_OBJS) $(LIBFT)
+	$(CC) $(CFLAGS) -o $(PROGRAM_DIR)/$@ $^ $(LIBFT)
 
-# Add string tests
-string_tests_extended:	$(OBJ_DIR)/string_tests_extended.o $(OBJS) $(LIBFT)
-					$(CC) $(CFLAGS) -o string_tests_extended $(OBJ_DIR)/string_tests_extended.o $(OBJS) $(LIBFT)
-					./string_tests_extended
+# Flag combinations tester - remove auto-execution
+flag_combinations_tester: $(OBJ_DIR)/flag_combinations_tester.o $(OBJ_UTILS) $(PRINTF_OBJS) $(LIBFT)
+	$(CC) $(CFLAGS) -o $(PROGRAM_DIR)/$@ $^ $(LIBFT)
 
-# Add integer tests
-int_tests_extended:	$(OBJ_DIR)/int_tests_extended.o $(OBJS) $(LIBFT)
-					$(CC) $(CFLAGS) -o int_tests_extended $(OBJ_DIR)/int_tests_extended.o $(OBJS) $(LIBFT)
-					./int_tests_extended
+# Special flags tester - remove auto-execution
+special_flags_tester: $(OBJ_DIR)/special_flags_tester.o $(OBJ_UTILS) $(PRINTF_OBJS) $(LIBFT)
+	$(CC) $(CFLAGS) -o $(PROGRAM_DIR)/$@ $^ $(LIBFT)
 
-# Add pointer extended tests
-ptr_tests_extended:	$(OBJ_DIR)/ptr_tests_extended.o $(OBJS) $(LIBFT)
-					$(CC) $(CFLAGS) -o ptr_tests_extended $(OBJ_DIR)/ptr_tests_extended.o $(OBJS) $(LIBFT)
-					./ptr_tests_extended
+# Run tests with shortcut commands (KEEP these for convenience but they'll only run when explicitly called)
+simple: ft_printf_debug_tester_simple
+	./$(PROGRAM_DIR)/ft_printf_debug_tester_simple
 
-# Add unsigned integer tests
-unsigned_tests_extended:	$(OBJ_DIR)/unsigned_tests_extended.o $(OBJS) $(LIBFT)
-					$(CC) $(CFLAGS) -o unsigned_tests_extended $(OBJ_DIR)/unsigned_tests_extended.o $(OBJS) $(LIBFT)
-					./unsigned_tests_extended
+debug: ft_printf_debug_tester
+	./$(PROGRAM_DIR)/ft_printf_debug_tester
 
-# Add hexadecimal tests
-hex_tests_extended:	$(OBJ_DIR)/hex_tests_extended.o $(OBJS) $(LIBFT)
-					$(CC) $(CFLAGS) -o hex_tests_extended $(OBJ_DIR)/hex_tests_extended.o $(OBJS) $(LIBFT)
-					./hex_tests_extended
+stress: ft_printf_stress_tester
+	./$(PROGRAM_DIR)/ft_printf_stress_tester
 
-# Add flag combinations tester
-flag_combinations_tester:	$(OBJ_DIR)/flag_combinations_tester.o $(OBJS) $(LIBFT)
-					$(CC) $(CFLAGS) -o flag_combinations_tester $(OBJ_DIR)/flag_combinations_tester.o $(OBJS) $(LIBFT)
-					./flag_combinations_tester
+flags: flag_combinations_tester
+	./$(PROGRAM_DIR)/flag_combinations_tester
 
-# Add special flags tester
-special_flags_tester:	$(OBJ_DIR)/special_flags_tester.o $(OBJS) $(LIBFT)
-					$(CC) $(CFLAGS) -o special_flags_tester $(OBJ_DIR)/special_flags_tester.o $(OBJS) $(LIBFT)
-					./special_flags_tester
+char: char_tests
+	./$(PROGRAM_DIR)/char_tests
 
-run_tests:			$(TEST_EXECUTABLES) char_tests pointer_debug pointer_test
-					@for test in $(TEST_EXECUTABLES) char_tests pointer_debug pointer_test; do \
-						echo "Running $$test..."; \
-						./$$test; \
-					done
+chars_ex: char_tests_extended
+	./$(PROGRAM_DIR)/char_tests_extended
 
-.PHONY:				all bonus clean fclean re run_tests test ultimate tester fixed stress debug simple pointer_debug pointer_test char_tests char_tests_extended string_tests_extended int_tests_extended ptr_tests_extended unsigned_tests_extended hex_tests_extended flag_combinations_tester special_flags_tester
+# Run all tests
+test: $(TESTERS)
+	@echo "Running all tests..."
+	@for tester in $(TESTERS); do \
+		echo "\n===== Running $$tester ====="; \
+		./$(PROGRAM_DIR)/$$tester || true; \
+	done
+
+.PHONY: all clean fclean re simple debug stress flags char chars_ex test

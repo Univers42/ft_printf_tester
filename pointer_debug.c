@@ -1,7 +1,5 @@
 #include "../ft_printf.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include "ft_printf_debug.h"
 
 int main(void) {
     int num = 42;

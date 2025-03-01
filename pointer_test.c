@@ -1,91 +1,52 @@
 #include "../ft_printf.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <stdarg.h>
-#include <sys/wait.h>
+#include "ft_printf_test_utils.h"  // Include utilities header
 
-#define BUFFER_SIZE 1024
-#define GREEN "\033[0;32m"
-#define RED "\033[0;31m"
-#define RESET "\033[0m"
-
-int test_count = 0;
-int pass_count = 0;
-int fail_count = 0;
-
-// Capture stdout from a function into a buffer using a temporary file
-int capture_output(char *buffer, int size, int (*func)(const char*, ...), const char *format, ...) {
-    FILE *tmp_file = tmpfile();
-    if (!tmp_file) {
-        perror("tmpfile");
-        exit(EXIT_FAILURE);
-    }
-
-    int saved_stdout = dup(STDOUT_FILENO);
-    dup2(fileno(tmp_file), STDOUT_FILENO);
-
-    va_list args;
-    va_start(args, format);
-    int ret_val = func(format, args);
-    va_end(args);
-
-    fflush(stdout);
-    dup2(saved_stdout, STDOUT_FILENO);
-    close(saved_stdout);
-
-    fseek(tmp_file, 0, SEEK_SET);
-    size_t nread = fread(buffer, 1, size - 1, tmp_file);
-    buffer[nread] = '\0';
-
-    fclose(tmp_file);
-    return ret_val;
-}
-
-void pointer_test(const char *test_name, const char *fmt, void *ptr) {
-    test_count++;
-    printf("Test %d: %s... ", test_count, test_name);
-    
-    char expected_output[BUFFER_SIZE] = {0};
-    char actual_output[BUFFER_SIZE] = {0};
-    int expected_ret, actual_ret;
-    
-    // Capture expected output using printf
-    expected_ret = snprintf(expected_output, BUFFER_SIZE, fmt, ptr);
-    
-    // Capture actual output using ft_printf
-    actual_ret = capture_output(actual_output, BUFFER_SIZE, ft_printf, fmt, ptr);
-    
-    // Compare the format and structure of the output
-    if (expected_ret == actual_ret && strcmp(expected_output, actual_output) == 0) {
-        printf("%sPASSED%s\n\n", GREEN, RESET);
-        pass_count++;
-    } else {
-        printf("%sFAILED%s\n", RED, RESET);
-        printf("  Expected output: \"%s\"\n", expected_output);
-        printf("  Actual output:   \"%s\"\n", actual_output);
-        printf("  Expected return: %d\n", expected_ret);
-        printf("  Actual return:   %d\n\n", actual_ret);
-        fail_count++;
-    }
-}
+// Remove the duplicate implementation of test_pointer_with_flags
+// Since we're now using the implementation from ft_printf_test_utils.c
 
 int main(void) {
-    printf("===== POINTER FT_PRINTF TESTS =====\n\n");
+    printf("\n%s=== FT_PRINTF POINTER TESTS ===%s\n\n", MAGENTA, RESET);
     
-    // Pointer tests
-    int dummy_var = 0;
-    pointer_test("Pointer to int", "Pointer: %p", &dummy_var);
-    pointer_test("Pointer to function", "Pointer: %p", &main);
-    pointer_test("Pointer to NULL", "Pointer: %p", NULL);
+    void *p1 = (void *)0x12345678;
+    void *p2 = (void *)0xdeadbeef;
+    void *p3 = (void *)0x0;
+    void *p4 = NULL;
+    void *p5 = &p1;  // pointer to a pointer
     
-    // Summary
-    printf("\n===== TEST SUMMARY =====\n");
-    printf("Total: %d\n", test_count);
-    printf("Passed: %s%d%s\n", GREEN, pass_count, RESET);
-    printf("Failed: %s%d%s\n", RED, fail_count, RESET);
-    printf("\n");
+    run_category("Basic Pointer Tests");
+    test_pointer(p1, "%p", "Regular pointer");
+    test_pointer(p2, "%p", "Pointer with hex chars");
+    test_pointer(p3, "%p", "Zero pointer");
+    test_pointer(p4, "%p", "NULL pointer");
+    test_pointer(p5, "%p", "Pointer to pointer");
+    test_pointer(&main, "%p", "Function pointer");
     
-    return (fail_count > 0);
+    run_category("Width Tests");
+    test_pointer(p1, "%20p", "Width 20");
+    test_pointer(p2, "%30p", "Width 30");
+    test_pointer(p4, "%15p", "NULL with width 15");
+    
+    run_category("Left-justify Tests");
+    test_pointer(p1, "%-20p", "Left-justified width 20");
+    test_pointer(p2, "%-30p", "Left-justified width 30");
+    test_pointer(p4, "%-15p", "NULL left-justified width 15");
+    
+    run_category("Context Tests");
+    test_pointer(p1, "Pointer: %p", "With text");
+    test_pointer(p2, "%p is a pointer", "Text after");
+    test_pointer(p3, "Before %p after", "Text before and after");
+    
+    run_category("Flag Combination Tests");
+    // Use the helper function from ft_printf_test_utils.c
+    test_pointer_with_flags(p1, "%+p", "Plus flag (platform-dependent)");
+    test_pointer_with_flags(p2, "% p", "Space flag (platform-dependent)");
+    test_pointer_with_flags(p3, "%#p", "Hash flag (may be redundant)");
+    test_pointer_with_flags(p4, "%0p", "Zero flag without width");
+    test_pointer_with_flags(p5, "%020p", "Zero padding with width");
+    test_pointer_with_flags(&main, "%-020p", "Left-justify overrides zero padding");
+    
+    // Print summary
+    print_summary();
+    
+    return fail_count > 0 ? 1 : 0;
 }

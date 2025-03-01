@@ -1,19 +1,10 @@
 #include "../ft_printf.h"
+#include "ft_printf_test_utils.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdarg.h>
 #include <limits.h>
 #include <stdlib.h>
-
-#define TEST_BUFFER_SIZE 4096
-#define GREEN "\033[0;32m"
-#define RED "\033[0;31m"
-#define YELLOW "\033[0;33m"
-#define BLUE "\033[0;34m"
-#define PURPLE "\033[0;35m"
-#define CYAN "\033[0;36m"
-#define RESET "\033[0m"
-#define BOLD "\033[1m"
 
 typedef struct s_test_stats {
     int passed;
@@ -23,71 +14,8 @@ typedef struct s_test_stats {
 
 t_test_stats stats = {0, 0, 0};
 
-// Custom capture function to redirect ft_printf output to a buffer
-int capture_ft_printf(char *buffer, int size, const char *format, ...) {
-    int fd[2];
-    int old_stdout;
-    int ret;
-    va_list args;
-
-    // Create a pipe
-    pipe(fd);
-    
-    // Save the current stdout
-    old_stdout = dup(STDOUT_FILENO);
-    
-    // Redirect stdout to the pipe
-    dup2(fd[1], STDOUT_FILENO);
-    
-    // Call ft_printf
-    va_start(args, format);
-    ret = ft_printf(format, args);
-    va_end(args);
-    
-    // Restore stdout
-    dup2(old_stdout, STDOUT_FILENO);
-    close(old_stdout);
-    close(fd[1]);
-    
-    // Read the output from the pipe
-    read(fd[0], buffer, size);
-    close(fd[0]);
-
-    return ret;
-}
-
-void run_test(const char *test_name, const char *format, ...) {
-    char expected[TEST_BUFFER_SIZE] = {0};
-    char actual[TEST_BUFFER_SIZE] = {0};
-    int expected_len, actual_len;
-    va_list args, args_copy;
-    
-    va_start(args, format);
-    va_copy(args_copy, args);
-
-    // Get expected output from standard printf
-    expected_len = vsnprintf(expected, TEST_BUFFER_SIZE, format, args);
-    
-    // Get actual output from ft_printf
-    actual_len = vsnprintf(actual, TEST_BUFFER_SIZE, format, args_copy);
-    
-    va_end(args_copy);
-    va_end(args);
-
-    stats.total++;
-
-    // Compare results
-    if (strcmp(expected, actual) == 0 && expected_len == actual_len) {
-        printf("%s[PASS]%s %s\n", GREEN, RESET, test_name);
-        stats.passed++;
-    } else {
-        printf("%s[FAIL]%s %s\n", RED, RESET, test_name);
-        printf("  Format:   \"%s\"\n", format);
-        printf("  Expected: \"%s\" (len: %d)\n", expected, expected_len);
-        printf("  Actual:   \"%s\" (len: %d)\n", actual, actual_len);
-        stats.failed++;
-    }
-}
+// Remove duplicate function definitions for run_test() and print_summary()
+// as they're already defined in ft_printf_test_utils.c
 
 void print_header(const char *title) {
     int len = strlen(title);
@@ -100,16 +28,6 @@ void print_header(const char *title) {
     for (i = 0; i < len + 4; i++)
         printf("=");
     printf("%s\n\n", RESET);
-}
-
-void print_summary() {
-    printf("\n%s%s=== TEST SUMMARY ===%s\n", BOLD, PURPLE, RESET);
-    printf("%sPassed: %s%d/%d (%.2f%%)%s\n", 
-           BOLD, GREEN, stats.passed, stats.total, 
-           (stats.total > 0) ? (stats.passed * 100.0 / stats.total) : 0, RESET);
-    printf("%sFailed: %s%d/%d (%.2f%%)%s\n", 
-           BOLD, RED, stats.failed, stats.total,
-           (stats.total > 0) ? (stats.failed * 100.0 / stats.total) : 0, RESET);
 }
 
 int main() {

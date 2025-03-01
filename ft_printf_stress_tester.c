@@ -1,32 +1,5 @@
 #include "../ft_printf.h"
-#include <stdio.h>
-#include <string.h>
-#include <stdarg.h>
-#include <stdlib.h>
-#include <time.h>
-#include <limits.h>
-#include <fcntl.h>
-#include <unistd.h>
-
-// Colors and formatting
-#define RESET   "\033[0m"
-#define BOLD    "\033[1m"
-#define RED     "\033[31m"
-#define GREEN   "\033[32m"
-#define YELLOW  "\033[33m"
-#define BLUE    "\033[34m"
-#define MAGENTA "\033[35m"
-#define CYAN    "\033[36m"
-#define WHITE   "\033[37m"
-#define BG_RED  "\033[41m"
-
-// Test configuration
-#define BUFFER_SIZE 10000
-#define TEST_RUNS_RANDOM 100
-#define RANDOM_TEST_MAX_LENGTH 20
-#define RANDOM_INT_MIN -10000
-#define RANDOM_INT_MAX 10000
-#define RANDOM_STR_MAX 20
+#include "ft_printf_test_utils.h"  // Include this header for run_test and other utilities
 
 // Global stats
 typedef struct s_test_stats {
@@ -97,80 +70,6 @@ int capture_printf_output(char *buffer, int buffer_size, int *ret_val, const cha
     return read_bytes;
 }
 
-// Run a test and compare results - improved version with safer handling
-void run_test(const char *test_name, const char *format, ...) {
-    char expected_output[BUFFER_SIZE] = {0};
-    char actual_output[BUFFER_SIZE] = {0};
-    int expected_ret = 0, actual_ret = 0;
-    int i, diff_pos = -1;
-    va_list args, args_copy1, args_copy2;
-    
-    va_start(args, format);
-    
-    // Create two copies of the args
-    va_copy(args_copy1, args);
-    va_copy(args_copy2, args);
-    
-    // Safely capture standard printf output
-    expected_ret = vsnprintf(expected_output, BUFFER_SIZE - 1, format, args);
-    
-    // Safely capture ft_printf output using our capture function to avoid direct execution
-    // that might cause segmentation fault
-    capture_ft_printf_output(actual_output, BUFFER_SIZE - 1, &actual_ret, format, args_copy1);
-    
-    // Clean up va_list copies
-    va_end(args_copy1);
-    va_end(args_copy2);
-    va_end(args);
-    
-    g_stats.total++;
-    
-    // Compare outputs but with safer string handling
-    if (strcmp(expected_output, actual_output) == 0 && expected_ret == actual_ret) {
-        printf("%s%s[✓] %s%s\n", GREEN, BOLD, test_name, RESET);
-        g_stats.passed++;
-        return;
-    }
-    
-    // Find first difference in output with careful bounds checking
-    for (i = 0; i < BUFFER_SIZE - 1; i++) {
-        if (expected_output[i] != actual_output[i]) {
-            diff_pos = i;
-            break;
-        }
-        if (expected_output[i] == '\0' && actual_output[i] == '\0')
-            break;
-    }
-    
-    printf("%s%s[✗] %s%s\n", RED, BOLD, test_name, RESET);
-    printf("    Format:        \"%s\"\n", format);
-    printf("    Expected ret:  %d\n", expected_ret);
-    printf("    Actual ret:    %d\n", actual_ret);
-    
-    if (diff_pos >= 0) {
-        printf("    Diff at pos:   %d\n", diff_pos);
-        printf("    Expected:      \"");
-        for (i = 0; i < 20 && i < BUFFER_SIZE - 1 && expected_output[i]; i++) {
-            if (i == diff_pos) printf("%s%c%s", BG_RED, expected_output[i], RESET);
-            else printf("%c", expected_output[i]);
-        }
-        printf(i < (int)strlen(expected_output) ? "...\"" : "\"");
-        
-        printf("\n    Actual:        \"");
-        for (i = 0; i < 20 && i < BUFFER_SIZE - 1 && actual_output[i]; i++) {
-            if (i == diff_pos) printf("%s%c%s", BG_RED, actual_output[i], RESET);
-            else printf("%c", actual_output[i]);
-        }
-        printf(i < (int)strlen(actual_output) ? "...\"" : "\"");
-        printf("\n");
-    } else {
-        printf("    Expected:      \"%s\"\n", expected_output);
-        printf("    Actual:        \"%s\"\n", actual_output);
-    }
-    
-    g_stats.failed++;
-}
-
 // Generate a random string
 char *random_string(int max_length) {
     static const char charset[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -234,21 +133,13 @@ char *random_format_string(int max_length) {
     return format;
 }
 
-// Print test summary
-void print_summary() {
-    float pass_percentage = g_stats.total > 0 ? (g_stats.passed * 100.0f / g_stats.total) : 0;
-    
-    printf("\n%s%s================== TEST SUMMARY ==================%s\n", BOLD, MAGENTA, RESET);
-    printf("%sTotal tests:  %s%d%s\n", BOLD, WHITE, g_stats.total, RESET);
-    printf("%sPassed:       %s%d (%.2f%%)%s\n", BOLD, GREEN, g_stats.passed, pass_percentage, RESET);
-    printf("%sFailed:       %s%d (%.2f%%)%s\n", BOLD, RED, g_stats.failed, 100 - pass_percentage, RESET);
-    printf("%s%s=================================================%s\n", BOLD, MAGENTA, RESET);
-    
-    if (g_stats.failed == 0) {
-        printf("\n%s%sAll tests passed! Your ft_printf implementation is robust!%s\n", BOLD, GREEN, RESET);
-    } else {
-        printf("\n%s%sSome tests failed. Check the details above.%s\n", BOLD, RED, RESET);
-    }
+void run_stress_tests(void) {
+    // Add stress tests here
+    run_test("Stress test 1", "%d", 123456789);
+    run_test("Stress test 2", "%s", "A very long string to test the buffer size and performance of the ft_printf function.");
+    run_test("Stress test 3", "%x", 0xabcdef);
+    run_test("Stress test 4", "%p", &run_stress_tests);
+    run_test("Stress test 5", "Mixed: %d %s %x %p", 42, "test", 0x1234, &run_stress_tests);
 }
 
 // Modify the main function to fix memory management and prevent double free

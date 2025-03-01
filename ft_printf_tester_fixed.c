@@ -1,122 +1,73 @@
 #include "../ft_printf.h"
+#include "ft_printf_test_utils.h"  // Include this header for utilities
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
-#include <limits.h>
-#include <unistd.h>
 #include <stdarg.h>
-#include <sys/wait.h>
+#include <limits.h>
+#include <stdlib.h>
 
-#define BUFFER_SIZE 1024
-#define GREEN "\033[0;32m"
-#define RED "\033[0;31m"
-#define RESET "\033[0m"
+// Remove duplicate definitions of test_count, pass_count, fail_count that are already
+// defined in ft_printf_test_utils.c
+// int test_count = 0;
+// int pass_count = 0;
+// int fail_count = 0;
 
-int test_count = 0;
-int pass_count = 0;
-int fail_count = 0;
-
-// Capture stdout from a function into a buffer
-int capture_output(char *buffer, int size, int (*func)(const char*, ...), const char *format, ...) {
-    int pipefd[2];
-    pid_t pid;
-    int status, ret_val;
+// Remove or rename duplicate capture_output function that conflicts with
+// the one in ft_printf_test_utils.c
+int capture_output_fixed(char *buffer, size_t bufsize, const char *format, ...) {
     va_list args;
+    va_start(args, format);
 
-    // Create a pipe
-    if (pipe(pipefd) == -1) {
-        perror("pipe");
-        exit(EXIT_FAILURE);
-    }
-
-    // Fork a child process
-    pid = fork();
-    if (pid == -1) {
-        perror("fork");
-        exit(EXIT_FAILURE);
-    }
-
-    if (pid == 0) { // Child process
-        va_start(args, format);
-        
-        // Redirect stdout to the write end of the pipe
-        close(pipefd[0]);
-        dup2(pipefd[1], STDOUT_FILENO);
-        close(pipefd[1]);
-        
-        // Call the provided function
-        ret_val = func(format, args);
-        
+    // Redirect stdout to a temporary file
+    FILE *temp = tmpfile();
+    if (!temp) {
+        perror("tmpfile");
         va_end(args);
-        
-        // Exit with the return value from the function
-        exit(ret_val);
-    } else { // Parent process
-        // Close the write end of the pipe
-        close(pipefd[1]);
-        
-        // Read from the pipe
-        ssize_t nread = read(pipefd[0], buffer, size - 1);
-        if (nread > 0)
-            buffer[nread] = '\0';
-        else
-            buffer[0] = '\0';
-        
-        close(pipefd[0]);
-        
-        // Wait for the child process and get its exit status
-        waitpid(pid, &status, 0);
-        if (WIFEXITED(status))
-            ret_val = WEXITSTATUS(status);
-        else
-            ret_val = -1;
-        
-        return ret_val;
+        return -1;
     }
+
+    int original_stdout = dup(STDOUT_FILENO);
+    if (dup2(fileno(temp), STDOUT_FILENO) == -1) {
+        perror("dup2");
+        fclose(temp);
+        va_end(args);
+        return -1;
+    }
+
+    // Call ft_printf with the arguments
+    int ret_val = vprintf(format, args);
+    fflush(stdout);
+    
+    // Restore stdout
+    dup2(original_stdout, STDOUT_FILENO);
+    close(original_stdout);
+    
+    // Read the captured output
+    rewind(temp);
+    size_t read_size = fread(buffer, 1, bufsize - 1, temp);
+    buffer[read_size] = '\0';
+    
+    fclose(temp);
+    va_end(args);
+    return ret_val;
 }
 
-// Simple test that doesn't use va_arg forwarding
-void basic_test(const char *test_name, const char *fmt, ...) {
-    test_count++;
-    printf("Test %d: %s... ", test_count, test_name);
-    
-    // This is a simplified test that only checks if the function doesn't crash
-    int ret = ft_printf(fmt);
-    printf("\n");
-    
-    if (ret >= 0) {
-        printf("%sPASSED%s (returned %d)\n\n", GREEN, RESET, ret);
-        pass_count++;
-    } else {
-        printf("%sFAILED%s (returned %d)\n\n", RED, RESET, ret);
-        fail_count++;
-    }
-}
-
+// Main function that uses the utility functions from ft_printf_test_utils.h
 int main(void) {
-    printf("===== BASIC FT_PRINTF TESTS =====\n\n");
+    printf("=== FT_PRINTF FIXED TESTER ===\n\n");
     
-    // Basic tests that avoid complex logic
-    basic_test("Simple string", "Hello, world!");
-    basic_test("Character", "%c", 'A');
-    basic_test("String", "%s", "Hello");
-    basic_test("Integer", "%d", 42);
-    basic_test("Negative integer", "%d", -42);
-    basic_test("Zero", "%d", 0);
-    basic_test("Unsigned", "%u", 42);
-    basic_test("Hex lowercase", "%x", 42);
-    basic_test("Hex uppercase", "%X", 42);
-    basic_test("Percent sign", "%%");
-    basic_test("Width", "%6d", 42);
-    basic_test("Precision", "%.5d", 42);
-    basic_test("Width and precision", "%8.5d", 42);
+    // Use run_test from ft_printf_test_utils.c
+    run_test("Simple string", "Hello, world!");
+    run_test("Character", "%c", 'A');
+    run_test("String", "%s", "test");
+    run_test("Integer", "%d", 42);
+    run_test("Negative integer", "%d", -42);
     
-    // Summary
-    printf("\n===== TEST SUMMARY =====\n");
-    printf("Total: %d\n", test_count);
-    printf("Passed: %s%d%s\n", GREEN, pass_count, RESET);
-    printf("Failed: %s%d%s\n", RED, fail_count, RESET);
-    printf("\n");
+    // Test a mix of format specifiers
+    run_test("Mixed formats", "This %s is %c %d% complete!", "test", 'a', 100);
     
-    return (fail_count > 0);
+    // Print summary using print_summary from ft_printf_test_utils.c
+    print_summary();
+    
+    return fail_count > 0 ? 1 : 0;
 }

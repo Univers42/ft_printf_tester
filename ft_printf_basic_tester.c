@@ -1,18 +1,8 @@
 #include "../ft_printf.h"
-#include <stdio.h>
-#include <string.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <sys/wait.h>
+#include "ft_printf_test_utils.h"  // Include this header for run_test and other utilities
 
-#define BUFFER_SIZE 2048
-#define GREEN "\033[0;32m"
-#define RED "\033[0;31m"
-#define YELLOW "\033[0;33m"
-#define RESET "\033[0m"
-
-// Capture stdout from a function into a buffer
-int capture_output(char *buffer, size_t bufsize, int (*func)(const char*, ...), const char *format, ...) {
+// Rename to avoid conflict with ft_printf_test_utils.c
+int capture_output_local(char *buffer, size_t bufsize, int (*func)(const char*, ...), const char *format, ...) {
     int pipefd[2];
     pid_t pid;
     int status, ret_val;
@@ -71,38 +61,6 @@ int capture_output(char *buffer, size_t bufsize, int (*func)(const char*, ...), 
             ret_val = -1;
         
         return ret_val;
-    }
-}
-
-// Run a simple test with direct comparison of printf and ft_printf
-void run_test(const char *test_name, const char *format, ...) {
-    char printf_output[BUFFER_SIZE] = {0};
-    int printf_ret, ft_printf_ret;
-    va_list args, args_copy;
-    
-    printf("Testing %s: \"%s\"\n", test_name, format);
-    
-    va_start(args, format);
-    va_copy(args_copy, args);
-    
-    // Get output from printf
-    vsnprintf(printf_output, BUFFER_SIZE, format, args);
-    printf_ret = vprintf(format, args_copy);
-    printf("\n");
-    
-    va_end(args_copy);
-    va_end(args);
-    
-    // Get output from ft_printf using direct call
-    ft_printf_ret = ft_printf(format);
-    printf("\n");
-    
-    // Compare results
-    if (printf_ret == ft_printf_ret) {
-        printf("%sPASSED:%s Return value matches: %d\n\n", GREEN, RESET, printf_ret);
-    } else {
-        printf("%sFAILED:%s Return values differ: printf=%d, ft_printf=%d\n\n", 
-               RED, RESET, printf_ret, ft_printf_ret);
     }
 }
 
