@@ -132,10 +132,15 @@ flag_combinations_tester:	$(OBJ_DIR)/flag_combinations_tester.o $(OBJS) $(LIBFT)
 					$(CC) $(CFLAGS) -o flag_combinations_tester $(OBJ_DIR)/flag_combinations_tester.o $(OBJS) $(LIBFT)
 					./flag_combinations_tester
 
+# Add special flags tester
+special_flags_tester:	$(OBJ_DIR)/special_flags_tester.o $(OBJS) $(LIBFT)
+					$(CC) $(CFLAGS) -o special_flags_tester $(OBJ_DIR)/special_flags_tester.o $(OBJS) $(LIBFT)
+					./special_flags_tester
+
 run_tests:			$(TEST_EXECUTABLES) char_tests pointer_debug pointer_test
 					@for test in $(TEST_EXECUTABLES) char_tests pointer_debug pointer_test; do \
 						echo "Running $$test..."; \
 						./$$test; \
 					done
 
-.PHONY:				all bonus clean fclean re run_tests test ultimate tester fixed stress debug simple pointer_debug pointer_test char_tests char_tests_extended string_tests_extended int_tests_extended ptr_tests_extended unsigned_tests_extended hex_tests_extended flag_combinations_tester
+.PHONY:				all bonus clean fclean re run_tests test ultimate tester fixed stress debug simple pointer_debug pointer_test char_tests char_tests_extended string_tests_extended int_tests_extended ptr_tests_extended unsigned_tests_extended hex_tests_extended flag_combinations_tester special_flags_tester
