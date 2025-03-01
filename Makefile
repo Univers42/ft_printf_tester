@@ -102,10 +102,40 @@ char_tests_extended:	$(OBJ_DIR)/char_tests_extended.o $(OBJS) $(LIBFT)
 					$(CC) $(CFLAGS) -o char_tests_extended $(OBJ_DIR)/char_tests_extended.o $(OBJS) $(LIBFT)
 					./char_tests_extended
 
+# Add string tests
+string_tests_extended:	$(OBJ_DIR)/string_tests_extended.o $(OBJS) $(LIBFT)
+					$(CC) $(CFLAGS) -o string_tests_extended $(OBJ_DIR)/string_tests_extended.o $(OBJS) $(LIBFT)
+					./string_tests_extended
+
+# Add integer tests
+int_tests_extended:	$(OBJ_DIR)/int_tests_extended.o $(OBJS) $(LIBFT)
+					$(CC) $(CFLAGS) -o int_tests_extended $(OBJ_DIR)/int_tests_extended.o $(OBJS) $(LIBFT)
+					./int_tests_extended
+
+# Add pointer extended tests
+ptr_tests_extended:	$(OBJ_DIR)/ptr_tests_extended.o $(OBJS) $(LIBFT)
+					$(CC) $(CFLAGS) -o ptr_tests_extended $(OBJ_DIR)/ptr_tests_extended.o $(OBJS) $(LIBFT)
+					./ptr_tests_extended
+
+# Add unsigned integer tests
+unsigned_tests_extended:	$(OBJ_DIR)/unsigned_tests_extended.o $(OBJS) $(LIBFT)
+					$(CC) $(CFLAGS) -o unsigned_tests_extended $(OBJ_DIR)/unsigned_tests_extended.o $(OBJS) $(LIBFT)
+					./unsigned_tests_extended
+
+# Add hexadecimal tests
+hex_tests_extended:	$(OBJ_DIR)/hex_tests_extended.o $(OBJS) $(LIBFT)
+					$(CC) $(CFLAGS) -o hex_tests_extended $(OBJ_DIR)/hex_tests_extended.o $(OBJS) $(LIBFT)
+					./hex_tests_extended
+
+# Add flag combinations tester
+flag_combinations_tester:	$(OBJ_DIR)/flag_combinations_tester.o $(OBJS) $(LIBFT)
+					$(CC) $(CFLAGS) -o flag_combinations_tester $(OBJ_DIR)/flag_combinations_tester.o $(OBJS) $(LIBFT)
+					./flag_combinations_tester
+
 run_tests:			$(TEST_EXECUTABLES) char_tests pointer_debug pointer_test
 					@for test in $(TEST_EXECUTABLES) char_tests pointer_debug pointer_test; do \
 						echo "Running $$test..."; \
 						./$$test; \
 					done
 
-.PHONY:				all bonus clean fclean re run_tests test ultimate tester fixed stress debug simple pointer_debug pointer_test char_tests char_tests_extended
+.PHONY:				all bonus clean fclean re run_tests test ultimate tester fixed stress debug simple pointer_debug pointer_test char_tests char_tests_extended string_tests_extended int_tests_extended ptr_tests_extended unsigned_tests_extended hex_tests_extended flag_combinations_tester
