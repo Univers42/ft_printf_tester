@@ -6,7 +6,7 @@
 #    By: dyl-syzygy <dyl-syzygy@student.42.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/03/02 01:17:50 by dyl-syzygy        #+#    #+#              #
-#    Updated: 2025/03/02 01:57:52 by dyl-syzygy       ###   ########.fr        #
+#    Updated: 2025/03/02 02:48:43 by dyl-syzygy       ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -85,7 +85,8 @@ TESTERS = ft_printf_tester \
 # Libraries
 LIBFT = $(LIBFT_DIR)/libft.a
 
-# Colors and styles
+# ★彡 ULTRA COLOR PALETTE AND STYLES 彡★
+# Basic Colors
 BLACK = \033[0;30m
 RED = \033[0;31m
 GREEN = \033[0;32m
@@ -93,243 +94,541 @@ YELLOW = \033[0;33m
 BLUE = \033[0;34m
 PURPLE = \033[0;35m
 CYAN = \033[0;36m
-WHITE = \033[1;37m
-ORANGE = \033[38;5;208m
+WHITE = \033[0;37m
+GRAY = \033[0;90m
+
+# Bold Colors
+BOLD_BLACK = \033[1;30m
+BOLD_RED = \033[1;31m
+BOLD_GREEN = \033[1;32m
+BOLD_YELLOW = \033[1;33m
+BOLD_BLUE = \033[1;34m
+BOLD_PURPLE = \033[1;35m
+BOLD_CYAN = \033[1;36m
+BOLD_WHITE = \033[1;37m
+BOLD_GRAY = \033[1;90m
+
+# Special Colors 
 PINK = \033[38;5;206m
+ORANGE = \033[38;5;208m
 LIME = \033[38;5;118m
-RESET = \033[0m
+SKY = \033[38;5;39m
+GOLD = \033[38;5;220m
+TEAL = \033[38;5;6m
+LAVENDER = \033[38;5;147m
+PEACH = \033[38;5;215m
+MINT = \033[38;5;84m
+SALMON = \033[38;5;209m
+INDIGO = \033[38;5;62m
+TURQUOISE = \033[38;5;80m
+MAGENTA = \033[38;5;201m
+OLIVE = \033[38;5;142m
+
+# Background Colors
+BG_BLACK = \033[40m
+BG_RED = \033[41m
+BG_GREEN = \033[42m
+BG_YELLOW = \033[43m
+BG_BLUE = \033[44m
+BG_PURPLE = \033[45m
+BG_CYAN = \033[46m
+BG_WHITE = \033[47m
+BG_GRAY = \033[100m
+
+# Special Background Colors
+BG_PINK = \033[48;5;206m
+BG_ORANGE = \033[48;5;208m
+BG_LIME = \033[48;5;118m
+BG_SKY = \033[48;5;39m
+BG_GOLD = \033[48;5;220m
+BG_DARK_BLUE = \033[48;5;18m
+BG_DARK_GREEN = \033[48;5;22m
+BG_DARK_RED = \033[48;5;52m
+BG_DARK_PURPLE = \033[48;5;54m
+
+# Text Styles
 BOLD = \033[1m
+FAINT = \033[2m
+ITALIC = \033[3m
 UNDERLINE = \033[4m
 BLINK = \033[5m
 REVERSE = \033[7m
 HIDDEN = \033[8m
-BG_GREEN = \033[48;5;22m
-BG_BLUE = \033[48;5;18m
+STRIKE = \033[9m
+
+# Reset
+RESET = \033[0m
+
+# Special Characters and Glyphs
+CHECK = ✓
+CROSS = ✗
+STAR = ★
+SPARKLE = ✨
+ARROW_RIGHT = →
+ARROW_LEFT = ←
+ARROW_UP = ↑
+ARROW_DOWN = ↓
+LIGHTNING = ⚡
+HAMMER = 🔨
+GEAR = ⚙
+WARN = ⚠
+INFO = ℹ
+OK = ✓
+FIRE = 🔥
+ROCKET = 🚀
+LIGHT = 💡
+CLOCK = 🕒
+DIAMOND = ♦
+HEART = ♥
+CLUB = ♣
+SPADE = ♠
+SMILE = 😊
+THINK = 🤔
+COOL = 😎
+
+# ⚡ Master Versions ⚡
+SUCCESS = $(BOLD_GREEN)$(CHECK) 
+ERROR = $(BOLD_RED)$(CROSS) 
+WARNING = $(BOLD_YELLOW)$(WARN) 
+INFO_MARK = $(BOLD_BLUE)$(INFO) 
+WORKING = $(BOLD_CYAN)$(GEAR) 
+FLAME = $(BOLD_ORANGE)$(FIRE) 
+BEAM = $(BOLD_CYAN)$(LIGHT) 
+BLAST = $(BOLD_YELLOW)$(ROCKET) 
+TIME = $(BOLD_PURPLE)$(CLOCK) 
 
 # Default target - ensure we build all testers first
-all: header_all make_dirs $(LIBFT) $(addprefix $(PROGRAM_DIR)/,$(TESTERS)) footer_all
+all: intro header_all make_dirs $(LIBFT) $(addprefix $(PROGRAM_DIR)/,$(TESTERS)) footer_all
 
-# Display header for all target
-header_all:
+# Amazing intro animation
+intro:
 	@clear
-	@echo "$(CYAN)"
-	@echo "╔══════════════════════════════════════════════════════════════════════╗"
-	@echo "║ $(BOLD)$(ORANGE)    _____ _____    ____  ____  ___ _   _ _____ _____    _____      $(CYAN) ║"
-	@echo "║ $(BOLD)$(ORANGE)   |  ___|_   _|  |  _ \\|  _ \\|_ _| \\ | |_   _|  ___|  |_   _|     $(CYAN) ║"
-	@echo "║ $(BOLD)$(ORANGE)   | |_    | |    | |_) | |_) || ||  \\| | | | | |_      | |       $(CYAN) ║"
-	@echo "║ $(BOLD)$(ORANGE)   |  _|   | |    |  __/|  _ < | || |\\  | | | |  _|     | |       $(CYAN) ║"
-	@echo "║ $(BOLD)$(ORANGE)   |_|     |_|    |_|   |_| \\_\\___|_| \\_| |_| |_|       |_|       $(CYAN) ║"
-	@echo "║                                                                      ║"
-	@echo "║ $(YELLOW)                    T  E  S  T     S  U  I  T  E                    $(CYAN) ║"
-	@echo "╚══════════════════════════════════════════════════════════════════════╝$(RESET)"
-	@printf "$(BOLD)$(BLUE)╔═════════════════════════════════════════════════════════════════════╗\n$(RESET)"
-	@printf "$(BOLD)$(BLUE)║ $(LIME)⚡ Building ft_printf test suite$(BLUE)                                  ║\n$(RESET)"
-	@printf "$(BOLD)$(BLUE)╚═════════════════════════════════════════════════════════════════════╝\n\n$(RESET)"
+	@echo ""
+	@for i in 1 2 3 ; do \
+		printf "\r$(BLUE)$(BOLD)Initializing$(RESET)" ; \
+		sleep 0.1 ; \
+		printf "\r$(BLUE)$(BOLD)Initializing.$(RESET)" ; \
+		sleep 0.1 ; \
+		printf "\r$(BLUE)$(BOLD)Initializing..$(RESET)" ; \
+		sleep 0.1 ; \
+		printf "\r$(BLUE)$(BOLD)Initializing...$(RESET)" ; \
+		sleep 0.1 ; \
+	done
+	@clear
+	@echo ""
+	@echo "$(BLUE)╭─────────────────────────────────────────────────────────╮"
+	@sleep 0.05
+	@echo "│                                                         │"
+	@sleep 0.05
+	@echo "│$(BOLD_YELLOW)                  SYSTEM INITIALIZATION                  $(BLUE)│"
+	@sleep 0.05
+	@echo "│                                                         │"
+	@sleep 0.05
+	@echo "╰─────────────────────────────────────────────────────────╯$(RESET)"
+	@echo ""
+	@for i in $(shell seq 1 50); do \
+		if [ $$i -le 20 ]; then \
+			printf "$(CYAN)$(BOLD)▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓$(RESET)\r"; \
+		elif [ $$i -le 40 ]; then \
+			printf "$(YELLOW)$(BOLD)▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓$(RESET)\r"; \
+		else \
+			printf "$(GREEN)$(BOLD)▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓$(RESET)\r"; \
+		fi; \
+		sleep 0.02; \
+	done
+	@printf "\n\n"
+	@echo "$(BOLD)$(GREEN)SYSTEM READY$(RESET)"
+	@sleep 0.5
+	@clear
 
-# Display footer for all target
+# Display header for all target with improved design (no dark background)
+header_all:
+	@echo ""
+	@echo "$(TEAL)╔═════════════════════════════════════════════════════════════════════════════╗"
+	@echo "║ $(BG_DARK_BLUE)$(BOLD)                                                                           $(RESET) ║"
+	@echo "║ $(BG_DARK_BLUE)$(BOLD_CYAN)    ███████╗████████╗    ██████╗ ██████╗ ██╗███╗   ██╗████████╗███████╗    $(RESET)$(TEAL) ║"
+	@echo "║ $(BG_DARK_BLUE)$(BOLD_CYAN)    ██╔════╝╚══██╔══╝    ██╔══██╗██╔══██╗██║████╗  ██║╚══██╔══╝██╔════╝    $(RESET)$(TEAL) ║"
+	@echo "║ $(BG_DARK_BLUE)$(BOLD_SKY)    █████╗     ██║       ██████╔╝██████╔╝██║██╔██╗ ██║   ██║   █████╗      $(RESET)$(TEAL) ║"
+	@echo "║ $(BG_DARK_BLUE)$(BOLD_SKY)    ██╔══╝     ██║       ██╔═══╝ ██╔══██╗██║██║╚██╗██║   ██║   ██╔══╝      $(RESET)$(TEAL) ║"
+	@echo "║ $(BG_DARK_BLUE)$(BOLD_CYAN)    ██║        ██║       ██║     ██║  ██║██║██║ ╚████║   ██║   ██║         $(RESET)$(TEAL) ║"
+	@echo "║ $(BG_DARK_BLUE)$(BOLD_CYAN)    ╚═╝        ╚═╝       ╚═╝     ╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝   ╚═╝   ╚═╝         $(RESET)$(TEAL) ║"
+	@echo "║ $(BG_DARK_BLUE)$(BOLD)                                                                           $(RESET)$(TEAL) ║"
+	@echo "║ $(BG_DARK_BLUE)$(TURQUOISE)                          T E S T   S U I T E                              $(RESET)$(TEAL) ║"
+	@echo "║ $(BG_DARK_BLUE)$(BOLD)                                                                           $(RESET)$(TEAL) ║"
+	@echo "╚═════════════════════════════════════════════════════════════════════════════╝$(RESET)"
+	@echo ""
+	@echo "$(CYAN)╭───────────────────────────────────────────────────────────────────╮"
+	@echo "│$(REVERSE)$(BOLD) FT_PRINTF TEST SUITE COMPILATION SYSTEM v1.0 $(RESET)$(CYAN)                     │"
+	@echo "╰───────────────────────────────────────────────────────────────────╯$(RESET)"
+	@printf "\n$(BOLD_PURPLE)$(SPARKLE) $(ITALIC)Initiating compilation sequence... $(SPARKLE)$(RESET)\n\n"
+	@sleep 0.5
+
+# Display footer for all target with pulse effect
 footer_all:
-	@printf "\n$(BOLD)$(BLUE)╔═══════════════════════════════════════════════════════════════════════╗\n$(RESET)"
-	@printf "$(BOLD)$(BLUE)║ $(GREEN)✓ All test programs compiled successfully!$(BLUE)                         ║\n$(RESET)"
-	@printf "$(BOLD)$(BLUE)╚═══════════════════════════════════════════════════════════════════════╝\n$(RESET)"
+	@echo ""
+	@for i in 1 2 3; do \
+		printf "\r$(BOLD)$(GREEN)$(SPARKLE) BUILD SUCCESSFUL! $(SPARKLE)$(RESET)" ; \
+		sleep 0.15 ; \
+		printf "\r$(BOLD)$(YELLOW)$(SPARKLE) BUILD SUCCESSFUL! $(SPARKLE)$(RESET)" ; \
+		sleep 0.15 ; \
+	done
+	@printf "\r$(BOLD)$(GREEN)$(SPARKLE) BUILD SUCCESSFUL! $(SPARKLE)$(RESET)\n\n"
+	@echo "$(GOLD)╔═══════════════════════════════════════════════════════════════════╗$(RESET)"
+	@printf "$(GOLD)║$(RESET)$(BOLD)$(GREEN)✓$(RESET)$(CYAN)All test programs compiled successfully!$(RESET)%26s$(GOLD)║$(RESET)\n" " "
+	@echo "$(GOLD)╚═══════════════════════════════════════════════════════════════════╝$(RESET)"
 	@echo ""
 	@echo "$(PURPLE)┌─────────────────────────────────────────────────────────────────┐$(RESET)"
-	@echo "$(PURPLE)│$(YELLOW) Use $(CYAN)'make controller'$(YELLOW) to run the comprehensive test controller $(PURPLE)│$(RESET)"
+	@echo "$(PURPLE)│$(RESET) $(YELLOW)Use $(RESET)$(BOLD_CYAN)'make controller'$(RESET)$(YELLOW) to run the comprehensive test controller$(RESET) $(PURPLE) │$(RESET)"
+	@echo -n "$(PURPLE)│$(RESET) $(YELLOW)Use '$(RESET)"
+	@for i in 1 2 3; do \
+		printf "$(BOLD_CYAN)make controller$(RESET)$(YELLOW)' to run the comprehensive test controller$(RESET) $(PURPLE) │$(RESET)\r"; \
+		sleep 0.2; \
+		printf "$(BOLD_MAGENTA)make controller$(RESET)$(YELLOW)' to run the comprehensive test controller$(RESET) $(PURPLE) │$(RESET)\r"; \
+		sleep 0.2; \
+		printf "$(BOLD_GREEN)make controller$(RESET)$(YELLOW)' to run the comprehensive test controller$(RESET) $(PURPLE) │$(RESET)\r"; \
+		sleep 0.2; \
+		printf "$(BOLD_GOLD)make controller$(RESET)$(YELLOW)' to run the comprehensive test controller$(RESET) $(PURPLE) │$(RESET)\r"; \
+		sleep 0.2; \
+	done
+	@echo "$(PURPLE)│$(RESET) $(YELLOW)Use $(BOLD_CYAN)'make controller'$(RESET)$(YELLOW) to run the comprehensive test controller$(RESET) $(PURPLE) │$(RESET)"
 	@echo "$(PURPLE)└─────────────────────────────────────────────────────────────────┘$(RESET)"
 	@sleep 0.5
 	@echo ""
-	@echo "$(BOLD)$(CYAN)Available test targets:$(RESET)"
-	@echo "$(GREEN)➤ $(YELLOW)make simple$(RESET)    - Run simple debug test"
-	@echo "$(GREEN)➤ $(YELLOW)make debug$(RESET)     - Run debug test"
-	@echo "$(GREEN)➤ $(YELLOW)make stress$(RESET)    - Run stress test"
-	@echo "$(GREEN)➤ $(YELLOW)make flags$(RESET)     - Run flag combinations test"
-	@echo "$(GREEN)➤ $(YELLOW)make char$(RESET)      - Run character tests"
-	@echo "$(GREEN)➤ $(YELLOW)make chars_ex$(RESET)  - Run extended character tests"
-	@echo "$(GREEN)➤ $(YELLOW)make ultimate$(RESET)  - Run ultimate test"
-	@echo "$(GREEN)➤ $(YELLOW)make test$(RESET)      - Run all tests with summary"
+	@echo "$(BOLD)$(UNDERLINE)$(SKY)AVAILABLE TEST TARGETS:$(RESET)"
+	@echo ""
+	@printf "$(BG_DARK_BLUE)$(BOLD_WHITE) 1 $(RESET) $(GREEN)➤ $(YELLOW)%-12s$(RESET) $(MINT)Run simple debug test$(RESET)\n" "make simple"
+	@printf "$(BG_DARK_BLUE)$(BOLD_WHITE) 2 $(RESET) $(GREEN)➤ $(YELLOW)%-12s$(RESET) $(MINT)Run debug test$(RESET)\n" "make debug"
+	@printf "$(BG_DARK_BLUE)$(BOLD_WHITE) 3 $(RESET) $(GREEN)➤ $(YELLOW)%-12s$(RESET) $(MINT)Run stress test$(RESET)\n" "make stress"
+	@printf "$(BG_DARK_BLUE)$(BOLD_WHITE) 4 $(RESET) $(GREEN)➤ $(YELLOW)%-12s$(RESET) $(MINT)Run flag combinations test$(RESET)\n" "make flags"
+	@printf "$(BG_DARK_BLUE)$(BOLD_WHITE) 5 $(RESET) $(GREEN)➤ $(YELLOW)%-12s$(RESET) $(MINT)Run character tests$(RESET)\n" "make char"
+	@printf "$(BG_DARK_BLUE)$(BOLD_WHITE) 6 $(RESET) $(GREEN)➤ $(YELLOW)%-12s$(RESET) $(MINT)Run extended character tests$(RESET)\n" "make chars_ex"
+	@printf "$(BG_DARK_BLUE)$(BOLD_WHITE) 7 $(RESET) $(GREEN)➤ $(YELLOW)%-12s$(RESET) $(MINT)Run ultimate test$(RESET)\n" "make ultimate"
+	@printf "$(BG_DARK_BLUE)$(BOLD_WHITE) 8 $(RESET) $(GREEN)➤ $(YELLOW)%-12s$(RESET) $(MINT)Run all tests with summary$(RESET)\n" "make test"
+	@echo ""
+	@sleep 0.2
+	@echo "$(BOLD)$(TEAL)Command History:$(RESET)"
+	@echo "$(GRAY)$ make all$(RESET)  $(GREEN)✓ Finished$(RESET)\n"
 
-# Create directories
+# Create directories with cleaner animation
 make_dirs:
-	@echo "$(YELLOW)⚙ Setting up build environment...$(RESET)"
+	@printf "$(BOLD_CYAN)╔════════════════════════════════════════╗$(RESET)\n"
+	@printf "$(BOLD_CYAN)║$(RESET) $(BOLD_YELLOW)SYSTEM ENVIRONMENT PREPARATION$(RESET)$(BOLD_CYAN)         ║$(RESET)\n"
+	@printf "$(BOLD_CYAN)╚════════════════════════════════════════╝$(RESET)\n"
+	@echo ""
+	@printf "$(YELLOW)$(GEAR) Creating system directories:$(RESET)\n"
+	
+	@printf "  $(CYAN)➤ Initializing obj/ directory...$(RESET)"
 	@mkdir -p $(OBJ_DIR)
-	@mkdir -p $(PROGRAM_DIR)
-	@for i in 1 2 3; do \
-		printf "$(YELLOW)  ⇒ Creating build structure $(CYAN)["; \
-		for j in 1 2 3 4 5; do \
-			printf "▓"; \
-			sleep 0.01; \
-		done; \
-		printf "]$(RESET)\r"; \
-		sleep 0.1; \
+	@for i in 1 2 3 4 5; do \
+		printf "\r  $(CYAN)➤ Initializing obj/ directory...   $(RESET)" ; \
+		sleep 0.1 ; \
+		printf "\r  $(CYAN)➤ Initializing obj/ directory.     $(RESET)" ; \
+		sleep 0.1 ; \
 	done
-	@echo "$(GREEN)  ✓ Build directories ready!        $(RESET)"
+	@printf "\r  $(CYAN)➤ Initializing obj/ directory $(GREEN)[$(BOLD)✓$(RESET)$(GREEN)]$(RESET)\n"
 
-# Build libft
+	@printf "  $(CYAN)➤ Initializing program/ directory...$(RESET)"
+	@mkdir -p $(PROGRAM_DIR)
+	@for i in 1 2 3 4 5; do \
+		printf "\r  $(CYAN)➤ Initializing program/ directory...   $(RESET)" ; \
+		sleep 0.1 ; \
+		printf "\r  $(CYAN)➤ Initializing program/ directory.     $(RESET)" ; \
+		sleep 0.1 ; \
+	done
+	@printf "\r  $(CYAN)➤ Initializing program/ directory $(GREEN)[$(BOLD)✓$(RESET)$(GREEN)]$(RESET)\n"
+	
+	@echo ""
+	@echo "$(GREEN)$(CHECK) Build environment ready!$(RESET)"
+	@echo ""
+
+# Build libft with animated status
 $(LIBFT):
-	@printf "$(BLUE)╔════════════════════════════════════╗\n$(RESET)"
-	@printf "$(BLUE)║ $(YELLOW)Building libft dependencies...$(BLUE)    ║\n$(RESET)"
-	@printf "$(BLUE)╚════════════════════════════════════╝\n$(RESET)"
-	@$(MAKE) -C $(LIBFT_DIR)
-	@echo "$(GREEN)  ✓ Libft built successfully!$(RESET)"
+	@printf "$(BG_DARK_BLUE)$(BOLD_WHITE) LIBFT $(RESET) $(BOLD_YELLOW)Importing dependency...$(RESET)\n"
+	@$(MAKE) -C $(LIBFT_DIR) > /dev/null
+	@echo ""
+	@echo -n "$(BOLD_YELLOW)Library status: $(RESET)"
+	@for i in 1 2 3; do \
+		printf "$(YELLOW)⬤$(RESET) " ; \
+		sleep 0.1 ; \
+	done
+	@echo "$(BOLD_GREEN)LINKED$(RESET)"
+	@echo ""
 
-# Compile ft_printf source files
+# Master function for a progress bar
+define progress_bar
+	@for k in $(shell seq 1 $(1)); do \
+		perl -e 'select(undef, undef, undef, 0.01)'; \
+		count=$$(($(2) * k / $(1))); \
+		printf "\r  $(YELLOW)%-25s [$(GREEN)" "$(3)"; \
+		for i in $$(seq 1 $$count); do printf "▓"; done; \
+		for i in $$(seq 1 $$(( $(2) - $$count ))); do printf "$(GRAY)·"; done; \
+		printf "$(YELLOW)] %3d%% $(RESET)" $$(( 100 * k / $(1) )); \
+	done; \
+	printf "\n"
+endef
+
+# Compile ft_printf source files with fancy loader
 $(OBJ_DIR)/%.o: $(PRINTF_DIR)/%.c
 	@if [ ! -f $(OBJ_DIR)/.header_printed ]; then \
-		printf "$(BLUE)╔════════════════════════════════════╗\n$(RESET)"; \
-		printf "$(BLUE)║ $(PURPLE)Compiling Source Files...$(BLUE)         ║\n$(RESET)"; \
-		printf "$(BLUE)╚════════════════════════════════════╝\n$(RESET)"; \
+		printf "$(BOLD_BLUE)╔════════════════════════════════════════╗$(RESET)\n"; \
+		printf "$(BOLD_BLUE)║ $(MAGENTA)CORE COMPONENTS COMPILATION$(BLUE)            ║$(RESET)\n"; \
+		printf "$(BOLD_BLUE)╚════════════════════════════════════════╝$(RESET)\n"; \
 		touch $(OBJ_DIR)/.header_printed; \
 	fi
-	@printf "  $(CYAN)%-30s $(YELLOW)→ $(GREEN)%s$(RESET)\n" "$<" "$@"
+	@printf "  $(CYAN)%-25s$(RESET) " "$(notdir $<)"
 	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+	@printf "$(GREEN)$(CHECK) Compiled$(RESET)\n"
 
-# Compile test source files
+# Compile test source files with shimmer effect
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	@if [ ! -f $(OBJ_DIR)/.test_header_printed ]; then \
-		printf "$(BLUE)╔════════════════════════════════════╗\n$(RESET)"; \
-		printf "$(BLUE)║ $(PURPLE)Building Test Components...$(BLUE)        ║\n$(RESET)"; \
-		printf "$(BLUE)╚════════════════════════════════════╝\n$(RESET)"; \
+		printf "\n$(BOLD_BLUE)╔════════════════════════════════════════╗$(RESET)\n"; \
+		printf "$(BOLD_BLUE)║ $(PINK)TEST COMPONENTS COMPILATION$(BLUE)            ║$(RESET)\n"; \
+		printf "$(BOLD_BLUE)╚════════════════════════════════════════╝$(RESET)\n\n"; \
 		touch $(OBJ_DIR)/.test_header_printed; \
 	fi
-	@printf "  $(CYAN)%-30s $(YELLOW)→ $(GREEN)%s$(RESET)\n" "$<" "$@"
+	@printf "  $(BOLD_CYAN)▶ Building:$(RESET) $(YELLOW)%-25s$(RESET) " "$(notdir $<)"
 	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+	@printf "$(GREEN)$(CHECK)$(RESET)\n"
 
-# Build tester executables
+# Build tester executables with fancy spinning animation
 $(PROGRAM_DIR)/%: $(OBJ_DIR)/%.o $(OBJ_UTILS) $(PRINTF_OBJS) $(LIBFT)
 	@if [ ! -f $(OBJ_DIR)/.link_header_printed ]; then \
-		printf "$(BLUE)╔════════════════════════════════════╗\n$(RESET)"; \
-		printf "$(BLUE)║ $(LIME)Building Test Executables...$(BLUE)       ║\n$(RESET)"; \
-		printf "$(BLUE)╚════════════════════════════════════╝\n$(RESET)"; \
+		printf "\n$(BOLD_BLUE)╔════════════════════════════════════════╗$(RESET)\n"; \
+		printf "$(BOLD_BLUE)║ $(LIME)LINKING TEST EXECUTABLES$(BLUE)               ║$(RESET)\n"; \
+		printf "$(BOLD_BLUE)╚════════════════════════════════════════╝$(RESET)\n\n"; \
 		touch $(OBJ_DIR)/.link_header_printed; \
 	fi
-	@printf "  $(PURPLE)%-30s $(YELLOW)→ $(GREEN)%s$(RESET)\n" "$<" "$@"
+	@printf "  $(BOLD_PURPLE)▶ Linking:$(RESET) $(WHITE)%-25s " "$@"
+	@for c in "/" "-" "\\" "|"; do \
+		printf "\r  $(BOLD_PURPLE)▶ Linking:$(RESET) $(WHITE)%-25s $(YELLOW)[$$c]$(RESET)" "$@" ; \
+		sleep 0.05; \
+	done
 	@$(CC) $(CFLAGS) -o $@ $^ $(LIBFT)
+	@printf "\r  $(BOLD_PURPLE)▶ Linking:$(RESET) $(WHITE)%-25s $(GREEN)[$(BOLD)✓$(RESET)$(GREEN)]$(RESET)\n" "$@"
 	@sleep 0.05
 
-# Special rule for ultimate_tester_extended
+# Special rule for ultimate_tester_extended with enhanced animation
 $(PROGRAM_DIR)/ultimate_tester_extended: $(OBJ_DIR)/ft_printf_ultimate_controller.o $(OBJ_UTILS) $(PRINTF_OBJS) $(LIBFT)
-	@printf "  $(PURPLE)%-30s $(YELLOW)→ $(GREEN)%s$(RESET)\n" "$<" "$@"
+	@printf "  $(BOLD_PURPLE)▶ Linking:$(RESET) $(WHITE)%-25s " "$@"
+	@for i in 1 2 3 4; do \
+		for c in "🔄" "🔁" "♻️" "⚙️"; do \
+			printf "\r  $(BOLD_PURPLE)▶ Linking:$(RESET) $(WHITE)%-25s $(YELLOW)[$$c]$(RESET)" "$@" ; \
+			sleep 0.05; \
+		done; \
+	done
 	@$(CC) $(CFLAGS) -o $@ $^ $(LIBFT)
+	@printf "\r  $(BOLD_PURPLE)▶ Linking:$(RESET) $(WHITE)%-25s $(GREEN)[$(BOLD)✓$(RESET)$(GREEN)]$(RESET)\n" "$@"
 	@sleep 0.05
 
-# Clean targets
+# Clean targets with completely silent file removal
 clean:
-	@printf "$(BG_BLUE)$(BOLD)$(WHITE) CLEANING $(RESET)\n"
-	@printf "$(YELLOW)⚙ Removing object files...$(RESET)\n"
-	@rm -rf $(OBJ_DIR)
-	@for i in $(shell seq 1 50); do \
-		printf "$(YELLOW)[$(GREEN)%-50s$(YELLOW)]$(RESET)\r" "$$(printf '%*s' $$i '' | tr ' ' '=')" ; \
-		sleep 0.01; \
+	@clear
+	@printf "$(BG_BLUE)$(BOLD_WHITE) SYSTEM MAINTENANCE: CLEANING OPERATION $(RESET)\n\n"
+	@printf "$(YELLOW)$(GEAR) Removing object files...$(RESET)\n\n"
+	
+	@# Display scanning animation
+	@for i in $(shell seq 1 3); do \
+		printf "  $(CYAN)Scanning for temporary files...$(RESET)\r"; \
+		sleep 0.2; \
+		printf "  $(CYAN)Scanning for temporary files$(RESET).$(RESET)\r"; \
+		sleep 0.2; \
+		printf "  $(CYAN)Scanning for temporary files$(RESET).$(RESET).$(RESET)\r"; \
+		sleep 0.2; \
+		printf "  $(CYAN)Scanning for temporary files$(RESET).$(RESET).$(RESET).$(RESET)\r"; \
+		sleep 0.2; \
 	done
-	@echo "$(GREEN)✓ Clean complete!$(RESET)"
+	@echo ""
+	
+	@# Show wipe animation with progress bar
+	@echo "  $(YELLOW)Wiping object directory:$(RESET)"
+	$(call progress_bar,20,30,"Removing build artifacts")
+	@rm -rf $(OBJ_DIR) > /dev/null 2>&1
+	
+	@echo ""
+	@printf "$(GREEN)$(BOLD)$(CHECK) Clean operation complete!$(RESET)\n"
+	@printf "$(GRAY)$ make clean$(RESET)  $(GREEN)✓ Finished$(RESET)\n"
 
-fclean: clean
-	@printf "$(YELLOW)⚙ Removing executables...$(RESET)\n"
-	@rm -rf $(PROGRAM_DIR)
-	@for i in $(shell seq 1 50); do \
-		printf "$(YELLOW)[$(GREEN)%-50s$(YELLOW)]$(RESET)\r" "$$(printf '%*s' $$i '' | tr ' ' '=')" ; \
-		sleep 0.01; \
+fclean:
+	@clear
+	@printf "$(BG_BLUE)$(BOLD_WHITE) SYSTEM MAINTENANCE: FULL CLEANING OPERATION $(RESET)\n\n"
+	@printf "$(YELLOW)$(GEAR) Removing object files...$(RESET)\n\n"
+	
+	@# Display scanning animation for objects
+	@for i in $(shell seq 1 2); do \
+		printf "  $(CYAN)Scanning objects...$(RESET)\r"; \
+		sleep 0.2; \
+		printf "  $(CYAN)Scanning objects$(RESET).$(RESET)\r"; \
+		sleep 0.2; \
+		printf "  $(CYAN)Scanning objects$(RESET).$(RESET).$(RESET)\r"; \
+		sleep 0.2; \
+		printf "  $(CYAN)Scanning objects$(RESET).$(RESET).$(RESET).$(RESET)\r"; \
+		sleep 0.2; \
 	done
-	@echo "$(GREEN)✓ Full clean complete!$(RESET)"
+	@echo ""
+	
+	@# Show wipe animation with progress bar for objects
+	@echo "  $(YELLOW)Wiping object directory:$(RESET)"
+	$(call progress_bar,15,30,"Removing build artifacts")
+	@rm -rf $(OBJ_DIR) > /dev/null 2>&1
+	
+	@printf "$(YELLOW)$(GEAR) Removing program files...$(RESET)\n\n"
+	
+	@# Display scanning animation for programs
+	@for i in $(shell seq 1 2); do \
+		printf "  $(CYAN)Scanning executables...$(RESET)\r"; \
+		sleep 0.2; \
+		printf "  $(CYAN)Scanning executables$(RESET).$(RESET)\r"; \
+		sleep 0.2; \
+		printf "  $(CYAN)Scanning executables$(RESET).$(RESET).$(RESET)\r"; \
+		sleep 0.2; \
+		printf "  $(CYAN)Scanning executables$(RESET).$(RESET).$(RESET).$(RESET)\r"; \
+		sleep 0.2; \
+	done
+	@echo ""
+	
+	@# Show wipe animation with progress bar for programs
+	@echo "  $(YELLOW)Wiping program directory:$(RESET)"
+	$(call progress_bar,15,30,"Removing executables")
+	@rm -rf $(PROGRAM_DIR) > /dev/null 2>&1
+	
+	@echo ""
+	@printf "$(GREEN)$(BOLD)$(CHECK) Full clean operation complete!$(RESET)\n"
+	@printf "$(GRAY)$ make fclean$(RESET)  $(GREEN)✓ Finished$(RESET)\n\n"
 
 re: fclean all
 
-# Test command display header
+# Test command display header with ultra-modern design
 define test_header
+	@clear
 	@echo ""
-	@echo "$(BG_GREEN)$(BOLD)$(WHITE) RUNNING TEST: $(UNDERLINE)$(1)$(RESET)$(BG_GREEN)$(BOLD)$(WHITE) $(RESET)"
-	@echo "$(CYAN)╭───────────────────────────────────────────────────────────╮$(RESET)"
-	@echo "$(CYAN)│$(RESET) $(BOLD)$(YELLOW)Test Starting...$(RESET)                                         $(CYAN)│$(RESET)"
-	@echo "$(CYAN)╰───────────────────────────────────────────────────────────╯$(RESET)"
-	@sleep 0.3
+	@echo "$(TEAL)╭───────────────────────────────────────────────────────────────────╮"
+	@echo "│$(BG_DARK_BLUE)$(BOLD_WHITE) RUNNING TEST: $(UNDERLINE)$(1)$(RESET)$(TEAL)                                           │"
+	@echo "╰───────────────────────────────────────────────────────────────────╯"
+	@echo ""
+	@echo "$(LAVENDER)┌─────────────────────────────────────────────────────────────────┐"
+	@echo "│$(RESET) $(BOLD_YELLOW)$(CLOCK) Test preparation in progress...$(RESET)                             $(LAVENDER)│"
+	@echo "└─────────────────────────────────────────────────────────────────┘$(RESET)"
+	@echo ""
+	@for i in 1 2 3; do \
+		for c in "⣾" "⣽" "⣻" "⢿" "⡿" "⣟" "⣯" "⣷"; do \
+			printf "$(YELLOW)  %s $(CYAN)Initializing test environment...$(RESET)\r" "$$c"; \
+			sleep 0.05; \
+		done; \
+	done
+	@echo "$(GREEN)✓ Test environment ready! Starting test...$(RESET)"
+	@sleep 0.5
+	@echo ""
 endef
 
-# Specific test commands
-simple: $(PROGRAM_DIR)/ft_printf_debug_tester_simple
-	$(call test_header,SIMPLE DEBUG TEST)
-	@$(PROGRAM_DIR)/ft_printf_debug_tester_simple
+# Test command display header with ultra-modern design
+define test_header
+	@clear
+	@echo ""
+	@echo "$(TEAL)╭───────────────────────────────────────────────────────────────────╮"
+	@echo "│$(BG_DARK_BLUE)$(BOLD_WHITE) RUNNING TEST: $(UNDERLINE)$(1)$(RESET)$(TEAL)                                           │"
+	@echo "╰───────────────────────────────────────────────────────────────────╯"
+	@echo ""
+	@echo "$(LAVENDER)┌─────────────────────────────────────────────────────────────────┐"
+	@echo "│$(RESET) $(BOLD_YELLOW)$(CLOCK) Test preparation in progress...$(RESET)                             $(LAVENDER)│"
+	@echo "└─────────────────────────────────────────────────────────────────┘$(RESET)"
+	@echo ""
+	@for i in 1 2 3; do \
+		for c in "⣾" "⣽" "⣻" "⢿" "⡿" "⣟" "⣯" "⣷"; do \
+			printf "$(YELLOW)  %s $(CYAN)Initializing test environment...$(RESET)\r" "$$c"; \
+			sleep 0.05; \
+		done; \
+	done
+	@echo "$(GREEN)✓ Test environment ready! Starting test...$(RESET)"
+	@sleep 0.5
+	@echo ""
+endef
 
-debug: $(PROGRAM_DIR)/ft_printf_debug_tester
-	$(call test_header,DEBUG TEST)
-	@$(PROGRAM_DIR)/ft_printf_debug_tester
-
-stress: $(PROGRAM_DIR)/ft_printf_stress_tester
-	$(call test_header,STRESS TEST)
-	@$(PROGRAM_DIR)/ft_printf_stress_tester
-
-flags: $(PROGRAM_DIR)/flag_combinations_tester
-	$(call test_header,FLAG COMBINATIONS TEST)
-	@$(PROGRAM_DIR)/flag_combinations_tester
-
-char: $(PROGRAM_DIR)/char_tests
-	$(call test_header,CHARACTER TESTS)
-	@$(PROGRAM_DIR)/char_tests
-
-chars_ex: $(PROGRAM_DIR)/char_tests_extended
-	$(call test_header,EXTENDED CHARACTER TESTS)
-	@$(PROGRAM_DIR)/char_tests_extended
-
-ultimate: $(PROGRAM_DIR)/ultimate_tester
-	$(call test_header,ULTIMATE TEST)
-	@$(PROGRAM_DIR)/ultimate_tester
-
-# Run controller
+# Run controller with attention-grabbing blinking effect
 controller: $(PROGRAM_DIR)/ultimate_tester_extended
 	@clear
 	@echo "$(CYAN)╔══════════════════════════════════════════════════════════════════════╗$(RESET)"
 	@echo "$(CYAN)║ $(BOLD)$(PINK)    F T _ P R I N T F   T E S T   C O N T R O L L E R    $(RESET)$(CYAN)         ║$(RESET)"
 	@echo "$(CYAN)╚══════════════════════════════════════════════════════════════════════╝$(RESET)"
 	@echo ""
+	@# Create and launch the blinking notification in a persistent way
+	@printf "#!/bin/bash\n\
+	while true; do\n\
+		printf \"\\r\$(BOLD_MAGENTA)⚡ CONTROLLER ACTIVE ⚡\$(RESET)\";\n\
+		sleep 0.5;\n\
+		printf \"\\r\$(BOLD_CYAN)⚡ CONTROLLER ACTIVE ⚡\$(RESET)\";\n\
+		sleep 0.5;\n\
+		printf \"\\r\$(BOLD_GREEN)⚡ CONTROLLER ACTIVE ⚡\$(RESET)\";\n\
+		sleep 0.5;\n\
+		printf \"\\r\$(BOLD_GOLD)⚡ CONTROLLER ACTIVE ⚡\$(RESET)\";\n\
+		sleep 0.5;\n\
+	done" > /tmp/ft_printf_blinker.sh 2>/dev/null
+	@chmod +x /tmp/ft_printf_blinker.sh 2>/dev/null
+	@# Launch blinking indicator in background, will terminate when test completes
+	@(nohup bash /tmp/ft_printf_blinker.sh > /dev/null 2>&1 & echo $$! > /tmp/ft_printf_blinker.pid) 2>/dev/null
 	@echo "$(YELLOW)⚙ Launching comprehensive test suite...$(RESET)"
 	@echo ""
 	@sleep 0.5
+	@# Run the actual test controller
+	@$(PROGRAM_DIR)/ultimate_tester_extended; \
+	if [ -f /tmp/ft_printf_blinker.pid ]; then \
+		kill -9 $$(cat /tmp/ft_printf_blinker.pid) > /dev/null 2>&1 || true; \
+		rm -f /tmp/ft_printf_blinker.pid /tmp/ft_printf_blinker.sh > /dev/null 2>&1; \
+	fi
+
+# Create notification box with perpetual blinking highlight
+define create_notification
+	@echo ""
+	@echo "$(MAGENTA)┌──────────────────────────────────────────────────────────────────┐$(RESET)"
+	@echo "$(MAGENTA)│$(RESET) $(BOLD_YELLOW)                                                               $(RESET)$(MAGENTA)│$(RESET)"
+	@echo "$(MAGENTA)│$(RESET) $(BOLD_YELLOW)$(1)$(RESET)$(MAGENTA)│$(RESET)"
+	@echo "$(MAGENTA)│$(RESET) $(BOLD_YELLOW)                                                               $(RESET)$(MAGENTA)│$(RESET)"
+	@echo "$(MAGENTA)└──────────────────────────────────────────────────────────────────┘$(RESET)"
+	@echo ""
+endef
+
+# Add a fully animated landing page for the controller
+controllerx: $(PROGRAM_DIR)/ultimate_tester_extended
+	@clear
+	@echo "$(BOLD_CYAN)╔════════════════════════════════════════════════════════════════╗$(RESET)"
+	@echo "$(BOLD_CYAN)║$(BOLD_WHITE)                                                                $(RESET)$(BOLD_CYAN)║$(RESET)"
+	@echo "$(BOLD_CYAN)║$(BOLD_WHITE)                FT_PRINTF ULTIMATE CONTROLLER                   $(RESET)$(BOLD_CYAN)║$(RESET)"
+	@echo "$(BOLD_CYAN)║$(BOLD_WHITE)                                                                $(RESET)$(BOLD_CYAN)║$(RESET)"
+	@echo "$(BOLD_CYAN)╚════════════════════════════════════════════════════════════════╝$(RESET)"
+	@echo ""
+	@sleep 0.5
+	
+	@# Create and launch the blinking notification in background
+	@rm -f /tmp/ft_printf_blink_flag
+	@printf "#!/bin/bash\n\
+	while [ ! -f /tmp/ft_printf_blink_flag ]; do\n\
+		tput civis;\n\
+		printf \"\$(PURPLE)┌────────────────────────────────────────────────────────────┐\$(RESET)\n\";\n\
+		printf \"\$(PURPLE)│\$(BOLD_MAGENTA) ★  CONTROLLER STARTING - PLEASE WAIT FOR INITIALIZATION  ★ \$(RESET)\$(PURPLE)│\$(RESET)\n\";\n\
+		printf \"\$(PURPLE)└────────────────────────────────────────────────────────────┘\$(RESET)\n\";\n\
+		sleep 0.3;\n\
+		clear;\n\
+		printf \"\$(CYAN)┌────────────────────────────────────────────────────────────┐\$(RESET)\n\";\n\
+		printf \"\$(CYAN)│\$(BOLD_CYAN) ★  CONTROLLER STARTING - PLEASE WAIT FOR INITIALIZATION  ★ \$(RESET)\$(CYAN)│\$(RESET)\n\";\n\
+		printf \"\$(CYAN)└────────────────────────────────────────────────────────────┘\$(RESET)\n\";\n\
+		sleep 0.3;\n\
+		clear;\n\
+		printf \"\$(GREEN)┌────────────────────────────────────────────────────────────┐\$(RESET)\n\";\n\
+		printf \"\$(GREEN)│\$(BOLD_GREEN) ★  CONTROLLER STARTING - PLEASE WAIT FOR INITIALIZATION  ★ \$(RESET)\$(GREEN)│\$(RESET)\n\";\n\
+		printf \"\$(GREEN)└────────────────────────────────────────────────────────────┘\$(RESET)\n\";\n\
+		sleep 0.3;\n\
+		clear;\n\
+	done\n\
+	tput cnorm;\n\
+	" > /tmp/ft_printf_controller_blinker.sh
+	@chmod +x /tmp/ft_printf_controller_blinker.sh
+	@(bash /tmp/ft_printf_controller_blinker.sh) &
+	@sleep 2
+	@touch /tmp/ft_printf_blink_flag
+	@rm -f /tmp/ft_printf_controller_blinker.sh /tmp/ft_printf_blink_flag
+	
+	@# Run the controller
 	@$(PROGRAM_DIR)/ultimate_tester_extended
 
 # Extended controller (same as controller)
 extended: controller
-
-# Run all tests
-test: $(addprefix $(PROGRAM_DIR)/,$(TESTERS))
-	@clear
-	@echo "$(BG_BLUE)$(BOLD)$(WHITE) FT_PRINTF COMPLETE TEST SUITE $(RESET)"
-	@echo ""
-	@echo "$(CYAN)╭───────────────────────────────────────────────────────────╮$(RESET)"
-	@echo "$(CYAN)│$(RESET) $(BOLD)$(YELLOW)Running all tests sequentially...$(RESET)                        $(CYAN)│$(RESET)"
-	@echo "$(CYAN)╰───────────────────────────────────────────────────────────╯$(RESET)"
-	@echo ""
-	@sleep 0.3
-	
-	@total=0; passed=0; failed=0; \
-	for tester in $(TESTERS); do \
-		total=$$((total+1)); \
-		printf "$(YELLOW)▶ %-30s$(RESET) " "$$tester"; \
-		for i in $(shell seq 1 10); do \
-			printf "."; \
-			sleep 0.03; \
-		done; \
-		printf " "; \
-		if $(PROGRAM_DIR)/$$tester >/dev/null 2>&1; then \
-			printf "$(GREEN)[PASS]$(RESET)\n"; \
-			passed=$$((passed+1)); \
-		else \
-			printf "$(RED)[FAIL]$(RESET)\n"; \
-			failed=$$((failed+1)); \
-		fi; \
-	done; \
-	echo ""; \
-	printf "$(BOLD)$(BLUE)╔═════════════════════════════════════════╗\n$(RESET)"; \
-	printf "$(BOLD)$(BLUE)║ $(WHITE)         TEST SUMMARY              $(BLUE) ║\n$(RESET)"; \
-	printf "$(BOLD)$(BLUE)╠═════════════════════════════════════════╣\n$(RESET)"; \
-	printf "$(BOLD)$(BLUE)║ $(CYAN)Total tests:  $(WHITE)%-22d$(BLUE) ║\n$(RESET)" $$total; \
-	printf "$(BOLD)$(BLUE)║ $(GREEN)Tests passed: $(WHITE)%-22d$(BLUE) ║\n$(RESET)" $$passed; \
-	printf "$(BOLD)$(BLUE)║ $(RED)Tests failed: $(WHITE)%-22d$(BLUE) ║\n$(RESET)" $$failed; \
-	printf "$(BOLD)$(BLUE)╠═════════════════════════════════════════╣\n$(RESET)"; \
-	percentage=$$((passed * 100 / total)); \
-	printf "$(BOLD)$(BLUE)║ $(WHITE)Success rate: $(YELLOW)%d%%$(WHITE)                  $(BLUE) ║\n$(RESET)" $$percentage; \
-	printf "$(BOLD)$(BLUE)╚═════════════════════════════════════════╝\n$(RESET)"; \
-	if [ $$failed -eq 0 ]; then \
-		echo "$(GREEN)All tests passed! Your implementation looks good.$(RESET)"; \
-	else \
-		echo "$(YELLOW)Some tests failed. More work needed.$(RESET)"; \
-	fi
-
-.PHONY: all header_all footer_all make_dirs clean fclean re simple debug stress flags char chars_ex ultimate controller extended test
