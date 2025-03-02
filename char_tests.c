@@ -1,14 +1,15 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   char_tests.c                                        :+:      :+:    :+:   */
+/*   char_tests.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: syzygy <syzygy@student.42.fr>              +#+  +:+       +#+        */
+/*   By: dyl-syzygy <dyl-syzygy@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/06/01 14:00:00 by syzygy            #+#    #+#             */
-/*   Updated: 2024/06/01 14:00:00 by syzygy           ###   ########.fr       */
+/*   Created: 2025/03/02 01:16:19 by dyl-syzygy        #+#    #+#             */
+/*   Updated: 2025/03/02 01:16:20 by dyl-syzygy       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 #include "../ft_printf.h"
 #include "ft_printf_test_utils.h"  // Include the utilities header

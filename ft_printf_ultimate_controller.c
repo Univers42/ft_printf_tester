@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_printf_ultimate_controller.c                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: syzygy <syzygy@student.42.fr>              +#+  +:+       +#+        */
+/*   By: dyl-syzygy <dyl-syzygy@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/06/15 12:00:00 by syzygy            #+#    #+#             */
-/*   Updated: 2024/06/15 12:00:00 by syzygy           ###   ########.fr       */
+/*   Created: 2025/03/02 01:17:28 by dyl-syzygy        #+#    #+#             */
+/*   Updated: 2025/03/02 01:17:29 by dyl-syzygy       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

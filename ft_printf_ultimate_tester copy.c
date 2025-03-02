@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_printf_ultimate_tester copy.c                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dyl-syzygy <dyl-syzygy@student.42.fr>      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/03/02 01:17:32 by dyl-syzygy        #+#    #+#             */
+/*   Updated: 2025/03/02 01:19:15 by dyl-syzygy       ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../ft_printf.h"
 #include "ft_printf_test_utils.h"
 #include <stdio.h>
@@ -7,6 +19,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <pthread.h>  // Add pthread header for mutex functions
+#include <signal.h>   // Add signal header for sig_atomic_t
 
 /* ===== CONFIGURATION ===== */
 // Use the BUFFER_SIZE from ft_printf_debug.h instead of redefining it
