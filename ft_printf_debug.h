@@ -6,7 +6,7 @@
 /*   By: dyl-syzygy <dyl-syzygy@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/02 01:16:55 by dyl-syzygy        #+#    #+#             */
-/*   Updated: 2025/03/02 01:16:57 by dyl-syzygy       ###   ########.fr       */
+/*   Updated: 2025/03/03 13:44:09 by dyl-syzygy       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,4 +95,4 @@ void print_test_result(const char *test_name, int pass, const char *format,
                       const char *expected, int expected_ret, 
                       const char *actual, int actual_ret);
 
-#endif /* FT_PRINTF_DEBUG_H */
+#endif

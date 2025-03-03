@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../ft_printf.h"
+#include "../include/ft_printf.h"
 #include "ft_printf_debug.h"
 
 int main(void) {

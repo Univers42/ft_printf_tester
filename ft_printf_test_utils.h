@@ -6,14 +6,14 @@
 /*   By: dyl-syzygy <dyl-syzygy@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/02 01:17:14 by dyl-syzygy        #+#    #+#             */
-/*   Updated: 2025/03/02 01:17:15 by dyl-syzygy       ###   ########.fr       */
+/*   Updated: 2025/03/03 13:42:03 by dyl-syzygy       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FT_PRINTF_TEST_UTILS_H
 # define FT_PRINTF_TEST_UTILS_H
 
-# include "../ft_printf.h"
+# include "../include/ft_printf.h"
 # include "ft_printf_debug.h"
 # include <stdio.h>
 # include <stdarg.h>

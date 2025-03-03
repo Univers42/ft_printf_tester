@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../ft_printf.h"
+#include "../include/ft_printf.h"
 #include "ft_printf_test_utils.h"  // Include utilities header
 
 // Remove the duplicate implementation of test_pointer_with_flags

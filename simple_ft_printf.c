@@ -1,9 +1,21 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   simple_ft_printf.c                                 :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dyl-syzygy <dyl-syzygy@student.42.fr>      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/03/03 13:42:12 by dyl-syzygy        #+#    #+#             */
+/*   Updated: 2025/03/03 14:06:11 by dyl-syzygy       ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <stdarg.h>
-#include "../ft_printf.h"
+#include "../include/ft_printf.h"  // Updated include path
 
 /*
  * This is a simple wrapper for ft_printf used in testing
- * It exists because some tests use simple_ft_printf instead of ft_printf directly
+ * It calls the actual ft_printf function with the given format and arguments
  */
 int simple_ft_printf(const char *format, ...)
 {

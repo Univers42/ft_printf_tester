@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../ft_printf.h"
+#include "../include/ft_printf.h"
 #include "ft_printf_test_utils.h"
 
 // We'll focus on testing specific flag combinations that may cause issues

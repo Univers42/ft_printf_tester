@@ -6,14 +6,14 @@
 #    By: dyl-syzygy <dyl-syzygy@student.42.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/03/03 01:40:56 by dyl-syzygy        #+#    #+#              #
-#    Updated: 2025/03/03 02:46:04 by dyl-syzygy       ###   ########.fr        #
+#    Updated: 2025/03/03 14:12:07 by dyl-syzygy       ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 # Compiler and flags
 CC = gcc
 CFLAGS = -Wall -Wextra -Werror
-INCLUDES = -I../
+INCLUDES = -I../include -I../
 
 # Directories
 OBJ_DIR = Objects
@@ -23,14 +23,22 @@ PRINTF_DIR = ..
 LIBFT_DIR = ../libft
 ROOT_OBJ_DIR = ../Object
 
-# Source files - using find to automatically discover all .c files
+# Source files - using enhanced find to explicitly discover all .c files with better debug output
 TESTER_SRCS = $(shell find $(TESTER_DIR) -type f -name "*.c")
 PRINTF_SRCS = $(shell find $(PRINTF_DIR) -type f -name "*.c" \
                 ! -path "$(PRINTF_DIR)/ft_printf_tester/*" \
                 ! -path "$(PRINTF_DIR)/framework_test/*" \
                 ! -path "$(PRINTF_DIR)/libft/*")
 
-# Generate object file paths
+# Enhanced debug output for source file discovery
+define print_found_files
+	@echo "$(YELLOW)Found source files:$(RESET)"
+	@for file in $(1); do \
+		echo "  $(CYAN)$$file$(RESET)"; \
+	done
+endef
+
+# Generate object file paths with preserved directory structure
 TESTER_OBJS = $(patsubst $(TESTER_DIR)/%.c,$(OBJ_DIR)/tester/%.o,$(TESTER_SRCS))
 PRINTF_OBJS = $(patsubst $(PRINTF_DIR)/%.c,$(OBJ_DIR)/printf/%.o,$(PRINTF_SRCS))
 
@@ -169,7 +177,7 @@ TIME = $(BOLD_PURPLE)$(CLOCK)
 # Default target - ensure we build all testers first
 all: intro header_all build_root_project make_dirs $(LIBFT) $(TESTERS) footer_all
 
-# Build the root project first - fixed to handle libft properly
+# Build the root project first - robust subdirectory handling with deduplication
 build_root_project:
 	@printf "$(BOLD_BLUE)╔════════════════════════════════════════╗$(RESET)\n"
 	@printf "$(BOLD_BLUE)║$(RESET) $(BOLD_GREEN)BUILDING ROOT PROJECT$(RESET)$(BOLD_BLUE)                 ║$(RESET)\n"
@@ -180,22 +188,77 @@ build_root_project:
 		printf "  $(CYAN)Running make in root directory...$(RESET)\r" ; \
 		sleep 0.2 ; \
 	done
-	@$(MAKE) -C $(PRINTF_DIR) > /dev/null 2>&1
+	
+	@# Build with better error handling
+	@if ! $(MAKE) -C $(PRINTF_DIR) > /tmp/ft_printf_make.log 2>&1; then \
+		echo "$(RED)$(CROSS) Root project build failed. Error log:$(RESET)"; \
+		cat /tmp/ft_printf_make.log; \
+		exit 1; \
+	fi
 	@printf "  $(CYAN)Root project build $(GREEN)[$(BOLD)✓$(RESET)$(GREEN)]$(RESET)\n\n"
 	
-	@# Build libft separately to ensure it's available
+	@# Check for the libftprintf.a library
+	@if [ -f "$(PRINTF_DIR)/libftprintf.a" ]; then \
+		printf "  $(GREEN)Found libftprintf.a in root directory$(RESET)\n"; \
+	else \
+		printf "  $(RED)Error: libftprintf.a not found in root directory$(RESET)\n"; \
+		exit 1; \
+	fi
+	
+	@# Generate supplemental library with potentially missing functions
+	@printf "$(YELLOW)$(GEAR) Running link wrapper to ensure all functions are available...$(RESET)\n"
+	@if [ ! -f "$(PRINTF_DIR)/libftprintf_supp.a" ]; then \
+		if [ -x "./link_wrapper.sh" ]; then \
+			./link_wrapper.sh > /tmp/link_wrapper.log 2>&1; \
+		else \
+			chmod +x ./link_wrapper.sh && ./link_wrapper.sh > /tmp/link_wrapper.log 2>&1; \
+		fi; \
+	fi
+	
+	@if [ -f "$(PRINTF_DIR)/libftprintf_supp.a" ]; then \
+		printf "  $(GREEN)Supplemental library generated successfully$(RESET)\n"; \
+	else \
+		printf "  $(YELLOW)Warning: Supplemental library not found, linking may fail$(RESET)\n"; \
+	fi
+	
+	@# Build libft with better error handling
 	@printf "$(YELLOW)$(GEAR) Ensuring libft is built...$(RESET)\n"
-	@$(MAKE) -C $(LIBFT_DIR) > /dev/null 2>&1
+	@if ! $(MAKE) -C $(LIBFT_DIR) > /tmp/ft_printf_libft.log 2>&1; then \
+		echo "$(RED)$(CROSS) Libft build failed. Error log:$(RESET)"; \
+		cat /tmp/ft_printf_libft.log; \
+		exit 1; \
+	fi
 	@printf "  $(CYAN)Libft build $(GREEN)[$(BOLD)✓$(RESET)$(GREEN)]$(RESET)\n\n"
 	
+	@# Recursive directory structure syncing
+	@echo "$(YELLOW)$(GEAR) Locating source files in project directory...$(RESET)"
+	$(call print_found_files, $(PRINTF_SRCS))
+	
+	@# Clean up any previous objects first to prevent duplicates
+	@rm -rf $(OBJ_DIR)/printf
+	
 	@if [ -d "$(ROOT_OBJ_DIR)" ]; then \
-		printf "  $(CYAN)Synchronizing object files...$(RESET)\r"; \
+		printf "\n$(YELLOW)$(GEAR) Synchronizing object files...$(RESET)\n"; \
 		mkdir -p $(OBJ_DIR)/printf; \
-		find $(ROOT_OBJ_DIR) -name "*.o" ! -path "*/libft/*" -exec cp {} $(OBJ_DIR)/printf/ \; 2>/dev/null || true; \
+		find $(ROOT_OBJ_DIR) -type f -name "*.o" ! -path "*/libft/*" | sort | uniq | while read src; do \
+			filename=$$(basename $$src); \
+			if [ ! -f "$(OBJ_DIR)/printf/$$filename" ]; then \
+				rel_path=$$(echo $$src | sed 's|$(ROOT_OBJ_DIR)/||'); \
+				dst_dir=$(OBJ_DIR)/printf/$$(dirname $$rel_path); \
+				printf "  $(CYAN)Syncing: %s$(RESET)\n" "$$rel_path"; \
+				mkdir -p $$dst_dir 2>/dev/null || true; \
+				cp $$src $$dst_dir/ 2>/dev/null || true; \
+			fi \
+		done; \
 		printf "  $(CYAN)Object synchronization $(GREEN)[$(BOLD)✓$(RESET)$(GREEN)]$(RESET)\n"; \
 	else \
-		printf "  $(RED)Warning: Root Object directory not found.$(RESET)\n"; \
-		printf "  $(YELLOW)Will create local objects instead.$(RESET)\n"; \
+		printf "  $(YELLOW)Warning: Root Object directory not found. Creating objects locally.$(RESET)\n"; \
+		for src in $(PRINTF_SRCS); do \
+			rel_path=$$(echo $$src | sed 's|$(PRINTF_DIR)/||'); \
+			obj_path=$(OBJ_DIR)/printf/$$(dirname $$rel_path); \
+			printf "  $(CYAN)Will compile: %s -> %s$(RESET)\n" "$$rel_path" "$$obj_path"; \
+			mkdir -p $$obj_path; \
+		done; \
 	fi
 	@echo ""
 
@@ -366,16 +429,18 @@ define progress_bar
 	printf "\n"
 endef
 
-# Compile ft_printf source files with fancy loader
-$(OBJ_DIR)/%.o: $(PRINTF_DIR)/%.c
-	@if [ ! -f $(OBJ_DIR)/.header_printed ]; then \
-		printf "$(BOLD_BLUE)╔════════════════════════════════════════╗$(RESET)\n"; \
+# Compile ft_printf source files with enhanced pattern rule for all subdirectories
+$(OBJ_DIR)/printf/%.o: $(PRINTF_DIR)/%.c
+	@if [ ! -f $(OBJ_DIR)/.printf_header_printed ]; then \
+		printf "\n$(BOLD_BLUE)╔════════════════════════════════════════╗$(RESET)\n"; \
 		printf "$(BOLD_BLUE)║ $(MAGENTA)CORE COMPONENTS COMPILATION$(BLUE)            ║$(RESET)\n"; \
-		printf "$(BOLD_BLUE)╚════════════════════════════════════════╝$(RESET)\n"; \
-		touch $(OBJ_DIR)/.header_printed; \
+		printf "$(BOLD_BLUE)╚════════════════════════════════════════╝$(RESET)\n\n"; \
+		touch $(OBJ_DIR)/.printf_header_printed; \
 	fi
-	@printf "  $(CYAN)%-25s$(RESET) " "$(notdir $<)"
-	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+	@mkdir -p $(dir $@)
+	@printf "  $(CYAN)%-40s$(RESET) " "$(notdir $<) $(GRAY)($(shell dirname $(subst $(PRINTF_DIR)/,,$<)))$(RESET)"
+	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@ || \
+		{ printf "$(RED)Failed to compile %s$(RESET)\n" "$<"; exit 1; }
 	@printf "$(GREEN)$(CHECK) Compiled$(RESET)\n"
 
 # Compile test source files with shimmer effect
@@ -391,20 +456,15 @@ $(OBJ_DIR)/tester/%.o: $(TESTER_DIR)/%.c
 	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 	@printf "$(GREEN)$(CHECK)$(RESET)\n"
 
-# Compile printf source files with fancy loader (if needed and not obtained from ROOT_OBJ_DIR)
-$(OBJ_DIR)/printf/%.o: $(PRINTF_DIR)/%.c
-	@if [ ! -f $(OBJ_DIR)/.printf_header_printed ]; then \
-		printf "\n$(BOLD_BLUE)╔════════════════════════════════════════╗$(RESET)\n"; \
-		printf "$(BOLD_BLUE)║ $(MAGENTA)CORE COMPONENTS COMPILATION$(BLUE)            ║$(RESET)\n"; \
-		printf "$(BOLD_BLUE)╚════════════════════════════════════════╝$(RESET)\n\n"; \
-		touch $(OBJ_DIR)/.printf_header_printed; \
-	fi
-	@mkdir -p $(dir $@)
-	@printf "  $(CYAN)%-25s$(RESET) " "$(notdir $<)"
-	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
-	@printf "$(GREEN)$(CHECK) Compiled$(RESET)\n"
+# Error handling function to be used for graceful error display
+define handle_error
+	@printf "\r$(BOLD_RED)▶ Error:$(RESET) $(RED)%s$(RESET)\n" "$(1)"
+	@echo "$(RED)$(CROSS) Build failed. See error message above.$(RESET)"
+	@-rm -f $(2) 2>/dev/null
+	@exit 1
+endef
 
-# Build tester executables with fancy spinning animation - FIXED LINKING
+# Build tester executables with improved diagnostics
 $(PROGRAM_DIR)/%: $(OBJ_DIR)/tester/%.o $(TEST_UTILS_OBJ) $(SIMPLE_PRINTF_OBJ)
 	@if [ ! -f $(OBJ_DIR)/.link_header_printed ]; then \
 		printf "\n$(BOLD_BLUE)╔════════════════════════════════════════╗$(RESET)\n"; \
@@ -418,8 +478,41 @@ $(PROGRAM_DIR)/%: $(OBJ_DIR)/tester/%.o $(TEST_UTILS_OBJ) $(SIMPLE_PRINTF_OBJ)
 		printf "\r  $(BOLD_PURPLE)▶ Linking:$(RESET) $(WHITE)%-25s $(YELLOW)[$$c]$(RESET)" "$(notdir $@)" ; \
 		sleep 0.05; \
 	done
-	@# Direct link with the printfs and libft.a, avoiding reference to individual object files
-	@$(CC) $(CFLAGS) -o $@ $< $(TEST_UTILS_OBJ) $(SIMPLE_PRINTF_OBJ) $(PRINTF_OBJS) -L$(LIBFT_DIR) -lft
+	
+	@# Use conditional linking to include supplemental library if it exists
+	@if [ -f "$(PRINTF_DIR)/libftprintf_supp.a" ]; then \
+		if ! $(CC) $(CFLAGS) -o $@ $< $(TEST_UTILS_OBJ) $(SIMPLE_PRINTF_OBJ) -L$(PRINTF_DIR) -lftprintf -lftprintf_supp -L$(LIBFT_DIR) -lft 2>/tmp/ft_printf_error.log; then \
+			printf "\r$(BOLD_RED)▶ Error:$(RESET) $(RED)Linking failed for $(notdir $@)$(RESET)\n"; \
+			echo "$(RED)Link error details:$(RESET)"; \
+			cat /tmp/ft_printf_error.log; \
+			echo "$(YELLOW)Debug information:$(RESET)"; \
+			echo "  - Main object: $<"; \
+			echo "  - Test utils: $(TEST_UTILS_OBJ)"; \
+			echo "  - Simple printf: $(SIMPLE_PRINTF_OBJ)"; \
+			echo "  - Printf libraries: $(PRINTF_DIR)/libftprintf.a $(PRINTF_DIR)/libftprintf_supp.a"; \
+			echo "  - Libft library: $(LIBFT_DIR)/libft.a"; \
+			echo "  - Library status:"; \
+			ls -la $(PRINTF_DIR)/libftprintf.a $(PRINTF_DIR)/libftprintf_supp.a $(LIBFT_DIR)/libft.a 2>/dev/null || echo "  $(RED)ERROR: libraries not found!$(RESET)"; \
+			echo "$(RED)$(CROSS) Build failed.$(RESET)"; \
+			exit 1; \
+		fi; \
+	else \
+		if ! $(CC) $(CFLAGS) -o $@ $< $(TEST_UTILS_OBJ) $(SIMPLE_PRINTF_OBJ) -L$(PRINTF_DIR) -lftprintf -L$(LIBFT_DIR) -lft 2>/tmp/ft_printf_error.log; then \
+			printf "\r$(BOLD_RED)▶ Error:$(RESET) $(RED)Linking failed for $(notdir $@)$(RESET)\n"; \
+			echo "$(RED)Link error details:$(RESET)"; \
+			cat /tmp/ft_printf_error.log; \
+			echo "$(YELLOW)Debug information:$(RESET)"; \
+			echo "  - Main object: $<"; \
+			echo "  - Test utils: $(TEST_UTILS_OBJ)"; \
+			echo "  - Simple printf: $(SIMPLE_PRINTF_OBJ)"; \
+			echo "  - Printf library: $(PRINTF_DIR)/libftprintf.a"; \
+			echo "  - Libft library: $(LIBFT_DIR)/libft.a"; \
+			echo "  - Library status:"; \
+			ls -la $(PRINTF_DIR)/libftprintf.a $(LIBFT_DIR)/libft.a 2>/dev/null || echo "  $(RED)ERROR: libraries not found!$(RESET)"; \
+			echo "$(RED)$(CROSS) Build failed.$(RESET)"; \
+			exit 1; \
+		fi; \
+	fi
 	@printf "\r  $(BOLD_PURPLE)▶ Linking:$(RESET) $(WHITE)%-25s $(GREEN)[$(BOLD)✓$(RESET)$(GREEN)]$(RESET)\n" "$(notdir $@)"
 	@sleep 0.05
 
@@ -433,8 +526,33 @@ $(PROGRAM_DIR)/ft_printf_ultimate_tester: $(OBJ_DIR)/tester/ft_printf_ultimate_t
 		done; \
 	done
 	@mkdir -p $(PROGRAM_DIR)
-	@# Direct link with the printfs and libft.a, avoiding reference to individual object files
-	@$(CC) $(CFLAGS) -o $@ $< $(TEST_UTILS_OBJ) $(SIMPLE_PRINTF_OBJ) $(PRINTF_OBJS) -L$(LIBFT_DIR) -lft
+	
+	@# Also add conditional linking here
+	@if [ -f "$(PRINTF_DIR)/libftprintf_supp.a" ]; then \
+		if ! $(CC) $(CFLAGS) -o $@ $< $(TEST_UTILS_OBJ) $(SIMPLE_PRINTF_OBJ) -L$(PRINTF_DIR) -lftprintf -lftprintf_supp -L$(LIBFT_DIR) -lft 2>/tmp/ft_printf_error.log; then \
+			printf "\r$(BOLD_RED)▶ Error:$(RESET) $(RED)Linking failed for $(notdir $@)$(RESET)\n"; \
+			echo "$(RED)Link error details:$(RESET)"; \
+			cat /tmp/ft_printf_error.log; \
+			echo "$(YELLOW)Debug information:$(RESET)"; \
+			echo "  - Printf libraries: $(PRINTF_DIR)/libftprintf.a $(PRINTF_DIR)/libftprintf_supp.a"; \
+			echo "  - Libft library: $(LIBFT_DIR)/libft.a"; \
+			ls -la $(PRINTF_DIR)/libftprintf.a $(PRINTF_DIR)/libftprintf_supp.a $(LIBFT_DIR)/libft.a 2>/dev/null || echo "  $(RED)ERROR: libraries not found!$(RESET)"; \
+			echo "$(RED)$(CROSS) Build failed.$(RESET)"; \
+			exit 1; \
+		fi; \
+	else \
+		if ! $(CC) $(CFLAGS) -o $@ $< $(TEST_UTILS_OBJ) $(SIMPLE_PRINTF_OBJ) -L$(PRINTF_DIR) -lftprintf -L$(LIBFT_DIR) -lft 2>/tmp/ft_printf_error.log; then \
+			printf "\r$(BOLD_RED)▶ Error:$(RESET) $(RED)Linking failed for $(notdir $@)$(RESET)\n"; \
+			echo "$(RED)Link error details:$(RESET)"; \
+			cat /tmp/ft_printf_error.log; \
+			echo "$(YELLOW)Debug information:$(RESET)"; \
+			echo "  - Printf library: $(PRINTF_DIR)/libftprintf.a"; \
+			echo "  - Libft library: $(LIBFT_DIR)/libft.a"; \
+			ls -la $(PRINTF_DIR)/libftprintf.a $(LIBFT_DIR)/libft.a 2>/dev/null || echo "  $(RED)ERROR: libraries not found!$(RESET)"; \
+			echo "$(RED)$(CROSS) Build failed.$(RESET)"; \
+			exit 1; \
+		fi; \
+	fi
 	@printf "\r  $(BOLD_PURPLE)▶ Linking:$(RESET) $(WHITE)%-25s $(GREEN)[$(BOLD)✓$(RESET)$(GREEN)]$(RESET)\n" "$@"
 	@sleep 0.05
 
@@ -460,8 +578,9 @@ clean:
 	@# Show wipe animation with progress bar
 	@echo "  $(YELLOW)Wiping object directory:$(RESET)"
 	$(call progress_bar,20,30,"Removing build artifacts")
-	@rm -rf $(OBJ_DIR) > /dev/null 2>&1
-	@rm -f $(OBJ_DIR)/.*.printed > /dev/null 2>&1
+	@-rm -rf $(OBJ_DIR) 2>/dev/null
+	@-rm -f $(OBJ_DIR)/.*.printed 2>/dev/null
+	@-rm -f /tmp/ft_printf_error.log 2>/dev/null
 	
 	@echo ""
 	@printf "$(GREEN)$(BOLD)$(CHECK) Clean operation complete!$(RESET)\n"
@@ -664,7 +783,7 @@ help:
 	@echo "  $(YELLOW)make re$(RESET)        - Rebuild everything"
 
 .PHONY: all intro header_all build_root_project make_dirs clean fclean re \
-        test debug simple stress flags char chars_ex ultimate controller list help $(TEST_UTILS) $(SIMPLE_PRINTF)
+        test debug simple stress flags char chars_ex ultimate controller list help $(TEST_UTILS) $(SIMPLE_PRINTF) FORCE
 
 # Empty rule to prevent attempting to build ft_printf_test_utils as an executable
 $(TEST_UTILS):

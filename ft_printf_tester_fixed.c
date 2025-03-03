@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../ft_printf.h"
+#include "../include/ft_printf.h"
 #include "ft_printf_test_utils.h"  // Include this header for utilities
 #include <stdio.h>
 #include <string.h>

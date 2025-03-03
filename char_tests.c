@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 
-#include "../ft_printf.h"
+#include "../include/ft_printf.h"
 #include "ft_printf_test_utils.h"  // Include the utilities header
 
 int main(void)
