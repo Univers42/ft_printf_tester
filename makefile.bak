@@ -1,12 +1,12 @@
 # **************************************************************************** #
 #                                                                              #
 #                                                         :::      ::::::::    #
-#    Makefile                                           :+:      :+:    :+:    #
+#    makefile.bak                                       :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
 #    By: dyl-syzygy <dyl-syzygy@student.42.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2025/03/03 01:40:56 by dyl-syzygy        #+#    #+#              #
-#    Updated: 2025/03/03 02:46:04 by dyl-syzygy       ###   ########.fr        #
+#    Created: 2025/03/02 01:17:50 by dyl-syzygy        #+#    #+#              #
+#    Updated: 2025/03/03 01:47:09 by dyl-syzygy       ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,42 +16,75 @@ CFLAGS = -Wall -Wextra -Werror
 INCLUDES = -I../
 
 # Directories
-OBJ_DIR = Objects
+OBJ_DIR = Object
 PROGRAM_DIR = program
-TESTER_DIR = .
+SRC_DIR = .
 PRINTF_DIR = ..
 LIBFT_DIR = ../libft
 ROOT_OBJ_DIR = ../Object
 
-# Source files - using find to automatically discover all .c files
-TESTER_SRCS = $(shell find $(TESTER_DIR) -type f -name "*.c")
-PRINTF_SRCS = $(shell find $(PRINTF_DIR) -type f -name "*.c" \
-                ! -path "$(PRINTF_DIR)/ft_printf_tester/*" \
-                ! -path "$(PRINTF_DIR)/framework_test/*" \
-                ! -path "$(PRINTF_DIR)/libft/*")
+# Source files for ft_printf
+PRINTF_SRCS = $(PRINTF_DIR)/ft_printf.c \
+              $(PRINTF_DIR)/ft_print_char.c \
+              $(PRINTF_DIR)/ft_print_str.c \
+              $(PRINTF_DIR)/ft_print_hex.c \
+              $(PRINTF_DIR)/ft_print_int.c \
+              $(PRINTF_DIR)/ft_print_ptr.c \
+              $(PRINTF_DIR)/ft_print_unsigned.c \
+              $(PRINTF_DIR)/ft_nbr_len.c \
+              $(PRINTF_DIR)/ft_flags.c \
+              $(PRINTF_DIR)/ft_flags_utils.c \
+              $(PRINTF_DIR)/ft_print_flag.c \
+              $(PRINTF_DIR)/ft_printf_itoa.c \
+              $(PRINTF_DIR)/ft_printf_utoa.c \
+              $(PRINTF_DIR)/ft_printf_xtoa.c \
+              $(PRINTF_DIR)/ft_print_width.c \
+              $(PRINTF_DIR)/ft_print_nbr.c
 
-# Generate object file paths
-TESTER_OBJS = $(patsubst $(TESTER_DIR)/%.c,$(OBJ_DIR)/tester/%.o,$(TESTER_SRCS))
-PRINTF_OBJS = $(patsubst $(PRINTF_DIR)/%.c,$(OBJ_DIR)/printf/%.o,$(PRINTF_SRCS))
+# Source files for testers
+TEST_SRCS = ft_printf_test_utils.c \
+            ft_printf_tester.c \
+            ft_printf_debug_tester.c \
+            ft_printf_debug_tester_simple.c \
+            ft_printf_stress_tester.c \
+            flag_combinations_tester.c \
+            char_tests.c \
+            char_tests_extended.c \
+            string_tests_extended.c \
+            int_tests_extended.c \
+            ptr_tests_extended.c \
+            unsigned_tests_extended.c \
+            hex_tests_extended.c \
+            special_flags_tester.c \
+            basic_test.c \
+            ultimate_tester.c \
+            ft_printf_ultimate_controller.c
 
-# All object files
-ALL_OBJS = $(TESTER_OBJS) $(PRINTF_OBJS)
+# Object files
+PRINTF_OBJS = $(patsubst $(PRINTF_DIR)/%.c,$(OBJ_DIR)/%.o,$(PRINTF_SRCS))
+TEST_OBJS = $(patsubst %.c,$(OBJ_DIR)/%.o,$(TEST_SRCS))
+OBJ_UTILS = $(OBJ_DIR)/ft_printf_test_utils.o
 
-# Extract test names for executables
-TEST_NAMES = $(patsubst $(TESTER_DIR)/%.c,%,$(TESTER_SRCS))
-TEST_UTILS = ft_printf_test_utils
-SIMPLE_PRINTF = simple_ft_printf
-TEST_UTILS_OBJ = $(OBJ_DIR)/tester/$(TEST_UTILS).o
-SIMPLE_PRINTF_OBJ = $(OBJ_DIR)/tester/$(SIMPLE_PRINTF).o
-# Properly exclude the test utils from executables
-TEST_EXECUTABLES = $(filter-out $(TEST_UTILS) $(SIMPLE_PRINTF),$(TEST_NAMES))
-
-# Define explicit list of testers for the program directory
-TESTERS = $(addprefix $(PROGRAM_DIR)/,$(TEST_EXECUTABLES))
+# Testing executables
+TESTERS = ft_printf_tester \
+          ft_printf_debug_tester \
+          ft_printf_debug_tester_simple \
+          ft_printf_stress_tester \
+          flag_combinations_tester \
+          char_tests \
+          char_tests_extended \
+          string_tests_extended \
+          int_tests_extended \
+          ptr_tests_extended \
+          unsigned_tests_extended \
+          hex_tests_extended \
+          special_flags_tester \
+          basic_test \
+          ultimate_tester \
+          ultimate_tester_extended
 
 # Libraries
 LIBFT = $(LIBFT_DIR)/libft.a
-PRINTF_LIB = $(PRINTF_DIR)/libftprintf.a
 
 # ★彡 ULTRA COLOR PALETTE AND STYLES 彡★
 # Basic Colors
@@ -165,11 +198,10 @@ BEAM = $(BOLD_CYAN)$(LIGHT)
 BLAST = $(BOLD_YELLOW)$(ROCKET) 
 TIME = $(BOLD_PURPLE)$(CLOCK) 
 
-
 # Default target - ensure we build all testers first
-all: intro header_all build_root_project make_dirs $(LIBFT) $(TESTERS) footer_all
+all: intro header_all build_root_project make_dirs $(LIBFT) $(addprefix $(PROGRAM_DIR)/,$(TESTERS)) footer_all
 
-# Build the root project first - fixed to handle libft properly
+# Build the root project first
 build_root_project:
 	@printf "$(BOLD_BLUE)╔════════════════════════════════════════╗$(RESET)\n"
 	@printf "$(BOLD_BLUE)║$(RESET) $(BOLD_GREEN)BUILDING ROOT PROJECT$(RESET)$(BOLD_BLUE)                 ║$(RESET)\n"
@@ -182,16 +214,10 @@ build_root_project:
 	done
 	@$(MAKE) -C $(PRINTF_DIR) > /dev/null 2>&1
 	@printf "  $(CYAN)Root project build $(GREEN)[$(BOLD)✓$(RESET)$(GREEN)]$(RESET)\n\n"
-	
-	@# Build libft separately to ensure it's available
-	@printf "$(YELLOW)$(GEAR) Ensuring libft is built...$(RESET)\n"
-	@$(MAKE) -C $(LIBFT_DIR) > /dev/null 2>&1
-	@printf "  $(CYAN)Libft build $(GREEN)[$(BOLD)✓$(RESET)$(GREEN)]$(RESET)\n\n"
-	
 	@if [ -d "$(ROOT_OBJ_DIR)" ]; then \
 		printf "  $(CYAN)Synchronizing object files...$(RESET)\r"; \
-		mkdir -p $(OBJ_DIR)/printf; \
-		find $(ROOT_OBJ_DIR) -name "*.o" ! -path "*/libft/*" -exec cp {} $(OBJ_DIR)/printf/ \; 2>/dev/null || true; \
+		mkdir -p $(OBJ_DIR); \
+		cp -r $(ROOT_OBJ_DIR)/* $(OBJ_DIR)/ 2>/dev/null || true; \
 		printf "  $(CYAN)Object synchronization $(GREEN)[$(BOLD)✓$(RESET)$(GREEN)]$(RESET)\n"; \
 	else \
 		printf "  $(RED)Warning: Root Object directory not found.$(RESET)\n"; \
@@ -379,52 +405,36 @@ $(OBJ_DIR)/%.o: $(PRINTF_DIR)/%.c
 	@printf "$(GREEN)$(CHECK) Compiled$(RESET)\n"
 
 # Compile test source files with shimmer effect
-$(OBJ_DIR)/tester/%.o: $(TESTER_DIR)/%.c
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	@if [ ! -f $(OBJ_DIR)/.test_header_printed ]; then \
 		printf "\n$(BOLD_BLUE)╔════════════════════════════════════════╗$(RESET)\n"; \
 		printf "$(BOLD_BLUE)║ $(PINK)TEST COMPONENTS COMPILATION$(BLUE)            ║$(RESET)\n"; \
 		printf "$(BOLD_BLUE)╚════════════════════════════════════════╝$(RESET)\n\n"; \
 		touch $(OBJ_DIR)/.test_header_printed; \
 	fi
-	@mkdir -p $(dir $@)
 	@printf "  $(BOLD_CYAN)▶ Building:$(RESET) $(YELLOW)%-25s$(RESET) " "$(notdir $<)"
 	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 	@printf "$(GREEN)$(CHECK)$(RESET)\n"
 
-# Compile printf source files with fancy loader (if needed and not obtained from ROOT_OBJ_DIR)
-$(OBJ_DIR)/printf/%.o: $(PRINTF_DIR)/%.c
-	@if [ ! -f $(OBJ_DIR)/.printf_header_printed ]; then \
-		printf "\n$(BOLD_BLUE)╔════════════════════════════════════════╗$(RESET)\n"; \
-		printf "$(BOLD_BLUE)║ $(MAGENTA)CORE COMPONENTS COMPILATION$(BLUE)            ║$(RESET)\n"; \
-		printf "$(BOLD_BLUE)╚════════════════════════════════════════╝$(RESET)\n\n"; \
-		touch $(OBJ_DIR)/.printf_header_printed; \
-	fi
-	@mkdir -p $(dir $@)
-	@printf "  $(CYAN)%-25s$(RESET) " "$(notdir $<)"
-	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
-	@printf "$(GREEN)$(CHECK) Compiled$(RESET)\n"
-
-# Build tester executables with fancy spinning animation - FIXED LINKING
-$(PROGRAM_DIR)/%: $(OBJ_DIR)/tester/%.o $(TEST_UTILS_OBJ) $(SIMPLE_PRINTF_OBJ)
+# Build tester executables with fancy spinning animation
+$(PROGRAM_DIR)/%: $(OBJ_DIR)/%.o $(OBJ_UTILS) $(PRINTF_OBJS) $(LIBFT)
 	@if [ ! -f $(OBJ_DIR)/.link_header_printed ]; then \
 		printf "\n$(BOLD_BLUE)╔════════════════════════════════════════╗$(RESET)\n"; \
 		printf "$(BOLD_BLUE)║ $(LIME)LINKING TEST EXECUTABLES$(BLUE)               ║$(RESET)\n"; \
 		printf "$(BOLD_BLUE)╚════════════════════════════════════════╝$(RESET)\n\n"; \
 		touch $(OBJ_DIR)/.link_header_printed; \
 	fi
-	@mkdir -p $(PROGRAM_DIR)
-	@printf "  $(BOLD_PURPLE)▶ Linking:$(RESET) $(WHITE)%-25s " "$(notdir $@)"
+	@printf "  $(BOLD_PURPLE)▶ Linking:$(RESET) $(WHITE)%-25s " "$@"
 	@for c in "/" "-" "\\" "|"; do \
-		printf "\r  $(BOLD_PURPLE)▶ Linking:$(RESET) $(WHITE)%-25s $(YELLOW)[$$c]$(RESET)" "$(notdir $@)" ; \
+		printf "\r  $(BOLD_PURPLE)▶ Linking:$(RESET) $(WHITE)%-25s $(YELLOW)[$$c]$(RESET)" "$@" ; \
 		sleep 0.05; \
 	done
-	@# Direct link with the printfs and libft.a, avoiding reference to individual object files
-	@$(CC) $(CFLAGS) -o $@ $< $(TEST_UTILS_OBJ) $(SIMPLE_PRINTF_OBJ) $(PRINTF_OBJS) -L$(LIBFT_DIR) -lft
-	@printf "\r  $(BOLD_PURPLE)▶ Linking:$(RESET) $(WHITE)%-25s $(GREEN)[$(BOLD)✓$(RESET)$(GREEN)]$(RESET)\n" "$(notdir $@)"
+	@$(CC) $(CFLAGS) -o $@ $^ $(LIBFT)
+	@printf "\r  $(BOLD_PURPLE)▶ Linking:$(RESET) $(WHITE)%-25s $(GREEN)[$(BOLD)✓$(RESET)$(GREEN)]$(RESET)\n" "$@"
 	@sleep 0.05
 
-# Special rule for ultimate_tester_extended with enhanced animation - FIXED LINKING
-$(PROGRAM_DIR)/ft_printf_ultimate_tester: $(OBJ_DIR)/tester/ft_printf_ultimate_tester.o $(TEST_UTILS_OBJ) $(SIMPLE_PRINTF_OBJ)
+# Special rule for ultimate_tester_extended with enhanced animation
+$(PROGRAM_DIR)/ultimate_tester_extended: $(OBJ_DIR)/ft_printf_ultimate_controller.o $(OBJ_UTILS) $(PRINTF_OBJS) $(LIBFT)
 	@printf "  $(BOLD_PURPLE)▶ Linking:$(RESET) $(WHITE)%-25s " "$@"
 	@for i in 1 2 3 4; do \
 		for c in "🔄" "🔁" "♻️" "⚙️"; do \
@@ -432,9 +442,7 @@ $(PROGRAM_DIR)/ft_printf_ultimate_tester: $(OBJ_DIR)/tester/ft_printf_ultimate_t
 			sleep 0.05; \
 		done; \
 	done
-	@mkdir -p $(PROGRAM_DIR)
-	@# Direct link with the printfs and libft.a, avoiding reference to individual object files
-	@$(CC) $(CFLAGS) -o $@ $< $(TEST_UTILS_OBJ) $(SIMPLE_PRINTF_OBJ) $(PRINTF_OBJS) -L$(LIBFT_DIR) -lft
+	@$(CC) $(CFLAGS) -o $@ $^ $(LIBFT)
 	@printf "\r  $(BOLD_PURPLE)▶ Linking:$(RESET) $(WHITE)%-25s $(GREEN)[$(BOLD)✓$(RESET)$(GREEN)]$(RESET)\n" "$@"
 	@sleep 0.05
 
@@ -461,7 +469,6 @@ clean:
 	@echo "  $(YELLOW)Wiping object directory:$(RESET)"
 	$(call progress_bar,20,30,"Removing build artifacts")
 	@rm -rf $(OBJ_DIR) > /dev/null 2>&1
-	@rm -f $(OBJ_DIR)/.*.printed > /dev/null 2>&1
 	
 	@echo ""
 	@printf "$(GREEN)$(BOLD)$(CHECK) Clean operation complete!$(RESET)\n"
@@ -562,8 +569,8 @@ define test_header
 	@echo ""
 endef
 
-# Run controller with attention-grabbing blinking effect - updated to use ft_printf_ultimate_controller
-controller: $(PROGRAM_DIR)/ft_printf_ultimate_controller
+# Run controller with attention-grabbing blinking effect
+controller: $(PROGRAM_DIR)/ultimate_tester_extended
 	@clear
 	@echo "$(CYAN)╔══════════════════════════════════════════════════════════════════════╗$(RESET)"
 	@echo "$(CYAN)║ $(BOLD)$(PINK)    F T _ P R I N T F   T E S T   C O N T R O L L E R    $(RESET)$(CYAN)         ║$(RESET)"
@@ -588,88 +595,65 @@ controller: $(PROGRAM_DIR)/ft_printf_ultimate_controller
 	@echo ""
 	@sleep 0.5
 	@# Run the actual test controller
-	@$(PROGRAM_DIR)/ft_printf_ultimate_controller; \
+	@$(PROGRAM_DIR)/ultimate_tester_extended; \
 	if [ -f /tmp/ft_printf_blinker.pid ]; then \
 		kill -9 $$(cat /tmp/ft_printf_blinker.pid) > /dev/null 2>&1 || true; \
 		rm -f /tmp/ft_printf_blinker.pid /tmp/ft_printf_blinker.sh > /dev/null 2>&1; \
 	fi
 
-# Add the actual test targets
-# 1. Simple debug test
-simple: $(PROGRAM_DIR)/ft_printf_debug_tester_simple
-	@$(call test_header,"SIMPLE DEBUG TEST")
-	@$(PROGRAM_DIR)/ft_printf_debug_tester_simple
+# Create notification box with perpetual blinking highlight
+define create_notification
+	@echo ""
+	@echo "$(MAGENTA)┌──────────────────────────────────────────────────────────────────┐$(RESET)"
+	@echo "$(MAGENTA)│$(RESET) $(BOLD_YELLOW)                                                               $(RESET)$(MAGENTA)│$(RESET)"
+	@echo "$(MAGENTA)│$(RESET) $(BOLD_YELLOW)$(1)$(RESET)$(MAGENTA)│$(RESET)"
+	@echo "$(MAGENTA)│$(RESET) $(BOLD_YELLOW)                                                               $(RESET)$(MAGENTA)│$(RESET)"
+	@echo "$(MAGENTA)└──────────────────────────────────────────────────────────────────┘$(RESET)"
+	@echo ""
+endef
 
-# 2. Debug test
-debug: $(PROGRAM_DIR)/ft_printf_debug_tester
-	@$(call test_header,"DEBUG TEST")
-	@$(PROGRAM_DIR)/ft_printf_debug_tester
-
-# 3. Stress test
-stress: $(PROGRAM_DIR)/ft_printf_stress_tester
-	@$(call test_header,"STRESS TEST")
-	@$(PROGRAM_DIR)/ft_printf_stress_tester
-
-# 4. Flag combinations test
-flags: $(PROGRAM_DIR)/flag_combinations_tester
-	@$(call test_header,"FLAG COMBINATIONS TEST")
-	@$(PROGRAM_DIR)/flag_combinations_tester
-
-# 5. Character tests
-char: $(PROGRAM_DIR)/char_tests
-	@$(call test_header,"CHARACTER TEST")
-	@$(PROGRAM_DIR)/char_tests
-
-# 6. Extended character tests
-chars_ex: $(PROGRAM_DIR)/char_tests_extended
-	@$(call test_header,"EXTENDED CHARACTER TEST")
-	@$(PROGRAM_DIR)/char_tests_extended
-
-# 7. Ultimate test
-ultimate: $(PROGRAM_DIR)/ft_printf_ultimate_tester
-	@$(call test_header,"ULTIMATE TEST")
-	@$(PROGRAM_DIR)/ft_printf_ultimate_tester
-
-# 8. All tests with summary
-test: $(PROGRAM_DIR)/ft_printf_tester
-	@$(call test_header,"COMPREHENSIVE TEST SUITE")
-	@$(PROGRAM_DIR)/ft_printf_tester
+# Add a fully animated landing page for the controller
+controllerx: $(PROGRAM_DIR)/ultimate_tester_extended
+	@clear
+	@echo "$(BOLD_CYAN)╔════════════════════════════════════════════════════════════════╗$(RESET)"
+	@echo "$(BOLD_CYAN)║$(BOLD_WHITE)                                                                $(RESET)$(BOLD_CYAN)║$(RESET)"
+	@echo "$(BOLD_CYAN)║$(BOLD_WHITE)                FT_PRINTF ULTIMATE CONTROLLER                   $(RESET)$(BOLD_CYAN)║$(RESET)"
+	@echo "$(BOLD_CYAN)║$(BOLD_WHITE)                                                                $(RESET)$(BOLD_CYAN)║$(RESET)"
+	@echo "$(BOLD_CYAN)╚════════════════════════════════════════════════════════════════╝$(RESET)"
+	@echo ""
+	@sleep 0.5
+	
+	@# Create and launch the blinking notification in background
+	@rm -f /tmp/ft_printf_blink_flag
+	@printf "#!/bin/bash\n\
+	while [ ! -f /tmp/ft_printf_blink_flag ]; do\n\
+		tput civis;\n\
+		printf \"\$(PURPLE)┌────────────────────────────────────────────────────────────┐\$(RESET)\n\";\n\
+		printf \"\$(PURPLE)│\$(BOLD_MAGENTA) ★  CONTROLLER STARTING - PLEASE WAIT FOR INITIALIZATION  ★ \$(RESET)\$(PURPLE)│\$(RESET)\n\";\n\
+		printf \"\$(PURPLE)└────────────────────────────────────────────────────────────┘\$(RESET)\n\";\n\
+		sleep 0.3;\n\
+		clear;\n\
+		printf \"\$(CYAN)┌────────────────────────────────────────────────────────────┐\$(RESET)\n\";\n\
+		printf \"\$(CYAN)│\$(BOLD_CYAN) ★  CONTROLLER STARTING - PLEASE WAIT FOR INITIALIZATION  ★ \$(RESET)\$(CYAN)│\$(RESET)\n\";\n\
+		printf \"\$(CYAN)└────────────────────────────────────────────────────────────┘\$(RESET)\n\";\n\
+		sleep 0.3;\n\
+		clear;\n\
+		printf \"\$(GREEN)┌────────────────────────────────────────────────────────────┐\$(RESET)\n\";\n\
+		printf \"\$(GREEN)│\$(BOLD_GREEN) ★  CONTROLLER STARTING - PLEASE WAIT FOR INITIALIZATION  ★ \$(RESET)\$(GREEN)│\$(RESET)\n\";\n\
+		printf \"\$(GREEN)└────────────────────────────────────────────────────────────┘\$(RESET)\n\";\n\
+		sleep 0.3;\n\
+		clear;\n\
+	done\n\
+	tput cnorm;\n\
+	" > /tmp/ft_printf_controller_blinker.sh
+	@chmod +x /tmp/ft_printf_controller_blinker.sh
+	@(bash /tmp/ft_printf_controller_blinker.sh) &
+	@sleep 2
+	@touch /tmp/ft_printf_blink_flag
+	@rm -f /tmp/ft_printf_controller_blinker.sh /tmp/ft_printf_blink_flag
+	
+	@# Run the controller
+	@$(PROGRAM_DIR)/ultimate_tester_extended
 
 # Extended controller (same as controller)
 extended: controller
-
-# List of all available test programs
-list:
-	@echo "$(BOLD_CYAN)Available test executables:$(RESET)"
-	@for test in $(TEST_EXECUTABLES); do \
-		echo "  $(YELLOW)$$test$(RESET)"; \
-	done
-
-# Show help information
-help:
-	@echo "$(BOLD_CYAN)FT_PRINTF TESTER - Available commands:$(RESET)"
-	@echo "  $(YELLOW)make$(RESET)           - Build all test programs"
-	@echo "  $(YELLOW)make test$(RESET)      - Run standard test"
-	@echo "  $(YELLOW)make debug$(RESET)     - Run debug test"
-	@echo "  $(YELLOW)make simple$(RESET)    - Run simple test"
-	@echo "  $(YELLOW)make stress$(RESET)    - Run stress test"
-	@echo "  $(YELLOW)make flags$(RESET)     - Run flag tests"
-	@echo "  $(YELLOW)make char$(RESET)      - Run character tests"
-	@echo "  $(YELLOW)make chars_ex$(RESET)  - Run extended character tests"
-	@echo "  $(YELLOW)make ultimate$(RESET)  - Run ultimate test"
-	@echo "  $(YELLOW)make controller$(RESET) - Run test controller"
-	@echo "  $(YELLOW)make list$(RESET)      - List all available test programs"
-	@echo "  $(YELLOW)make clean$(RESET)     - Remove object files"
-	@echo "  $(YELLOW)make fclean$(RESET)    - Remove objects and executables"
-	@echo "  $(YELLOW)make re$(RESET)        - Rebuild everything"
-
-.PHONY: all intro header_all build_root_project make_dirs clean fclean re \
-        test debug simple stress flags char chars_ex ultimate controller list help $(TEST_UTILS) $(SIMPLE_PRINTF)
-
-# Empty rule to prevent attempting to build ft_printf_test_utils as an executable
-$(TEST_UTILS):
-	@echo "$(YELLOW)⚠ $(TEST_UTILS) is not an executable target$(RESET)"
-
-# Empty rule to prevent attempting to build simple_ft_printf as an executable
-$(SIMPLE_PRINTF):
-	@echo "$(YELLOW)⚠ $(SIMPLE_PRINTF) is not an executable target$(RESET)"

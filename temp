@@ -1,0 +1,183 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    temp                                               :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: dyl-syzygy <dyl-syzygy@student.42.fr>      +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2025/03/03 00:00:00 by dyl-syzygy        #+#    #+#              #
+#    Updated: 2025/03/03 01:39:58 by dyl-syzygy       ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+# Compiler and flags
+CC = gcc
+CFLAGS = -Wall -Wextra -Werror
+INCLUDES = -I../
+
+# Directories
+OBJ_DIR = Objects
+PROGRAM_DIR = program
+TESTER_DIR = .
+PRINTF_DIR = ..
+LIBFT_DIR = ../libft
+
+# Find all .c files in the tester directory (excluding certain paths)
+TESTER_SRCS = $(shell find $(TESTER_DIR) -type f -name "*.c")
+
+# Find all .c files in the parent directory (excluding certain paths)
+PRINTF_SRCS = $(shell find $(PRINTF_DIR) -type f -name "*.c" \
+            ! -path "$(PRINTF_DIR)/ft_printf_tester/*" \
+            ! -path "$(PRINTF_DIR)/framework_test/*")
+
+# Generate object file paths
+TESTER_OBJS = $(patsubst $(TESTER_DIR)/%.c,$(OBJ_DIR)/tester/%.o,$(TESTER_SRCS))
+PRINTF_OBJS = $(patsubst $(PRINTF_DIR)/%.c,$(OBJ_DIR)/printf/%.o,$(PRINTF_SRCS))
+
+# All object files
+ALL_OBJS = $(TESTER_OBJS) $(PRINTF_OBJS)
+
+# Extract test names for executables
+TEST_NAMES = $(patsubst $(TESTER_DIR)/%.c,%,$(TESTER_SRCS))
+TEST_UTILS = ft_printf_test_utils.o
+TEST_EXECUTABLES = $(filter-out $(TEST_UTILS),$(TEST_NAMES))
+
+# Libraries
+LIBFT = $(LIBFT_DIR)/libft.a
+
+# Colors and formatting
+GREEN = \033[0;32m
+YELLOW = \033[0;33m
+CYAN = \033[0;36m
+BOLD = \033[1m
+RESET = \033[0m
+CHECK = ✓
+GEAR = ⚙
+SPARKLE = ✨
+
+# Default target
+all: intro $(OBJ_DIR) $(LIBFT) $(TEST_EXECUTABLES)
+	@echo "$(GREEN)$(BOLD)$(SPARKLE) All test programs compiled successfully! $(SPARKLE)$(RESET)"
+
+# Introduction animation
+intro:
+	@clear
+	@echo "$(CYAN)$(BOLD)╔════════════════════════════════════════════════════════════╗$(RESET)"
+	@echo "$(CYAN)$(BOLD)║              FT_PRINTF TESTER COMPILATION                 ║$(RESET)"
+	@echo "$(CYAN)$(BOLD)╚════════════════════════════════════════════════════════════╝$(RESET)"
+	@echo ""
+	@echo "$(YELLOW)$(GEAR) Initializing build system...$(RESET)"
+	@sleep 0.5
+
+# Create object directory
+$(OBJ_DIR):
+	@echo "$(YELLOW)Creating object directories...$(RESET)"
+	@mkdir -p $(OBJ_DIR)/tester $(OBJ_DIR)/printf
+	@echo "$(GREEN)$(CHECK) Object directories created$(RESET)"
+
+# Build libft
+$(LIBFT):
+	@echo "$(YELLOW)Building libft...$(RESET)"
+	@$(MAKE) -C $(LIBFT_DIR) > /dev/null
+	@echo "$(GREEN)$(CHECK) Libft built successfully$(RESET)"
+
+# Compile tester source files
+$(OBJ_DIR)/tester/%.o: $(TESTER_DIR)/%.c
+	@mkdir -p $(dir $@)
+	@echo "$(YELLOW)Compiling$(RESET) $<"
+	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+
+# Compile printf source files
+$(OBJ_DIR)/printf/%.o: $(PRINTF_DIR)/%.c
+	@mkdir -p $(dir $@)
+	@echo "$(YELLOW)Compiling$(RESET) $<"
+	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+
+# Special rule for the test utils object file
+$(OBJ_DIR)/tester/$(TEST_UTILS): $(TESTER_DIR)/$(TEST_UTILS:.o=.c)
+	@mkdir -p $(dir $@)
+	@echo "$(YELLOW)Compiling test utilities...$(RESET)"
+	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+
+# Link test executables
+$(TEST_EXECUTABLES): %: $(OBJ_DIR)/tester/%.o $(OBJ_DIR)/tester/$(TEST_UTILS) $(PRINTF_OBJS) $(LIBFT)
+	@echo "$(YELLOW)Linking$(RESET) $@"
+	@$(CC) $(CFLAGS) -o $@ $< $(OBJ_DIR)/tester/$(TEST_UTILS) $(PRINTF_OBJS) $(LIBFT)
+	@echo "$(GREEN)$(CHECK) $@ ready$(RESET)"
+
+# Clean compiled objects
+clean:
+	@echo "$(YELLOW)Cleaning object files...$(RESET)"
+	@$(RM) -r $(OBJ_DIR)
+	@echo "$(GREEN)$(CHECK) Object files cleaned$(RESET)"
+
+# Full clean (objects and executables)
+fclean: clean
+	@echo "$(YELLOW)Cleaning executables...$(RESET)"
+	@$(RM) $(TEST_EXECUTABLES)
+	@echo "$(YELLOW)Cleaning libft...$(RESET)"
+	@$(MAKE) -C $(LIBFT_DIR) fclean > /dev/null
+	@echo "$(GREEN)$(CHECK) Full clean complete$(RESET)"
+
+# Rebuild everything
+re: fclean all
+
+# Run comprehensive tests
+test: all
+	@echo "$(YELLOW)Running comprehensive tests...$(RESET)"
+	@./ft_printf_tester
+
+# Direct test targets
+basic: all
+	@echo "$(YELLOW)Running basic tests...$(RESET)"
+	@./basic_test
+
+debug: all
+	@echo "$(YELLOW)Running debug tests...$(RESET)"
+	@./ft_printf_debug_tester
+
+simple: all
+	@echo "$(YELLOW)Running simple tests...$(RESET)"
+	@./ft_printf_debug_tester_simple
+
+stress: all
+	@echo "$(YELLOW)Running stress tests...$(RESET)"
+	@./ft_printf_stress_tester
+
+flags: all
+	@echo "$(YELLOW)Running flag combination tests...$(RESET)"
+	@./flag_combinations_tester
+
+chars: all
+	@echo "$(YELLOW)Running character tests...$(RESET)"
+	@./char_tests
+
+chars_ex: all
+	@echo "$(YELLOW)Running extended character tests...$(RESET)"
+	@./char_tests_extended
+
+ultimate: all
+	@echo "$(YELLOW)Running ultimate tests...$(RESET)"
+	@./ultimate_tester
+
+controller: all
+	@echo "$(YELLOW)Running test controller...$(RESET)"
+	@./ft_printf_ultimate_controller
+
+# Show available tests
+help:
+	@echo "$(CYAN)$(BOLD)FT_PRINTF TESTER - Available commands:$(RESET)"
+	@echo "  $(YELLOW)make$(RESET)        - Compile all test programs"
+	@echo "  $(YELLOW)make test$(RESET)   - Run standard tests"
+	@echo "  $(YELLOW)make debug$(RESET)  - Run debug tests"
+	@echo "  $(YELLOW)make simple$(RESET) - Run simple tests"
+	@echo "  $(YELLOW)make stress$(RESET) - Run stress tests"
+	@echo "  $(YELLOW)make flags$(RESET)  - Run flag tests"
+	@echo "  $(YELLOW)make chars$(RESET)  - Run character tests"
+	@echo "  $(YELLOW)make ultimate$(RESET) - Run ultimate tests"
+	@echo "  $(YELLOW)make controller$(RESET) - Run test controller"
+	@echo "  $(YELLOW)make clean$(RESET)  - Remove object files"
+	@echo "  $(YELLOW)make fclean$(RESET) - Remove all generated files"
+	@echo "  $(YELLOW)make re$(RESET)     - Rebuild everything"
+
+.PHONY: all intro clean fclean re test basic debug simple stress flags chars chars_ex ultimate controller help
