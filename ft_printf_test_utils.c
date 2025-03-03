@@ -6,7 +6,7 @@
 /*   By: dyl-syzygy <dyl-syzygy@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/02 01:17:08 by dyl-syzygy        #+#    #+#             */
-/*   Updated: 2025/03/02 01:17:09 by dyl-syzygy       ###   ########.fr       */
+/*   Updated: 2025/03/03 23:40:45 by dyl-syzygy       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,13 @@
 int test_count = 0;
 int pass_count = 0;
 int fail_count = 0;
+
+// Track test statistics
+static int g_total_tests = 0;
+static int g_failed_tests = 0;
+
+// External ft_printf function
+int ft_printf(const char *format, ...);
 
 /* ---- Output formatting utilities ---- */
 
@@ -746,3 +753,78 @@ void run_test(const char *test_name, const char *format, ...) {
 
     compare_and_print_results(expected, expected_ret, actual, actual_ret, format, test_name);
 }
+
+// Print a test header with a given title and color
+void print_test_header(const char *title, const char *color)
+{
+	printf("%s%s=== %s ===%s\n\n", BOLD, color, title, RESET);
+}
+
+// Print a test footer with a given title and color
+void print_test_footer(const char *title, const char *color)
+{
+	printf("\n%s%s=== End of %s ===%s\n\n", BOLD, color, title, RESET);
+}
+
+// Compare the results and print the test outcome (renamed to avoid conflict)
+void print_test_comparison(const char *format, int orig_ret, int ft_ret, 
+                       char *orig_out, char *ft_out)
+{
+	g_total_tests++;
+	
+	int strings_match = (strcmp(orig_out, ft_out) == 0);
+	int return_match = (orig_ret == ft_ret);
+	int test_passed = strings_match && return_match;
+	
+	if (VERBOSE || !test_passed)
+	{
+		printf("Test %d: ", g_total_tests);
+		printf(BOLD "\"" RESET "%s" BOLD "\"" RESET "\n", format);
+		
+		if (!strings_match)
+		{
+			printf("  %sOutput mismatch:%s\n", RED, RESET);
+			printf("    Expected: \"%s\"\n", orig_out);
+			printf("    Got:      \"%s\"\n", ft_out);
+		}
+		
+		if (!return_match)
+		{
+			printf("  %sReturn value mismatch:%s\n", RED, RESET);
+			printf("    Expected: %d\n", orig_ret);
+			printf("    Got:      %d\n", ft_ret);
+		}
+		
+		if (test_passed)
+			printf("  %s✓ Test passed%s\n\n", GREEN, RESET);
+		else
+			printf("  %s✗ Test failed%s\n\n", RED, RESET);
+	}
+	else
+	{
+		printf("Test %d: %s%s%s\n", g_total_tests, 
+			test_passed ? GREEN : RED,
+			test_passed ? "✓" : "✗", 
+			RESET);
+	}
+	
+	if (!test_passed)
+		g_failed_tests++;
+}
+
+// Initialize test counters
+void initialize_test_counters(void)
+{
+	g_total_tests = 0;
+	g_failed_tests = 0;
+}
+
+// Get the test results
+void get_test_results(int *total, int *failed)
+{
+	*total = g_total_tests;
+	*failed = g_failed_tests;
+}
+
+// We'll remove the simple_ft_printf implementation from here
+// It will be in a separate file to avoid duplicate symbols

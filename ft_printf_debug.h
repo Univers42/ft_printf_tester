@@ -6,7 +6,7 @@
 /*   By: dyl-syzygy <dyl-syzygy@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/02 01:16:55 by dyl-syzygy        #+#    #+#             */
-/*   Updated: 2025/03/03 13:44:09 by dyl-syzygy       ###   ########.fr       */
+/*   Updated: 2025/03/03 23:30:55 by dyl-syzygy       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,8 @@
 # define RANDOM_TEST_MAX_LENGTH 1000
 # define RANDOM_INT_MAX 1000
 # define RANDOM_INT_MIN -1000
+# define R_SIZE 1000
+
 /* Color codes for test output - globally accessible */
 # ifndef RED
 #  define RED     "\033[0;31m"
