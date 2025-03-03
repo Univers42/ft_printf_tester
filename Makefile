@@ -6,7 +6,7 @@
 #    By: dyl-syzygy <dyl-syzygy@student.42.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/03/03 01:40:56 by dyl-syzygy        #+#    #+#              #
-#    Updated: 2025/03/03 14:12:07 by dyl-syzygy       ###   ########.fr        #
+#    Updated: 2025/03/03 20:57:35 by dyl-syzygy       ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -574,7 +574,7 @@ clean:
 		sleep 0.2; \
 	done
 	@echo ""
-	
+	$(RM) $
 	@# Show wipe animation with progress bar
 	@echo "  $(YELLOW)Wiping object directory:$(RESET)"
 	$(call progress_bar,20,30,"Removing build artifacts")
@@ -608,7 +608,11 @@ fclean:
 	@echo "  $(YELLOW)Wiping object directory:$(RESET)"
 	$(call progress_bar,15,30,"Removing build artifacts")
 	@rm -rf $(OBJ_DIR) > /dev/null 2>&1
-	
+	@rm -rf ../obj > /dev/null 2>&1
+	@rm -f ../libftprintf_supp.a > /dev/null 2>&1
+	@rm -f ../libftprintf.a > /dev/null 2>&1
+	@rm -rf ../libft/*.o > /dev/null 2>&1
+	@rm -rf obj > /dev/null 2>&1
 	@printf "$(YELLOW)$(GEAR) Removing program files...$(RESET)\n\n"
 	
 	@# Display scanning animation for programs
@@ -634,29 +638,6 @@ fclean:
 	@printf "$(GRAY)$ make fclean$(RESET)  $(GREEN)✓ Finished$(RESET)\n\n"
 
 re: fclean all
-
-# Test command display header with ultra-modern design
-define test_header
-	@clear
-	@echo ""
-	@echo "$(TEAL)╭───────────────────────────────────────────────────────────────────╮"
-	@echo "│$(BG_DARK_BLUE)$(BOLD_WHITE) RUNNING TEST: $(UNDERLINE)$(1)$(RESET)$(TEAL)                                           │"
-	@echo "╰───────────────────────────────────────────────────────────────────╯"
-	@echo ""
-	@echo "$(LAVENDER)┌─────────────────────────────────────────────────────────────────┐"
-	@echo "│$(RESET) $(BOLD_YELLOW)$(CLOCK) Test preparation in progress...$(RESET)                             $(LAVENDER)│"
-	@echo "└─────────────────────────────────────────────────────────────────┘$(RESET)"
-	@echo ""
-	@for i in 1 2 3; do \
-		for c in "⣾" "⣽" "⣻" "⢿" "⡿" "⣟" "⣯" "⣷"; do \
-			printf "$(YELLOW)  %s $(CYAN)Initializing test environment...$(RESET)\r" "$$c"; \
-			sleep 0.05; \
-		done; \
-	done
-	@echo "$(GREEN)✓ Test environment ready! Starting test...$(RESET)"
-	@sleep 0.5
-	@echo ""
-endef
 
 # Test command display header with ultra-modern design
 define test_header
