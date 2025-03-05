@@ -6,12 +6,12 @@
 /*   By: dyl-syzygy <dyl-syzygy@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/02 01:16:31 by dyl-syzygy        #+#    #+#             */
-/*   Updated: 2025/03/02 01:16:32 by dyl-syzygy       ###   ########.fr       */
+/*   Updated: 2025/03/05 13:27:58 by dyl-syzygy       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/ft_printf.h"
-#include "ft_printf_test_utils.h"  // Include this header for run_test and other utilities
+#include "ft_printf_test_utils.h"
 
 void run_simple_tests(void) {
     run_test("Simple character", "%c", 'A');
@@ -27,11 +27,7 @@ void run_simple_tests(void) {
 
 int main(void) {
     printf("%s=== FT_PRINTF SIMPLE DEBUG TESTER ===%s\n", MAGENTA, RESET);
-    
     run_simple_tests();
-    
-    // Print final summary
     print_summary();
-
-    return fail_count > 0 ? 1 : 0;
+    return (fail_count > 0 ? 1 : 0);
 }

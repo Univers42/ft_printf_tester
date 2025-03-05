@@ -59,10 +59,10 @@ extern int fail_count;
 
 
 /* Debug level definitions */
-# define DEBUG_NONE   0  // No debug output
-# define DEBUG_ERROR  1  // Only error messages
-# define DEBUG_INFO   2  // Errors and info messages
-# define DEBUG_TRACE  3  // Detailed function tracing
+# define DEBUG_NONE   0  
+# define DEBUG_ERROR  1  
+# define DEBUG_INFO   2  
+# define DEBUG_TRACE  3  
 
 /* Set current debug level */
 # ifndef DEBUG_LEVEL

@@ -19,10 +19,10 @@
 # include <stdarg.h>
 # include <unistd.h>
 
-// Set this to 1 for more detailed output
+
 # define VERBOSE 0
 
-// ANSI color codes for output
+
 # define RED "\033[0;31m"
 # define GREEN "\033[0;32m"
 # define YELLOW "\033[0;33m"
@@ -32,10 +32,10 @@
 # define BOLD "\033[1m"
 # define RESET "\033[0m"
 
-// Buffer size for capturing output - use a unique name to avoid conflicts
+
 # define FT_TEST_BUFFER_SIZE 8192
 
-// Function declarations
+
 void	print_test_header(const char *title, const char *color);
 void	print_test_footer(const char *title, const char *color);
 void	print_test_comparison(const char *format, int orig_ret, int ft_ret, char *orig_out, char *ft_out);
@@ -62,10 +62,10 @@ void compare_and_print_results(const char *expected, int expected_ret,
                              const char *actual, int actual_ret, 
                              const char *format, const char *test_name);
 
-// External ft_printf declaration
+
 int ft_printf(const char *format, ...);
 
-// Completely revised TEST macro that uses pipes to directly capture ft_printf output
+
 # define TEST(format, ...) do { \
 	int orig_ret, ft_ret; \
 	char orig_buf[FT_TEST_BUFFER_SIZE] = {0}; \
@@ -109,7 +109,7 @@ int ft_printf(const char *format, ...);
 	print_test_comparison(format, orig_ret, ft_ret, orig_buf, ft_buf); \
 } while (0)
 
-// Function to redirect ft_printf to a FILE stream
+
 int		simple_ft_printf(FILE *stream, const char *format, ...);
 
 #endif
