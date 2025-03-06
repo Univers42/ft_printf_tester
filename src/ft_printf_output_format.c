@@ -6,11 +6,13 @@
 /*   By: dyl-syzygy <dyl-syzygy@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 16:15:00 by dyl-syzygy        #+#    #+#             */
-/*   Updated: 2025/03/06 15:57:24 by dyl-syzygy       ###   ########.fr       */
+/*   Updated: 2025/03/06 16:40:37 by dyl-syzygy       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../headers/ft_printf_test_utils.h"
+/* Note: This file is designed to be included in ft_printf_test_utils.c */
+/* Therefore no need to include headers or define functions that are already declared */
+#include "../headers/controller.h"
 
 void	print_formatted_string(const char *str, int ret)
 {

@@ -6,17 +6,22 @@
 /*   By: dyl-syzygy <dyl-syzygy@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 16:20:00 by dyl-syzygy        #+#    #+#             */
-/*   Updated: 2025/03/06 15:57:20 by dyl-syzygy       ###   ########.fr       */
+/*   Updated: 2025/03/06 16:43:05 by dyl-syzygy       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../headers/ft_printf_test_utils.h"
+#ifndef INCLUDED_IN_MAIN_FILE
+# include "../headers/controller.h"
+#endif
 
-static int	test_count = 0;
-static int	pass_count = 0;
-static int	fail_count = 0;
-static int	g_total_tests = 0;
-static int	g_failed_tests = 0;
+/* These variables are declared in ft_printf_test_utils.c */
+#ifndef INCLUDED_IN_MAIN_FILE
+extern int test_count;
+extern int pass_count;
+extern int fail_count;
+extern int g_total_tests;
+extern int g_failed_tests;
+#endif
 
 void	run_category(const char *category)
 {

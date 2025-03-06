@@ -6,7 +6,7 @@
 #    By: dyl-syzygy <dyl-syzygy@student.42.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/03/06 13:51:20 by dyl-syzygy        #+#    #+#              #
-#    Updated: 2025/03/06 15:01:20 by dyl-syzygy       ###   ########.fr        #
+#    Updated: 2025/03/06 16:49:25 by dyl-syzygy       ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,7 +25,8 @@ ROOT_OBJ_DIR = ../Object
 MK_DIR = make
 
 # Source files - using enhanced find to explicitly discover all .c files with better debug output
-TESTER_SRCS = $(shell find $(TESTER_DIR) -type f -name "*.c")
+# Filter out files in src/ directory, as they're meant for inclusion only
+TESTER_SRCS = $(shell find $(TESTER_DIR) -type f -name "*.c" ! -path "*/src/*")
 PRINTF_SRCS = $(shell find $(PRINTF_DIR) -type f -name "*.c" \
                 ! -path "$(PRINTF_DIR)/ft_printf_tester/*" \
                 ! -path "$(PRINTF_DIR)/framework_test/*" \

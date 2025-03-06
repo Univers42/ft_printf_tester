@@ -6,14 +6,22 @@
 /*   By: dyl-syzygy <dyl-syzygy@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/02 01:16:11 by dyl-syzygy        #+#    #+#             */
-/*   Updated: 2025/03/06 15:22:07 by dyl-syzygy       ###   ########.fr       */
+/*   Updated: 2025/03/06 18:25:58 by dyl-syzygy       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "../include/ft_printf.h"
 #include "headers/controller.h"
-#include <string.h>
 
-int main(void) {
+// Forward declaration of our new function
+void test_multiple_chars_extended(const char *format, const char *test_name, ...);
+
+int main(void)
+{
+    printf("=== FT_PRINTF EXTENDED CHAR TESTS ===\n\n");
+    initialize_test_counters();
+    
+    printf("\n=== Basic character test ===\n");
     printf("%s=== FT_PRINTF EXTENDED CHARACTER STRESS TESTS ===%s\n", MAGENTA, RESET);
     run_category("ASCII Character Range Tests");
     for (char c = 32; c < 127; c++)
@@ -65,22 +73,46 @@ int main(void) {
     char format_buffer[1000] = {0};
     for (int i = 0; i < 25; i++)
         strcat(format_buffer, "%c");
-    test_multiple_chars(format_buffer, "25 consecutive %c conversions", 
+        
+    // Replace test_multiple_chars with test_multiple_chars_extended for these tests
+    test_multiple_chars_extended(format_buffer, "25 consecutive %c conversions", 
                       'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
                       'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
                       'U', 'V', 'W', 'X', 'Y');
-    test_multiple_chars("A%cB%cC%cD%cE%cF%cG%cH%cI%cJ%c", 
+                      
+    test_multiple_chars_extended("A%cB%cC%cD%cE%cF%cG%cH%cI%cJ%c", 
                       "Alternating characters and text",
                       '0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
-    test_multiple_chars("%c %5c %-5c %05c %c %5c %-5c", 
+                      
+    test_multiple_chars_extended("%c %5c %-5c %05c %c %5c %-5c", 
                       "Mixed width and alignment",
                       'A', 'B', 'C', 'D', 'E', 'F', 'G');
+                      
     run_category("Edge Cases");
     test_char('%', "%%c", "Percent sign with c specifier");
     test_char('Z', "\\t%c\\n", "Escaped characters in format");
     test_char('\0', "%c", "NULL character");
     test_char('A', "%1c", "Width 1 (exact fit)");
     test_char('A', "%0c", "Width 0");
+    
+    printf("\n=== Multiple Characters Test ===\n");
+    // Use our enhanced function for the multiple character tests
+    test_multiple_chars_extended("%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c", 
+                               "25 consecutive %c conversions", 
+                               'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
+                               'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
+                               'U', 'V', 'W', 'X', 'Y');
+    
+    test_multiple_chars_extended("A%cB%cC%cD%cE%cF%cG%cH%cI%cJ%c",
+                               "Alternating characters and text",
+                               '0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
+    
+    test_multiple_chars_extended("%c %5c %-5c %05c %c %5c %-5c",
+                               "Mixed width and alignment",
+                               'A', 'B', 'C', 'D', 'E', 'F', 'G');
+    
+    printf("\n=== CHAR TESTS COMPLETED ===\n");
+    print_summary();
     printf("\n%s=== TEST SUMMARY ===%s\n", BLUE, RESET);
     printf("Total tests: %d\n", test_count);
     printf("Passed: %s%d (%.1f%%)%s\n", GREEN, pass_count, (float)pass_count/test_count*100, RESET);
