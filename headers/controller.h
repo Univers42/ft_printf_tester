@@ -16,8 +16,13 @@
 # include "ft_printf_debug.h"
 # include <pthread.h>  
 # include <signal.h>
+#include <inttypes.h>
+#include <stddef.h>
+/* Function declarations for mixed format tests */
+void run_robust_mixed_format_tests(void);
+int call_ft_printf_with_types(const char *format, va_list args, char *types, int type_count);
 
 /* Function declaration for the internal helper */
-int call_ft_printf_with_types(const char *format, va_list args, char *types, int type_count);
+int parse_format_string(const char *format, char *types, int max_types);
 
 #endif

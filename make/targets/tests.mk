@@ -41,9 +41,9 @@ debug: $(PROGRAM_DIR)/ft_printf_debug_tester
 	@$(PROGRAM_DIR)/ft_printf_debug_tester
 
 # 3. Stress test
-stress: $(PROGRAM_DIR)/ft_printf_stress_tester
-	@$(call test_header,"STRESS TEST")
-	@$(PROGRAM_DIR)/ft_printf_stress_tester
+stress: header_stress $(STRESS_TEST) footer_test
+	@printf "$(GREEN)▶ Running ft_printf stress tester...$(RESET)\n"
+	@$(STRESS_TEST)
 
 # 4. Flag combinations test
 flags: $(PROGRAM_DIR)/flag_combinations_tester
