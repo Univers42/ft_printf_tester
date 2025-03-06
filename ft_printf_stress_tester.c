@@ -6,7 +6,7 @@
 /*   By: dyl-syzygy <dyl-syzygy@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 20:00:00 by dyl-syzygy        #+#    #+#             */
-/*   Updated: 2025/03/06 23:58:20 by dyl-syzygy       ###   ########.fr       */
+/*   Updated: 2025/03/07 00:00:50 by dyl-syzygy       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include <inttypes.h>
 #include <stddef.h>
 
-/* Function declarations */
+/* Function declarations - rename to avoid conflict */
 void test_char_simple(char c);
 void test_string_simple(char *s);
 void test_integer_simple(int n);
@@ -29,8 +29,8 @@ void test_hash_flag(unsigned int n, int uppercase);
 void test_width(void);
 void test_precision(void);
 void run_flag_stress_tests(void);
-/* Changed to match existing declaration in ft_printf_test_utils.h */
-void test_format(const char *format, const char *test_name, void *value, char type);
+/* Rename our implementation to avoid conflict with the one in ft_printf_test_utils.h */
+void stress_test_format(const char *format, const char *test_name, void *value, char type);
 
 /* Basic test helper function that directly calls ft_printf with specific arguments */
 void test_char_simple(char c)
@@ -671,16 +671,16 @@ void test_width(void) {
     char char_val = 'A';
     unsigned int hex_val = 0xABCDEF;
     
-    // Pass pointers or addresses of values
-    test_format("%10d", "Width with int", &int_val, 'i');
-    test_format("%10s", "Width with string", str_val, 's');
-    test_format("%10c", "Width with char", &char_val, 'c');
-    test_format("%10x", "Width with hex", &hex_val, 'x');
+    // Pass pointers or addresses of values - use our renamed function
+    stress_test_format("%10d", "Width with int", &int_val, 'i');
+    stress_test_format("%10s", "Width with string", str_val, 's');
+    stress_test_format("%10c", "Width with char", &char_val, 'c');
+    stress_test_format("%10x", "Width with hex", &hex_val, 'x');
     
     // Variable widths
-    test_format("%1d", "Width 1", &int_val, 'i');
-    test_format("%20d", "Width 20", &int_val, 'i');
-    test_format("%50d", "Width 50", &int_val, 'i');
+    stress_test_format("%1d", "Width 1", &int_val, 'i');
+    stress_test_format("%20d", "Width 20", &int_val, 'i');
+    stress_test_format("%50d", "Width 50", &int_val, 'i');
 }
 
 /* Precision tests */
@@ -692,17 +692,17 @@ void test_precision(void) {
     char *str_val = "Hello World";
     int zero_val = 0;
     
-    // Pass pointers or addresses of values
-    test_format("%.5d", "Precision with int", &int_val, 'i');
-    test_format("%.5s", "Precision with string", str_val, 's');
+    // Pass pointers or addresses of values - use our renamed function
+    stress_test_format("%.5d", "Precision with int", &int_val, 'i');
+    stress_test_format("%.5s", "Precision with string", str_val, 's');
     
     // Variable precisions
-    test_format("%.1d", "Precision 1", &int_val, 'i');
-    test_format("%.10d", "Precision 10", &int_val, 'i');
+    stress_test_format("%.1d", "Precision 1", &int_val, 'i');
+    stress_test_format("%.10d", "Precision 10", &int_val, 'i');
     
     // Zero precision special cases
-    test_format("%.0d", "Zero precision with 0", &zero_val, 'i');
-    test_format("%.0d", "Zero precision with non-zero", &int_val, 'i');
+    stress_test_format("%.0d", "Zero precision with 0", &zero_val, 'i');
+    stress_test_format("%.0d", "Zero precision with non-zero", &int_val, 'i');
 }
 
 /* Run flag stress tests with direct function calls */
@@ -718,21 +718,21 @@ void run_flag_stress_tests(void)
     test_hash_flag(42, 0);
     test_hash_flag(42, 1);
     
-    // Extended flag tests
+    // Extended flag tests - use our renamed function
     int int_val = 42;
     unsigned int hex_val = 42;
     
-    test_format("%-10d", "Left-justify flag", &int_val, 'd');
-    test_format("%010d", "Zero-padding flag", &int_val, 'd');
+    stress_test_format("%-10d", "Left-justify flag", &int_val, 'd');
+    stress_test_format("%010d", "Zero-padding flag", &int_val, 'd');
     
     // Flag combinations
-    test_format("%+010d", "Plus with zero padding", &int_val, 'd');
-    test_format("% #x", "Space with hash", &hex_val, 'x');
-    test_format("%#10X", "Hash with width", &hex_val, 'X');
+    stress_test_format("%+010d", "Plus with zero padding", &int_val, 'd');
+    stress_test_format("% #x", "Space with hash", &hex_val, 'x');
+    stress_test_format("%#10X", "Hash with width", &hex_val, 'X');
 }
 
-/* Helper function for complex test cases - updated to match header declaration */
-void test_format(const char *format, const char *test_name, void *value, char type)
+/* Helper function for complex test cases - renamed to avoid conflict */
+void stress_test_format(const char *format, const char *test_name, void *value, char type)
 {
     char expected[BUFFER_SIZE];
     char actual[BUFFER_SIZE];
