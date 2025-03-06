@@ -40,7 +40,7 @@
 #define BLINK       "\033[5m"
 #define REVERSE     "\033[7m"
 #define BLACK       "\033[30m"
-#define ORANGE      "\033[38;5;208m
+#define ORANGE      "\033[38;5;208m"
 #define BG_BLACK    "\033[40m"
 #define BG_RED      "\033[41m"
 #define BG_GREEN    "\033[42m"
