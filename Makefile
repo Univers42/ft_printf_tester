@@ -6,7 +6,7 @@
 #    By: dyl-syzygy <dyl-syzygy@student.42.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/03/06 13:42:50 by dyl-syzygy        #+#    #+#              #
-#    Updated: 2025/03/06 14:47:15 by dyl-syzygy       ###   ########.fr        #
+#    Updated: 2025/03/06 21:06:33 by dyl-syzygy       ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -52,6 +52,9 @@ include make/commands/commands_rules.mk
 include make/targets/tests.mk
 include make/targets/helper.mk
 include make/targets/clean.mk
+
+# Add the new source file to your existing SRC list
+SRC += src/ft_printf_format_parser.c
 
 # Main target
 all: intro header_all build_root_project make_dirs $(LIBFT) $(TESTERS) footer_all

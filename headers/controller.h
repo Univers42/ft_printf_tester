@@ -16,4 +16,8 @@
 # include "ft_printf_debug.h"
 # include <pthread.h>  
 # include <signal.h>
+
+/* Function declaration for the internal helper */
+int call_ft_printf_with_types(const char *format, va_list args, char *types, int type_count);
+
 #endif
