@@ -6,12 +6,12 @@
 /*   By: dyl-syzygy <dyl-syzygy@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/02 01:17:56 by dyl-syzygy        #+#    #+#             */
-/*   Updated: 2025/03/05 14:07:51 by dyl-syzygy       ###   ########.fr       */
+/*   Updated: 2025/03/06 15:23:18 by dyl-syzygy       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/ft_printf.h"
-#include "ft_printf_debug.h"
+#include "headers/controller.h"
 
 int main(void) {
     int num = 42;

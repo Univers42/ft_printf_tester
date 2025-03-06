@@ -5,23 +5,16 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: dyl-syzygy <dyl-syzygy@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/02 01:16:55 by dyl-syzygy        #+#    #+#             */
-/*   Updated: 2025/03/03 23:30:55 by dyl-syzygy       ###   ########.fr       */
+/*   Created: 2025/03/07 10:22:00 by dyl-syzygy        #+#    #+#             */
+/*   Updated: 2025/03/06 16:06:41 by dyl-syzygy       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FT_PRINTF_DEBUG_H
 # define FT_PRINTF_DEBUG_H
 
-# include <stdio.h>
-# include <stdlib.h>
-# include <stdarg.h>
-# include <string.h>
-# include <unistd.h>
-# include <time.h>
-# include <sys/wait.h>
-# include <limits.h>
-# include <fcntl.h>
+# include "ft_printf_test_utils.h"
+
 /* Test buffer size for output comparison - globally accessible */
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 4096
@@ -32,25 +25,6 @@
 # define RANDOM_INT_MAX 1000
 # define RANDOM_INT_MIN -1000
 # define R_SIZE 1000
-
-/* Color codes for test output - globally accessible */
-# ifndef RED
-#  define RED     "\033[0;31m"
-#  define GREEN   "\033[0;32m"
-#  define YELLOW  "\033[0;33m"
-#  define BLUE    "\033[0;34m"
-#  define PURPLE  "\033[0;35m"
-#  define MAGENTA "\033[0;35m"
-#  define CYAN    "\033[0;36m"
-#  define RESET   "\033[0m"
-#  define BOLD     "\033[1m"
-#  define WHITE    "\033[0;37m"
-#  define BG_RED   "\033[41m"
-#  define BG_GREEN "\033[42m"
-#  define BG_BLUE  "\033[44m"
-#  define BG_CYAN  "\033[46m"
-#  define BG_WHITE "\033[47m"
-# endif
 
 /* Global test counters - extern so they can be defined elsewhere */
 extern int test_count;
@@ -97,4 +71,13 @@ void print_test_result(const char *test_name, int pass, const char *format,
                       const char *expected, int expected_ret, 
                       const char *actual, int actual_ret);
 
-#endif
+/* Debug function prototypes */
+void debug_print_char(char c);
+void debug_print_string(const char *str);
+void debug_print_pointer(void *ptr);
+void debug_print_int(int num);
+void debug_print_uint(unsigned int num);
+void debug_print_hex(unsigned int num, int uppercase);
+void debug_print_format_specifier(const char *format);
+
+#endif /* FT_PRINTF_DEBUG_H */

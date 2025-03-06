@@ -6,17 +6,12 @@
 /*   By: dyl-syzygy <dyl-syzygy@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/02 01:17:19 by dyl-syzygy        #+#    #+#             */
-/*   Updated: 2025/03/05 13:46:13 by dyl-syzygy       ###   ########.fr       */
+/*   Updated: 2025/03/06 15:33:41 by dyl-syzygy       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/ft_printf.h"
-#include "ft_printf_test_utils.h"  
-#include <stdio.h>
-#include <string.h>
-#include <stdarg.h>
-#include <limits.h>
-#include <stdlib.h>
+#include "headers/controller.h"
 
 int capture_output_fixed(char *buffer, size_t bufsize, const char *format, ...)
 {

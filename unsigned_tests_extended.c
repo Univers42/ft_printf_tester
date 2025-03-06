@@ -6,20 +6,11 @@
 /*   By: dyl-syzygy <dyl-syzygy@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 23:48:22 by dyl-syzygy        #+#    #+#             */
-/*   Updated: 2025/03/05 14:22:01 by dyl-syzygy       ###   ########.fr       */
+/*   Updated: 2025/03/06 15:30:55 by dyl-syzygy       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <limits.h>
-#include "ft_printf_test_utils.h"
-#include "ft_printf_debug.h"
-
-
-int ft_printf(const char *format, ...);
-
+#include "headers/controller.h"
 
 void test_unsigned(unsigned int value, const char *format, const char *test_name);
 

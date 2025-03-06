@@ -6,13 +6,12 @@
 /*   By: dyl-syzygy <dyl-syzygy@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/02 01:16:26 by dyl-syzygy        #+#    #+#             */
-/*   Updated: 2025/03/05 13:27:29 by dyl-syzygy       ###   ########.fr       */
+/*   Updated: 2025/03/06 15:34:01 by dyl-syzygy       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/ft_printf.h"
-#include "ft_printf_test_utils.h"  
-
+#include "headers/controller.h"
 
 int capture_output_local(char *buffer, size_t bufsize, int (*func)(const char*, ...), const char *format, ...)
 {

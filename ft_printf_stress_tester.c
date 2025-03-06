@@ -6,19 +6,13 @@
 /*   By: dyl-syzygy <dyl-syzygy@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/02 01:17:02 by dyl-syzygy        #+#    #+#             */
-/*   Updated: 2025/03/05 13:36:42 by dyl-syzygy       ###   ########.fr       */
+/*   Updated: 2025/03/06 15:38:39 by dyl-syzygy       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/ft_printf.h"
-#include "ft_printf_test_utils.h"
+#include "headers/controller.h"
 
-typedef struct s_test_stats
-{
-    int passed;
-    int failed;
-    int total;
-}	t_test_stats;
 
 t_test_stats	g_stats = {0, 0, 0};
 

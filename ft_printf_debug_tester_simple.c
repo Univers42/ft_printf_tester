@@ -6,12 +6,12 @@
 /*   By: dyl-syzygy <dyl-syzygy@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/02 01:16:31 by dyl-syzygy        #+#    #+#             */
-/*   Updated: 2025/03/05 13:27:58 by dyl-syzygy       ###   ########.fr       */
+/*   Updated: 2025/03/06 15:22:27 by dyl-syzygy       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/ft_printf.h"
-#include "ft_printf_test_utils.h"
+#include "headers/controller.h"
 
 void run_simple_tests(void) {
     run_test("Simple character", "%c", 'A');

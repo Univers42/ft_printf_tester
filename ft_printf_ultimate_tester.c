@@ -6,20 +6,12 @@
 /*   By: dyl-syzygy <dyl-syzygy@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/02 01:17:36 by dyl-syzygy        #+#    #+#             */
-/*   Updated: 2025/03/05 14:02:47 by dyl-syzygy       ###   ########.fr       */
+/*   Updated: 2025/03/06 15:39:26 by dyl-syzygy       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/ft_printf.h"
-#include "ft_printf_test_utils.h"
-#include <stdio.h>
-#include <string.h>
-#include <stdarg.h>
-#include <limits.h>
-#include <stdlib.h>
-#include <time.h>
-#include <pthread.h>  
-#include <signal.h>   
+#include "headers/controller.h"
 
 /* ===== CONFIGURATION ===== */
 
@@ -33,75 +25,6 @@
 /* ===== COLORS AND FORMATTING ===== */
 
 
-#define BOLD        "\033[1m"
-#define DIM         "\033[2m"
-#define ITALIC      "\033[3m"
-#define UNDERLINE   "\033[4m"
-#define BLINK       "\033[5m"
-#define REVERSE     "\033[7m"
-#define BLACK       "\033[30m"
-#define ORANGE      "\033[38;5;208m"
-#define BG_BLACK    "\033[40m"
-#define BG_RED      "\033[41m"
-#define BG_GREEN    "\033[42m"
-#define BG_YELLOW   "\033[43m"
-#define BG_BLUE     "\033[44m"
-#define BG_MAGENTA  "\033[45m"
-#define BG_CYAN     "\033[46m"
-#define BG_WHITE    "\033[47m"
-#define BG_ORANGE   "\033[48;5;208m"
-
-/* ===== TEST FRAMEWORK TYPES ===== */
-typedef enum {
-    BASIC_TEST,
-    EDGE_CASE_TEST,
-    STRESS_TEST,
-    MEMORY_TEST,
-    RANDOM_TEST,
-    SECURITY_TEST
-} test_type_t;
-
-typedef enum {
-    TEST_RUNNING,
-    TEST_PASSED,
-    TEST_FAILED,
-    TEST_TIMEOUT,
-    TEST_CRASH,
-    TEST_LEAK
-} test_status_t;
-
-typedef struct {
-    const char *name;
-    const char *description;
-    test_type_t type;
-    test_status_t status;
-    char *error_message;
-    int expected_return;
-    int actual_return;
-    double execution_time;
-    size_t memory_used;
-    void (*func)(void *);
-    void *data;
-} test_case_t;
-
-typedef struct {
-    int total;
-    int passed;
-    int failed;
-    int crashes;
-    int leaks;
-    int timeouts;
-    double total_time;
-    size_t total_memory;
-} test_stats_t;
-
-typedef struct {
-    const char *name;
-    const char *description;
-    test_case_t *tests;
-    int test_count;
-    test_stats_t stats;
-} test_suite_t;
 
 /* ===== GLOBAL VARIABLES ===== */
 static test_suite_t *current_suite = NULL;

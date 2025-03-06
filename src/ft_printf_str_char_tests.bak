@@ -1,0 +1,132 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_printf_str_char_tests.c                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dyl-syzygy <dyl-syzygy@student.42.fr>      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/03/06 16:30:00 by dyl-syzygy        #+#    #+#             */
+/*   Updated: 2025/03/06 15:57:43 by dyl-syzygy       ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../headers/ft_printf_test_utils.h"
+
+int ft_printf(const char *format, ...);
+
+void	test_char(char c, const char *format, const char *test_name)
+{
+	char	expected[BUFFER_SIZE];
+	char	actual[BUFFER_SIZE];
+	int		expected_ret;
+	int		actual_ret;
+	FILE	*fp;
+	int		original_stdout;
+	int		bytes_read;
+
+	expected_ret = sprintf(expected, format, c);
+	fp = tmpfile();
+	if (!fp)
+	{
+		perror("Failed to create temporary file");
+		return ;
+	}
+	original_stdout = dup(1);
+	if (dup2(fileno(fp), 1) == -1)
+	{
+		perror("Failed to redirect stdout");
+		fclose(fp);
+		return ;
+	}
+	actual_ret = ft_printf(format, c);
+	fflush(stdout);
+	dup2(original_stdout, 1);
+	close(original_stdout);
+	fseek(fp, 0, SEEK_SET);
+	bytes_read = fread(actual, 1, BUFFER_SIZE - 1, fp);
+	actual[bytes_read] = '\0';
+	fclose(fp);
+	compare_and_print_results(expected, expected_ret, actual, actual_ret,
+		format, test_name);
+	if (strcmp(expected, actual) != 0 || expected_ret != actual_ret)
+	{
+		printf("  Char:      '%c' (ASCII: %d)\n", 
+			c > 31 && c < 127 ? c : '.', (int)c);
+	}
+}
+
+void	test_multiple_chars(const char *format, const char *test_name, ...)
+{
+	char	expected[BUFFER_SIZE];
+	char	actual[BUFFER_SIZE];
+	int		expected_ret;
+	int		actual_ret;
+	va_list	args;
+	va_list	args_copy;
+
+	va_start(args, test_name);
+	va_copy(args_copy, args);
+	expected_ret = vsnprintf(expected, BUFFER_SIZE, format, args);
+	va_end(args);
+	capture_formatted_output(actual, &actual_ret, format, args_copy);
+	va_end(args_copy);
+	compare_and_print_results(expected, expected_ret, actual, actual_ret,
+		format, test_name);
+}
+
+void	test_string(const char *str, const char *format, const char *test_name)
+{
+	char	expected[BUFFER_SIZE];
+	char	actual[BUFFER_SIZE];
+	int		expected_ret;
+	int		actual_ret;
+	FILE	*fp;
+	int		original_stdout;
+	int		bytes_read;
+
+	expected_ret = sprintf(expected, format, str);
+	fp = tmpfile();
+	if (!fp)
+	{
+		perror("Failed to create temporary file");
+		return ;
+	}
+	original_stdout = dup(1);
+	if (dup2(fileno(fp), 1) == -1)
+	{
+		perror("Failed to redirect stdout");
+		fclose(fp);
+		return ;
+	}
+	actual_ret = ft_printf(format, str);
+	fflush(stdout);
+	dup2(original_stdout, 1);
+	close(original_stdout);
+	fseek(fp, 0, SEEK_SET);
+	bytes_read = fread(actual, 1, BUFFER_SIZE - 1, fp);
+	actual[bytes_read] = '\0';
+	fclose(fp);
+	compare_and_print_results(expected, expected_ret, actual, actual_ret,
+		format, test_name);
+	if (strcmp(expected, actual) != 0 || expected_ret != actual_ret)
+		printf("  Input:     %s\"%s\"%s\n", BLUE, str ? str : "NULL", RESET);
+}
+
+void	test_multiple_strings(const char *format, const char *test_name, ...)
+{
+	char	expected[BUFFER_SIZE];
+	char	actual[BUFFER_SIZE];
+	int		expected_ret;
+	int		actual_ret;
+	va_list	args;
+	va_list	args_copy;
+
+	va_start(args, test_name);
+	va_copy(args_copy, args);
+	expected_ret = vsnprintf(expected, BUFFER_SIZE, format, args);
+	va_end(args);
+	capture_formatted_output(actual, &actual_ret, format, args_copy);
+	va_end(args_copy);
+	compare_and_print_results(expected, expected_ret, actual, actual_ret,
+		format, test_name);
+}
