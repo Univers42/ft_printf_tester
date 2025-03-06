@@ -6,7 +6,7 @@
 /*   By: dyl-syzygy <dyl-syzygy@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 20:00:00 by dyl-syzygy        #+#    #+#             */
-/*   Updated: 2025/03/06 23:56:00 by dyl-syzygy       ###   ########.fr       */
+/*   Updated: 2025/03/06 23:58:20 by dyl-syzygy       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,8 @@ void test_hash_flag(unsigned int n, int uppercase);
 void test_width(void);
 void test_precision(void);
 void run_flag_stress_tests(void);
-void test_format(const char *format, const char *test_name, int value, char type);
+/* Changed to match existing declaration in ft_printf_test_utils.h */
+void test_format(const char *format, const char *test_name, void *value, char type);
 
 /* Basic test helper function that directly calls ft_printf with specific arguments */
 void test_char_simple(char c)
@@ -665,15 +666,21 @@ void test_width(void) {
     printf("\n===== WIDTH TESTS =====\n");
     
     // Width with different types
-    test_format("%10d", "Width with int", 42, 'i');
-    test_format("%10s", "Width with string", "Hello", 's');
-    test_format("%10c", "Width with char", 'A', 'c');
-    test_format("%10x", "Width with hex", 0xABCDEF, 'x');
+    int int_val = 42;
+    char *str_val = "Hello";
+    char char_val = 'A';
+    unsigned int hex_val = 0xABCDEF;
+    
+    // Pass pointers or addresses of values
+    test_format("%10d", "Width with int", &int_val, 'i');
+    test_format("%10s", "Width with string", str_val, 's');
+    test_format("%10c", "Width with char", &char_val, 'c');
+    test_format("%10x", "Width with hex", &hex_val, 'x');
     
     // Variable widths
-    test_format("%1d", "Width 1", 42, 'i');
-    test_format("%20d", "Width 20", 42, 'i');
-    test_format("%50d", "Width 50", 42, 'i');
+    test_format("%1d", "Width 1", &int_val, 'i');
+    test_format("%20d", "Width 20", &int_val, 'i');
+    test_format("%50d", "Width 50", &int_val, 'i');
 }
 
 /* Precision tests */
@@ -681,16 +688,21 @@ void test_precision(void) {
     printf("\n===== PRECISION TESTS =====\n");
     
     // Precision with different types
-    test_format("%.5d", "Precision with int", 42, 'i');
-    test_format("%.5s", "Precision with string", "Hello World", 's');
+    int int_val = 42;
+    char *str_val = "Hello World";
+    int zero_val = 0;
+    
+    // Pass pointers or addresses of values
+    test_format("%.5d", "Precision with int", &int_val, 'i');
+    test_format("%.5s", "Precision with string", str_val, 's');
     
     // Variable precisions
-    test_format("%.1d", "Precision 1", 42, 'i');
-    test_format("%.10d", "Precision 10", 42, 'i');
+    test_format("%.1d", "Precision 1", &int_val, 'i');
+    test_format("%.10d", "Precision 10", &int_val, 'i');
     
     // Zero precision special cases
-    test_format("%.0d", "Zero precision with 0", 0, 'i');
-    test_format("%.0d", "Zero precision with non-zero", 42, 'i');
+    test_format("%.0d", "Zero precision with 0", &zero_val, 'i');
+    test_format("%.0d", "Zero precision with non-zero", &int_val, 'i');
 }
 
 /* Run flag stress tests with direct function calls */
@@ -707,17 +719,20 @@ void run_flag_stress_tests(void)
     test_hash_flag(42, 1);
     
     // Extended flag tests
-    test_format("%-10d", "Left-justify flag", 42, 'd');
-    test_format("%010d", "Zero-padding flag", 42, 'd');
+    int int_val = 42;
+    unsigned int hex_val = 42;
+    
+    test_format("%-10d", "Left-justify flag", &int_val, 'd');
+    test_format("%010d", "Zero-padding flag", &int_val, 'd');
     
     // Flag combinations
-    test_format("%+010d", "Plus with zero padding", 42, 'd');
-    test_format("% #x", "Space with hash", 42, 'x');
-    test_format("%#10X", "Hash with width", 42, 'X');
+    test_format("%+010d", "Plus with zero padding", &int_val, 'd');
+    test_format("% #x", "Space with hash", &hex_val, 'x');
+    test_format("%#10X", "Hash with width", &hex_val, 'X');
 }
 
-/* Helper function for complex test cases */
-void test_format(const char *format, const char *test_name, int value, char type)
+/* Helper function for complex test cases - updated to match header declaration */
+void test_format(const char *format, const char *test_name, void *value, char type)
 {
     char expected[BUFFER_SIZE];
     char actual[BUFFER_SIZE];
@@ -730,15 +745,15 @@ void test_format(const char *format, const char *test_name, int value, char type
         dup2(pipe_fd[1], STDOUT_FILENO);
         
         switch (type) {
-            case 'c': expected_ret = printf(format, (char)value); break;
+            case 'c': expected_ret = printf(format, *(char*)value); break;
             case 's': expected_ret = printf(format, (char*)value); break;
-            case 'p': expected_ret = printf(format, (void*)value); break;
+            case 'p': expected_ret = printf(format, value); break;
             case 'd':
-            case 'i': expected_ret = printf(format, value); break;
-            case 'u': expected_ret = printf(format, (unsigned int)value); break;
+            case 'i': expected_ret = printf(format, *(int*)value); break;
+            case 'u': expected_ret = printf(format, *(unsigned int*)value); break;
             case 'x':
-            case 'X': expected_ret = printf(format, (unsigned int)value); break;
-            default: expected_ret = printf(format, value);
+            case 'X': expected_ret = printf(format, *(unsigned int*)value); break;
+            default: expected_ret = printf(format, *(int*)value);
         }
         
         fflush(stdout);
@@ -760,15 +775,15 @@ void test_format(const char *format, const char *test_name, int value, char type
         dup2(pipe_fd[1], STDOUT_FILENO);
         
         switch (type) {
-            case 'c': actual_ret = ft_printf(format, (char)value); break;
+            case 'c': actual_ret = ft_printf(format, *(char*)value); break;
             case 's': actual_ret = ft_printf(format, (char*)value); break;
-            case 'p': actual_ret = ft_printf(format, (void*)value); break;
+            case 'p': actual_ret = ft_printf(format, value); break;
             case 'd':
-            case 'i': actual_ret = ft_printf(format, value); break;
-            case 'u': actual_ret = ft_printf(format, (unsigned int)value); break;
+            case 'i': actual_ret = ft_printf(format, *(int*)value); break;
+            case 'u': actual_ret = ft_printf(format, *(unsigned int*)value); break;
             case 'x':
-            case 'X': actual_ret = ft_printf(format, (unsigned int)value); break;
-            default: actual_ret = ft_printf(format, value);
+            case 'X': actual_ret = ft_printf(format, *(unsigned int*)value); break;
+            default: actual_ret = ft_printf(format, *(int*)value);
         }
         
         fflush(stdout);
