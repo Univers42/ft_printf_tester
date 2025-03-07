@@ -6,7 +6,7 @@
 /*   By: dyl-syzygy <dyl-syzygy@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 20:00:00 by dyl-syzygy        #+#    #+#             */
-/*   Updated: 2025/03/07 01:19:05 by dyl-syzygy       ###   ########.fr       */
+/*   Updated: 2025/03/07 01:40:32 by dyl-syzygy       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -253,8 +253,10 @@ void run_extreme_values_tests(void)
     
     // Flag tests - these often have platform-specific behaviors
     test_simple("%016p", "Zero-padded pointer", ptr_test);
-    test_simple("% p", "Space flag with pointer", ptr_test);
-    test_simple("% 016p", "Space and zero-padded pointer", ptr_test);
+    
+    // Handle space flags with pointers specially since behavior differs by platform
+    test_pointer_format_flags("% p", "Space flag with pointer", ptr_test);
+    test_pointer_format_flags("% 016p", "Space and zero-padded pointer", ptr_test);
     
     // Extreme widths and precisions
     test_simple("%1000d", "Width 1000", 42);

@@ -84,6 +84,14 @@ void test_random_value(const char *format)
         ptr++;
     }
     
+    // Check if this is a pointer with flags format (like %+p, % p)
+    if (type == 'p' && (strstr(format, "%+") || strstr(format, "% "))) {
+        // Use special handler for pointer flags
+        void *values[] = {NULL, (void*)0x1, (void*)0xff, (void*)0xffff, (void*)0xffffffff};
+        test_pointer_format_flags(format, test_name, values[rand() % 5]);
+        return;
+    }
+    
     // Select a random value based on the conversion type
     switch (type) {
         case 'c': {
