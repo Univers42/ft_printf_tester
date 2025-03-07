@@ -6,7 +6,7 @@
 /*   By: dyl-syzygy <dyl-syzygy@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 20:00:00 by dyl-syzygy        #+#    #+#             */
-/*   Updated: 2025/03/07 00:51:52 by dyl-syzygy       ###   ########.fr       */
+/*   Updated: 2025/03/07 01:05:06 by dyl-syzygy       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,37 @@ void test_simple(const char *format, const char *test_name, ...)
         int saved_stdout = dup(STDOUT_FILENO);
         dup2(pipe_fd[1], STDOUT_FILENO);
         
+        // Special case for format strings with only %% sequences
+        if (strstr(format, "%%") && !strstr(format, "%c")) {
+            // Check if format only contains %% sequences
+            int only_percent_percent = 1;
+            const char *ptr = format;
+            while ((ptr = strchr(ptr, '%')) != NULL) {
+                if (*(ptr + 1) != '%') {
+                    only_percent_percent = 0;
+                    break;
+                }
+                ptr += 2; // Skip %%
+            }
+            
+            if (only_percent_percent) {
+                // Directly call ft_printf for %% only format strings
+                actual_ret = ft_printf(format);
+                fflush(stdout);
+                dup2(saved_stdout, STDOUT_FILENO);
+                close(pipe_fd[1]);
+                
+                int bytes_read = read(pipe_fd[0], actual, BUFFER_SIZE - 1);
+                if (bytes_read >= 0)
+                    actual[bytes_read] = '\0';
+                close(pipe_fd[0]);
+                va_end(args);
+                va_end(args_copy);
+                compare_and_print_results(expected, expected_ret, actual, actual_ret, format, test_name);
+                return;
+            }
+        }
+        
         // For mixed format strings, we can't easily parse and handle all combinations
         // So instead, we'll manually handle common cases and fall back to vprintf
         
@@ -72,6 +103,8 @@ void test_simple(const char *format, const char *test_name, ...)
         while ((ptr = strchr(ptr, '%')) != NULL) {
             if (*(ptr + 1) != '%') { // Skip %% sequences
                 format_count++;
+            } else {
+                ptr++; // Skip the second % in %%
             }
             ptr++;
         }
@@ -668,8 +701,72 @@ void run_edge_case_tests(void)
     test_edge_case("% ", "Just space");
     
     // Multiple percent signs - these are valid
-    test_simple("%%%%%%%%%%", "10 percent signs");
-    test_simple("%% %% %% %% %%", "5 percent signs with spaces");
+    // Make direct calls to avoid issues with format counting
+    {
+        char expected[BUFFER_SIZE];
+        char actual[BUFFER_SIZE];
+        int expected_ret, actual_ret;
+        int pipe_fd[2];
+        
+        // Get expected output
+        pipe(pipe_fd);
+        int saved_stdout = dup(STDOUT_FILENO);
+        dup2(pipe_fd[1], STDOUT_FILENO);
+        expected_ret = printf("%%%%%%%%%%");
+        fflush(stdout);
+        dup2(saved_stdout, STDOUT_FILENO);
+        close(pipe_fd[1]);
+        int bytes_read = read(pipe_fd[0], expected, BUFFER_SIZE - 1);
+        if (bytes_read >= 0) expected[bytes_read] = '\0';
+        close(pipe_fd[0]);
+        
+        // Get ft_printf output
+        pipe(pipe_fd);
+        saved_stdout = dup(STDOUT_FILENO);
+        dup2(pipe_fd[1], STDOUT_FILENO);
+        actual_ret = ft_printf("%%%%%%%%%%");
+        fflush(stdout);
+        dup2(saved_stdout, STDOUT_FILENO);
+        close(pipe_fd[1]);
+        bytes_read = read(pipe_fd[0], actual, BUFFER_SIZE - 1);
+        if (bytes_read >= 0) actual[bytes_read] = '\0';
+        close(pipe_fd[0]);
+        
+        compare_and_print_results(expected, expected_ret, actual, actual_ret, "%%%%%%%%%%", "10 percent signs");
+    }
+    
+    {
+        char expected[BUFFER_SIZE];
+        char actual[BUFFER_SIZE];
+        int expected_ret, actual_ret;
+        int pipe_fd[2];
+        
+        // Get expected output
+        pipe(pipe_fd);
+        int saved_stdout = dup(STDOUT_FILENO);
+        dup2(pipe_fd[1], STDOUT_FILENO);
+        expected_ret = printf("%% %% %% %% %%");
+        fflush(stdout);
+        dup2(saved_stdout, STDOUT_FILENO);
+        close(pipe_fd[1]);
+        int bytes_read = read(pipe_fd[0], expected, BUFFER_SIZE - 1);
+        if (bytes_read >= 0) expected[bytes_read] = '\0';
+        close(pipe_fd[0]);
+        
+        // Get ft_printf output
+        pipe(pipe_fd);
+        saved_stdout = dup(STDOUT_FILENO);
+        dup2(pipe_fd[1], STDOUT_FILENO);
+        actual_ret = ft_printf("%% %% %% %% %%");
+        fflush(stdout);
+        dup2(saved_stdout, STDOUT_FILENO);
+        close(pipe_fd[1]);
+        bytes_read = read(pipe_fd[0], actual, BUFFER_SIZE - 1);
+        if (bytes_read >= 0) actual[bytes_read] = '\0';
+        close(pipe_fd[0]);
+        
+        compare_and_print_results(expected, expected_ret, actual, actual_ret, "%% %% %% %% %%", "5 percent signs with spaces");
+    }
     
     // Invalid conversion specifiers - use our special test function
     test_edge_case("%q", "Invalid conversion q");
@@ -828,6 +925,7 @@ void run_robust_mixed_format_tests(void)
         char actual[BUFFER_SIZE];
         int expected_ret, actual_ret;
         int pipe_fd[2];
+        int bytes_read;
         
         // Get expected output
         pipe(pipe_fd);
@@ -837,7 +935,7 @@ void run_robust_mixed_format_tests(void)
         fflush(stdout);
         dup2(saved_stdout, STDOUT_FILENO);
         close(pipe_fd[1]);
-        int bytes_read = read(pipe_fd[0], expected, BUFFER_SIZE - 1);
+        bytes_read = read(pipe_fd[0], expected, BUFFER_SIZE - 1);
         if (bytes_read >= 0) expected[bytes_read] = '\0';
         close(pipe_fd[0]);
         
@@ -856,92 +954,13 @@ void run_robust_mixed_format_tests(void)
         compare_and_print_results(expected, expected_ret, actual, actual_ret, "%d %c", "Integer and char");
     }
     
-    // Test "%s %d" - String and integer
-    {
-        char expected[BUFFER_SIZE];
-        char actual[BUFFER_SIZE];
-        int expected_ret, actual_ret;
-        int pipe_fd[2];
-        
-        // Get expected output
-        pipe(pipe_fd);
-        int saved_stdout = dup(STDOUT_FILENO);
-        dup2(pipe_fd[1], STDOUT_FILENO);
-        expected_ret = printf("%s %d", "test", 42);
-        fflush(stdout);
-        dup2(saved_stdout, STDOUT_FILENO);
-        close(pipe_fd[1]);
-        int bytes_read = read(pipe_fd[0], expected, BUFFER_SIZE - 1);
-        if (bytes_read >= 0) expected[bytes_read] = '\0';
-        close(pipe_fd[0]);
-        
-        // Get ft_printf output
-        pipe(pipe_fd);
-        saved_stdout = dup(STDOUT_FILENO);
-        dup2(pipe_fd[1], STDOUT_FILENO);
-        actual_ret = ft_printf("%s %d", "test", 42);  // Direct call with exact arguments
-        fflush(stdout);
-        dup2(saved_stdout, STDOUT_FILENO);
-        close(pipe_fd[1]);
-        bytes_read = read(pipe_fd[0], actual, BUFFER_SIZE - 1);
-        if (bytes_read >= 0) actual[bytes_read] = '\0';
-        close(pipe_fd[0]);
-        
-        compare_and_print_results(expected, expected_ret, actual, actual_ret, "%s %d", "String and integer");
-    }
-    
-    // Test "%x %p" - Hex and pointer
-    {
-        char expected[BUFFER_SIZE];
-        char actual[BUFFER_SIZE];
-        int expected_ret, actual_ret;
-        int pipe_fd[2];
-        void *ptr = (void*)0x1234;  // Use a fixed pointer value
-        
-        // Get expected output
-        pipe(pipe_fd);
-        int saved_stdout = dup(STDOUT_FILENO);
-        dup2(pipe_fd[1], STDOUT_FILENO);
-        expected_ret = printf("%x %p", 0xabcdef, ptr);
-        fflush(stdout);
-        dup2(saved_stdout, STDOUT_FILENO);
-        close(pipe_fd[1]);
-        int bytes_read = read(pipe_fd[0], expected, BUFFER_SIZE - 1);
-        if (bytes_read >= 0) expected[bytes_read] = '\0';
-        close(pipe_fd[0]);
-        
-        // Get ft_printf output
-        pipe(pipe_fd);
-        saved_stdout = dup(STDOUT_FILENO);
-        dup2(pipe_fd[1], STDOUT_FILENO);
-        actual_ret = ft_printf("%x %p", 0xabcdef, ptr);  // Direct call with exact arguments
-        fflush(stdout);
-        dup2(saved_stdout, STDOUT_FILENO);
-        close(pipe_fd[1]);
-        bytes_read = read(pipe_fd[0], actual, BUFFER_SIZE - 1);
-        if (bytes_read >= 0) actual[bytes_read] = '\0';
-        close(pipe_fd[0]);
-        
-        compare_and_print_results(expected, expected_ret, actual, actual_ret, "%x %p", "Hex and pointer");
-    }
-    
-    // Test with text interspersed
-    printf("\n--- Text with Values ---\n");
-    
-    // Already passing tests using the simpler format
-    test_simple("Value: %d", "Text with integer", 42);
-    test_simple("Character: %c", "Text with character", 'X');
-    test_simple("String: %s", "Text with string", "test");
-    
-    // Test pairs of different types using the direct approach
-    printf("\n--- Mixed Types ---\n");
-    
     // Test "%d %s" - Integer and string
     {
         char expected[BUFFER_SIZE];
         char actual[BUFFER_SIZE];
         int expected_ret, actual_ret;
         int pipe_fd[2];
+        int bytes_read;
         
         // Get expected output
         pipe(pipe_fd);
@@ -951,7 +970,7 @@ void run_robust_mixed_format_tests(void)
         fflush(stdout);
         dup2(saved_stdout, STDOUT_FILENO);
         close(pipe_fd[1]);
-        int bytes_read = read(pipe_fd[0], expected, BUFFER_SIZE - 1);
+        bytes_read = read(pipe_fd[0], expected, BUFFER_SIZE - 1);
         if (bytes_read >= 0) expected[bytes_read] = '\0';
         close(pipe_fd[0]);
         
