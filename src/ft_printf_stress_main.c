@@ -1,50 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_printf_stress_tester.c                          :+:      :+:    :+:   */
+/*   ft_printf_stress_main.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dyl-syzygy <dyl-syzygy@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 20:00:00 by dyl-syzygy        #+#    #+#             */
-/*   Updated: 2025/03/07 01:22:29 by dyl-syzygy       ###   ########.fr       */
+/*   Updated: 2025/03/07 01:19:09 by dyl-syzygy       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "headers/controller.h"
+#include "../headers/ft_printf_stress.h"
 
-/* These are already declared in ft_printf_test_utils.c */
-extern int test_count;
-extern int pass_count;
-extern int fail_count;
-
-/**
- * Simple test function with direct input values
- * Eliminates the need for specialized test functions for each type
- */
-void test_simple(const char *format, const char *test_name, ...);
-void stress_test_format(const char *format, const char *test_name, void *value, char type);
-char* generate_random_format(void);
-void test_random_value(const char *format);
-void test_pointer_format_flags(const char *format, const char *test_name, void *ptr);
-void test_edge_case(const char *format, const char *test_name);
-void run_basic_tests(void);
-void run_flag_stress_tests(void);
-void test_width(void);
-void test_precision(void);
-void run_edge_case_tests(void);
-void run_extreme_values_tests(void);
-void run_mixed_format_tests(void);
-void run_robust_mixed_format_tests(void);
-void run_rapid_stress_test(int iterations);
-
-// Include the actual implementations
-#include "src/ft_printf_stress_core.c"
-#include "src/ft_printf_stress_format.c"
-#include "src/ft_printf_stress_basic.c"
-#include "src/ft_printf_stress_width_precision.c"
-#include "src/ft_printf_stress_edge_cases.c"
-#include "src/ft_printf_stress_pointer_rapid.c"
-#include "src/ft_printf_mixed_tests.c"
+/* Global test counters */
+int test_count = 0;
+int pass_count = 0;
+int fail_count = 0;
 
 /* Main function to run the stress tester */
 int main(void)

@@ -17,6 +17,7 @@
 # include <pthread.h>  
 # include <signal.h>
 #include <inttypes.h>
+# include "../includes/ft_printf_stress.h"
 #include <stddef.h>
 /* Function declarations for mixed format tests */
 void run_robust_mixed_format_tests(void);

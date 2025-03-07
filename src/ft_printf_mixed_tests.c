@@ -6,7 +6,7 @@
 /*   By: dyl-syzygy <dyl-syzygy@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 08:30:00 by dyl-syzygy        #+#    #+#             */
-/*   Updated: 2025/03/07 00:26:30 by dyl-syzygy       ###   ########.fr       */
+/*   Updated: 2025/03/07 01:32:20 by dyl-syzygy       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,16 +15,6 @@
 /* A more robust mixed format tester that uses a special approach for multiple
  * format specifiers to avoid segmentation faults.
  */
-
-typedef struct s_mixed_test_args {
-    int int_args[10];
-    unsigned int uint_args[10];
-    char char_args[10];
-    char *str_args[10];
-    void *ptr_args[10];
-    char arg_types[10];
-    int arg_count;
-} t_mixed_test_args;
 
 /* Converts a type character into an argument type enum */
 t_arg_type char_to_arg_type(char c)
@@ -150,13 +140,13 @@ void test_mixed_format_random(const char *format, const char *test_name)
                     args.arg_types[0] == 's' ? (intptr_t)args.str_args[0] :
                     args.arg_types[0] == 'p' ? (intptr_t)args.ptr_args[0] :
                     args.arg_types[0] == 'u' || args.arg_types[0] == 'x' || args.arg_types[0] == 'X' ? 
-                        args.uint_args[0] : args.int_args[0],
+                        (intptr_t)args.uint_args[0] : (intptr_t)args.int_args[0],
                     
                     args.arg_types[1] == 'c' ? (int)args.char_args[1] : 
                     args.arg_types[1] == 's' ? (intptr_t)args.str_args[1] :
                     args.arg_types[1] == 'p' ? (intptr_t)args.ptr_args[1] :
                     args.arg_types[1] == 'u' || args.arg_types[1] == 'x' || args.arg_types[1] == 'X' ? 
-                        args.uint_args[1] : args.int_args[1]
+                        (intptr_t)args.uint_args[1] : (intptr_t)args.int_args[1]
                 );
                 break;
             case 3:
@@ -165,19 +155,19 @@ void test_mixed_format_random(const char *format, const char *test_name)
                     args.arg_types[0] == 's' ? (intptr_t)args.str_args[0] :
                     args.arg_types[0] == 'p' ? (intptr_t)args.ptr_args[0] :
                     args.arg_types[0] == 'u' || args.arg_types[0] == 'x' || args.arg_types[0] == 'X' ? 
-                        args.uint_args[0] : args.int_args[0],
+                        (intptr_t)args.uint_args[0] : (intptr_t)args.int_args[0],
                     
                     args.arg_types[1] == 'c' ? (int)args.char_args[1] : 
                     args.arg_types[1] == 's' ? (intptr_t)args.str_args[1] :
                     args.arg_types[1] == 'p' ? (intptr_t)args.ptr_args[1] :
                     args.arg_types[1] == 'u' || args.arg_types[1] == 'x' || args.arg_types[1] == 'X' ? 
-                        args.uint_args[1] : args.int_args[1],
+                        (intptr_t)args.uint_args[1] : (intptr_t)args.int_args[1],
                         
                     args.arg_types[2] == 'c' ? (int)args.char_args[2] : 
                     args.arg_types[2] == 's' ? (intptr_t)args.str_args[2] :
                     args.arg_types[2] == 'p' ? (intptr_t)args.ptr_args[2] :
                     args.arg_types[2] == 'u' || args.arg_types[2] == 'x' || args.arg_types[2] == 'X' ? 
-                        args.uint_args[2] : args.int_args[2]
+                        (intptr_t)args.uint_args[2] : (intptr_t)args.int_args[2]
                 );
                 break;
             // Add cases for more arguments if needed
@@ -225,13 +215,13 @@ void test_mixed_format_random(const char *format, const char *test_name)
                     args.arg_types[0] == 's' ? (intptr_t)args.str_args[0] :
                     args.arg_types[0] == 'p' ? (intptr_t)args.ptr_args[0] :
                     args.arg_types[0] == 'u' || args.arg_types[0] == 'x' || args.arg_types[0] == 'X' ? 
-                        args.uint_args[0] : args.int_args[0],
+                        (intptr_t)args.uint_args[0] : (intptr_t)args.int_args[0],
                     
                     args.arg_types[1] == 'c' ? (int)args.char_args[1] : 
                     args.arg_types[1] == 's' ? (intptr_t)args.str_args[1] :
                     args.arg_types[1] == 'p' ? (intptr_t)args.ptr_args[1] :
                     args.arg_types[1] == 'u' || args.arg_types[1] == 'x' || args.arg_types[1] == 'X' ? 
-                        args.uint_args[1] : args.int_args[1]
+                        (intptr_t)args.uint_args[1] : (intptr_t)args.int_args[1]
                 );
                 break;
             case 3:
@@ -240,19 +230,19 @@ void test_mixed_format_random(const char *format, const char *test_name)
                     args.arg_types[0] == 's' ? (intptr_t)args.str_args[0] :
                     args.arg_types[0] == 'p' ? (intptr_t)args.ptr_args[0] :
                     args.arg_types[0] == 'u' || args.arg_types[0] == 'x' || args.arg_types[0] == 'X' ? 
-                        args.uint_args[0] : args.int_args[0],
+                        (intptr_t)args.uint_args[0] : (intptr_t)args.int_args[0],
                     
                     args.arg_types[1] == 'c' ? (int)args.char_args[1] : 
                     args.arg_types[1] == 's' ? (intptr_t)args.str_args[1] :
                     args.arg_types[1] == 'p' ? (intptr_t)args.ptr_args[1] :
                     args.arg_types[1] == 'u' || args.arg_types[1] == 'x' || args.arg_types[1] == 'X' ? 
-                        args.uint_args[1] : args.int_args[1],
+                        (intptr_t)args.uint_args[1] : (intptr_t)args.int_args[1],
                         
                     args.arg_types[2] == 'c' ? (int)args.char_args[2] : 
                     args.arg_types[2] == 's' ? (intptr_t)args.str_args[2] :
                     args.arg_types[2] == 'p' ? (intptr_t)args.ptr_args[2] :
                     args.arg_types[2] == 'u' || args.arg_types[2] == 'x' || args.arg_types[2] == 'X' ? 
-                        args.uint_args[2] : args.int_args[2]
+                        (intptr_t)args.uint_args[2] : (intptr_t)args.int_args[2]
                 );
                 break;
             // Add cases for more arguments if needed
@@ -278,7 +268,6 @@ void test_mixed_format_random(const char *format, const char *test_name)
     compare_and_print_results(expected, expected_ret, actual, actual_ret, format, test_name);
 }
 
-/* Run a series of mixed format tests with specific values */
 void test_mixed_format_with_values(const char *format, const char *test_name, ...)
 {
     t_mixed_test_args args;
@@ -346,13 +335,13 @@ void test_mixed_format_with_values(const char *format, const char *test_name, ..
                     args.arg_types[0] == 's' ? (intptr_t)args.str_args[0] :
                     args.arg_types[0] == 'p' ? (intptr_t)args.ptr_args[0] :
                     args.arg_types[0] == 'u' || args.arg_types[0] == 'x' || args.arg_types[0] == 'X' ? 
-                        args.uint_args[0] : args.int_args[0],
+                        (intptr_t)args.uint_args[0] : (intptr_t)args.int_args[0],
                     
                     args.arg_types[1] == 'c' ? (int)args.char_args[1] : 
                     args.arg_types[1] == 's' ? (intptr_t)args.str_args[1] :
                     args.arg_types[1] == 'p' ? (intptr_t)args.ptr_args[1] :
                     args.arg_types[1] == 'u' || args.arg_types[1] == 'x' || args.arg_types[1] == 'X' ? 
-                        args.uint_args[1] : args.int_args[1]
+                        (intptr_t)args.uint_args[1] : (intptr_t)args.int_args[1]
                 );
                 break;
             case 3:
@@ -361,19 +350,19 @@ void test_mixed_format_with_values(const char *format, const char *test_name, ..
                     args.arg_types[0] == 's' ? (intptr_t)args.str_args[0] :
                     args.arg_types[0] == 'p' ? (intptr_t)args.ptr_args[0] :
                     args.arg_types[0] == 'u' || args.arg_types[0] == 'x' || args.arg_types[0] == 'X' ? 
-                        args.uint_args[0] : args.int_args[0],
+                        (intptr_t)args.uint_args[0] : (intptr_t)args.int_args[0],
                     
                     args.arg_types[1] == 'c' ? (int)args.char_args[1] : 
                     args.arg_types[1] == 's' ? (intptr_t)args.str_args[1] :
                     args.arg_types[1] == 'p' ? (intptr_t)args.ptr_args[1] :
                     args.arg_types[1] == 'u' || args.arg_types[1] == 'x' || args.arg_types[1] == 'X' ? 
-                        args.uint_args[1] : args.int_args[1],
+                        (intptr_t)args.uint_args[1] : (intptr_t)args.int_args[1],
                         
                     args.arg_types[2] == 'c' ? (int)args.char_args[2] : 
                     args.arg_types[2] == 's' ? (intptr_t)args.str_args[2] :
                     args.arg_types[2] == 'p' ? (intptr_t)args.ptr_args[2] :
                     args.arg_types[2] == 'u' || args.arg_types[2] == 'x' || args.arg_types[2] == 'X' ? 
-                        args.uint_args[2] : args.int_args[2]
+                        (intptr_t)args.uint_args[2] : (intptr_t)args.int_args[2]
                 );
                 break;
             // Add cases for more arguments if needed
@@ -421,13 +410,13 @@ void test_mixed_format_with_values(const char *format, const char *test_name, ..
                     args.arg_types[0] == 's' ? (intptr_t)args.str_args[0] :
                     args.arg_types[0] == 'p' ? (intptr_t)args.ptr_args[0] :
                     args.arg_types[0] == 'u' || args.arg_types[0] == 'x' || args.arg_types[0] == 'X' ? 
-                        args.uint_args[0] : args.int_args[0],
+                        (intptr_t)args.uint_args[0] : (intptr_t)args.int_args[0],
                     
                     args.arg_types[1] == 'c' ? (int)args.char_args[1] : 
                     args.arg_types[1] == 's' ? (intptr_t)args.str_args[1] :
                     args.arg_types[1] == 'p' ? (intptr_t)args.ptr_args[1] :
                     args.arg_types[1] == 'u' || args.arg_types[1] == 'x' || args.arg_types[1] == 'X' ? 
-                        args.uint_args[1] : args.int_args[1]
+                        (intptr_t)args.uint_args[1] : (intptr_t)args.int_args[1]
                 );
                 break;
             case 3:
@@ -436,19 +425,19 @@ void test_mixed_format_with_values(const char *format, const char *test_name, ..
                     args.arg_types[0] == 's' ? (intptr_t)args.str_args[0] :
                     args.arg_types[0] == 'p' ? (intptr_t)args.ptr_args[0] :
                     args.arg_types[0] == 'u' || args.arg_types[0] == 'x' || args.arg_types[0] == 'X' ? 
-                        args.uint_args[0] : args.int_args[0],
+                        (intptr_t)args.uint_args[0] : (intptr_t)args.int_args[0],
                     
                     args.arg_types[1] == 'c' ? (int)args.char_args[1] : 
                     args.arg_types[1] == 's' ? (intptr_t)args.str_args[1] :
                     args.arg_types[1] == 'p' ? (intptr_t)args.ptr_args[1] :
                     args.arg_types[1] == 'u' || args.arg_types[1] == 'x' || args.arg_types[1] == 'X' ? 
-                        args.uint_args[1] : args.int_args[1],
+                        (intptr_t)args.uint_args[1] : (intptr_t)args.int_args[1],
                         
                     args.arg_types[2] == 'c' ? (int)args.char_args[2] : 
                     args.arg_types[2] == 's' ? (intptr_t)args.str_args[2] :
                     args.arg_types[2] == 'p' ? (intptr_t)args.ptr_args[2] :
                     args.arg_types[2] == 'u' || args.arg_types[2] == 'x' || args.arg_types[2] == 'X' ? 
-                        args.uint_args[2] : args.int_args[2]
+                        (intptr_t)args.uint_args[2] : (intptr_t)args.int_args[2]
                 );
                 break;
             // Add cases for more arguments if needed
@@ -512,4 +501,10 @@ void run_robust_mixed_format_tests(void)
         };
         test_mixed_format_random(formats[rand() % 5], "Random mixed test");
     }
+}
+
+/* This is a wrapper for run_robust_mixed_format_tests */
+void run_mixed_format_tests(void)
+{
+    run_robust_mixed_format_tests();
 }

@@ -6,7 +6,7 @@
 #    By: dyl-syzygy <dyl-syzygy@student.42.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/03/06 13:42:50 by dyl-syzygy        #+#    #+#              #
-#    Updated: 2025/03/07 00:30:05 by dyl-syzygy       ###   ########.fr        #
+#    Updated: 2025/03/07 01:12:12 by dyl-syzygy       ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -57,6 +57,13 @@ include make/targets/clean.mk
 SRC += src/ft_printf_format_parser.c
 SRC += src/ft_printf_mixed_tests.c
 SRC += src/ft_printf_va_helper.c
+SRC += src/ft_printf_stress_core.c
+SRC += src/ft_printf_stress_format.c
+SRC += src/ft_printf_stress_basic.c
+SRC += src/ft_printf_stress_width_precision.c
+SRC += src/ft_printf_stress_edge_cases.c
+SRC += src/ft_printf_stress_pointer_rapid.c
+SRC += src/ft_printf_stress_main.c
 
 # Main target
 all: intro header_all build_root_project make_dirs $(LIBFT) $(TESTERS) footer_all
