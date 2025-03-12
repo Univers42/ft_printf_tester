@@ -1,4 +1,3 @@
-
 # Empty rule to prevent attempting to build ft_printf_test_utils as an executable
 $(TEST_UTILS):
 	@echo "$(YELLOW)⚠ $(TEST_UTILS) is not an executable target$(RESET)"

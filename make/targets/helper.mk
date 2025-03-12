@@ -1,15 +1,3 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    helper.mk                                          :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: dyl-syzygy <dyl-syzygy@student.42.fr>      +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2025/03/06 13:56:56 by dyl-syzygy        #+#    #+#              #
-#    Updated: 2025/03/06 13:57:08 by dyl-syzygy       ###   ########.fr        #
-#                                                                              #
-# **************************************************************************** #
-
 list:
 	@echo "$(BOLD_CYAN)Available test executables:$(RESET)"
 	@for test in $(TEST_EXECUTABLES); do \

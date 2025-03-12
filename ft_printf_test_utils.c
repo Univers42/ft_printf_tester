@@ -6,7 +6,7 @@
 /*   By: dyl-syzygy <dyl-syzygy@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/02 01:17:08 by dyl-syzygy        #+#    #+#             */
-/*   Updated: 2025/03/12 16:26:34 by dyl-syzygy       ###   ########.fr       */
+/*   Updated: 2025/03/12 16:29:12 by dyl-syzygy       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,11 +24,11 @@ static int g_failed_tests = 0;
 int ft_printf(const char *format, ...);
 
 /* Include all the source files that were split out */
-#include "utils/ft_printf_output_format.c"
-#include "utils/ft_printf_test_runner.c"
-#include "utils/ft_printf_capture.c"
-#include "utils/ft_printf_str_char_tests.c"
-#include "utils/ft_printf_num_tests.c"
-#include "utils/ft_printf_ptr_tests.c"
-#include "utils/ft_printf_general_tests.c"
+#include "src/ft_printf_output_format.c"
+#include "src/ft_printf_test_runner.c"
+#include "src/ft_printf_capture.c"
+#include "src/ft_printf_str_char_tests.c"
+#include "src/ft_printf_num_tests.c"
+#include "src/ft_printf_ptr_tests.c"
+#include "src/ft_printf_general_tests.c"
 /* Removed ft_printf_stress_tester.c include as it's compiled separately */

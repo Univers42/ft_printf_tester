@@ -1,17 +1,7 @@
-
 define intro
 	@clear
 	@echo ""
-	@for i in 1 2 3 ; do \
-		printf "\r$(BLUE)$(BOLD)Initializing$(RESET)" ; \
-		sleep 0.1 ; \
-		printf "\r$(BLUE)$(BOLD)Initializing.$(RESET)" ; \
-		sleep 0.1 ; \
-		printf "\r$(BLUE)$(BOLD)Initializing..$(RESET)" ; \
-		sleep 0.1 ; \
-		printf "\r$(BLUE)$(BOLD)Initializing...$(RESET)" ; \
-		sleep 0.1 ; \
-	done
+	$(call init_dots_animation,"$(BLUE)$(BOLD)Initializing", 3, "$(RESET)")
 	@clear
 	@echo ""
 	@echo "$(BLUE)╭─────────────────────────────────────────────────────────╮"
@@ -61,6 +51,21 @@ define header_all
 	@printf "\n$(BOLD_PURPLE)$(SPARKLE) $(ITALIC)Initiating compilation sequence... $(SPARKLE)$(RESET)\n\n"
 	@sleep 0.5
 endef
+
+# Display completion message
+define display_completion
+	@echo ""
+	@printf "$(GREEN)$(BOLD)$(CHECK) $(1) complete!$(RESET)\n"
+	@printf "$(GRAY)$ make $(2)$(RESET)  $(GREEN)✓ Finished$(RESET)$(3)\n"
+endef
+
+# Display header for maintenance operations
+define display_maintenance_header
+	@clear
+	@printf "$(BG_BLUE)$(BOLD_WHITE) SYSTEM MAINTENANCE: $(1) $(RESET)\n\n"
+endef
+
+
 
 header_all:
 	$(call header_all)
