@@ -6,7 +6,7 @@
 #    By: dyl-syzygy <dyl-syzygy@student.42.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/03/06 14:02:45 by dyl-syzygy        #+#    #+#              #
-#    Updated: 2025/03/06 15:01:38 by dyl-syzygy       ###   ########.fr        #
+#    Updated: 2025/03/12 15:50:37 by dyl-syzygy       ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -38,13 +38,51 @@ build_root_project:
 	fi
 	
 	@# Generate supplemental library with potentially missing functions
-	@printf "$(YELLOW)$(GEAR) Running link wrapper to ensure all functions are available...$(RESET)\n"
-	@if [ ! -f "$(PRINTF_DIR)/libftprintf_supp.a" ]; then \
-		if [ -x "./link_wrapper.sh" ]; then \
-			./link_wrapper.sh > /tmp/link_wrapper.log 2>&1; \
+	@printf "$(YELLOW)$(GEAR) Checking for missing functions...$(RESET)\n"
+	@# Create a directory to store supplemental objects in parent directory
+	@mkdir -p $(PRINTF_DIR)/obj
+	
+	@printf "$(CYAN)=== Finding Missing Object Files ===$(RESET)\n"
+	@printf "$(YELLOW)Looking for missing functions...$(RESET)\n"
+	
+	@# Define missing functions to search for
+	@missing_found=0; \
+	cd $(PRINTF_DIR) && \
+	for func in "ft_print_width" "ft_flags_init" "ft_isflag" "ft_istype"; do \
+		printf "$(YELLOW)Looking for $$func...$(RESET)"; \
+		files=$$(grep -l "^[^/]*$$func" --include="*.c" -r src/ 2>/dev/null || echo ""); \
+		if [ -z "$$files" ]; then \
+			printf "$(RED)Not found!$(RESET)\n"; \
 		else \
-			chmod +x ./link_wrapper.sh && ./link_wrapper.sh > /tmp/link_wrapper.log 2>&1; \
+			printf "$(GREEN)Found in: $(CYAN)$$files$(RESET)\n"; \
+			for file in $$files; do \
+				base_file=$$(basename "$$file" .c); \
+				dir_name=$$(dirname "$$file" | sed 's|^src/||'); \
+				obj_path="obj/$$dir_name"; \
+				mkdir -p "$$obj_path" 2>/dev/null; \
+				if [ ! -f "$$obj_path/$$base_file.o" ]; then \
+					printf "$(YELLOW)Compiling $$file for $$func...$(RESET)\n"; \
+					gcc -Wall -Wextra -Werror -I. -I./include -c "$$file" -o "$$obj_path/$$base_file.o"; \
+					if [ $$? -eq 0 ]; then \
+						printf "$(GREEN)Successfully compiled $$file$(RESET)\n"; \
+						missing_found=1; \
+					else \
+						printf "$(RED)Failed to compile $$file$(RESET)\n"; \
+					fi; \
+				else \
+					printf "$(GREEN)Already compiled: $$file$(RESET)\n"; \
+					missing_found=1; \
+				fi; \
+			done; \
 		fi; \
+	done; \
+	\
+	printf "\n$(CYAN)=== Creating Supplemental Archive ===$(RESET)\n"; \
+	if [ $$missing_found -eq 1 ]; then \
+		find obj -type f -name "*.o" -print0 | xargs -0 ar rcs libftprintf_supp.a; \
+		printf "$(GREEN)Created supplemental archive with missing functions$(RESET)\n"; \
+	else \
+		printf "$(YELLOW)No supplemental objects to archive$(RESET)\n"; \
 	fi
 	
 	@if [ -f "$(PRINTF_DIR)/libftprintf_supp.a" ]; then \

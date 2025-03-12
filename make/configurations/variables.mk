@@ -6,7 +6,7 @@
 #    By: dyl-syzygy <dyl-syzygy@student.42.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/03/06 13:51:20 by dyl-syzygy        #+#    #+#              #
-#    Updated: 2025/03/06 16:49:25 by dyl-syzygy       ###   ########.fr        #
+#    Updated: 2025/03/12 15:40:07 by dyl-syzygy       ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,7 +20,7 @@ OBJ_DIR = Objects
 PROGRAM_DIR = program
 TESTER_DIR = .
 PRINTF_DIR = ..
-LIBFT_DIR = /home/dyl-syzygy/goinfre/ft_printf2/libft
+LIBFT_DIR = ../libft
 ROOT_OBJ_DIR = ../Object
 MK_DIR = make
 
