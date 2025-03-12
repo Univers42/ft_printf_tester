@@ -6,11 +6,11 @@
 /*   By: dyl-syzygy <dyl-syzygy@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 19:56:48 by dyl-syzygy        #+#    #+#             */
-/*   Updated: 2025/03/06 15:23:28 by dyl-syzygy       ###   ########.fr       */
+/*   Updated: 2025/03/12 23:41:46 by dyl-syzygy       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "headers/controller.h"
+#include "../../headers/controller.h"
 
 extern int ft_printf(const char *format, ...);
 

@@ -6,13 +6,13 @@
 /*   By: dyl-syzygy <dyl-syzygy@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/02 01:17:08 by dyl-syzygy        #+#    #+#             */
-/*   Updated: 2025/03/12 23:04:05 by dyl-syzygy       ###   ########.fr       */
+/*   Updated: 2025/03/12 23:41:10 by dyl-syzygy       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 /* Define this macro to inform included files that they are being included */
 #define INCLUDED_IN_MAIN_FILE 1
-#include "headers/controller.h"
+#include "../../headers/controller.h"
 
 /* Global variables needed by test functions */
 int test_count = 0;

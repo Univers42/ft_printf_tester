@@ -6,11 +6,11 @@
 /*   By: dyl-syzygy <dyl-syzygy@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/02 01:16:31 by dyl-syzygy        #+#    #+#             */
-/*   Updated: 2025/03/06 17:25:01 by dyl-syzygy       ###   ########.fr       */
+/*   Updated: 2025/03/12 23:41:02 by dyl-syzygy       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "headers/controller.h"
+#include "../../headers/controller.h"
 
 // Direct comparison function for simple debug tests
 void run_direct_test(const char *test_name, const char *format, ...)

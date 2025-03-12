@@ -6,11 +6,11 @@
 /*   By: dyl-syzygy <dyl-syzygy@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/02 01:17:28 by dyl-syzygy        #+#    #+#             */
-/*   Updated: 2025/03/12 23:24:59 by dyl-syzygy       ###   ########.fr       */
+/*   Updated: 2025/03/12 23:42:15 by dyl-syzygy       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "headers/controller.h"
+#include "../headers/controller.h"
 
 Test tests[] = {
     {1, "Mandatory Part", "All required conversions (cspdiuxX%)", "./program/srcs/tests/ft_printf_mandatory_test", ""},

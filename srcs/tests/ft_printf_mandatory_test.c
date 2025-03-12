@@ -6,11 +6,11 @@
 /*   By: dyl-syzygy <dyl-syzygy@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 15:30:42 by dyl-syzygy        #+#    #+#             */
-/*   Updated: 2025/03/06 15:33:52 by dyl-syzygy       ###   ########.fr       */
+/*   Updated: 2025/03/12 23:40:52 by dyl-syzygy       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "headers/controller.h"
+#include "../../headers/controller.h"
 
 int ft_printf(const char *format, ...);
 void test_char_conversion(void)

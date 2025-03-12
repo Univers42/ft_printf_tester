@@ -6,12 +6,11 @@
 /*   By: dyl-syzygy <dyl-syzygy@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/02 01:18:04 by dyl-syzygy        #+#    #+#             */
-/*   Updated: 2025/03/06 15:23:25 by dyl-syzygy       ###   ########.fr       */
+/*   Updated: 2025/03/12 23:43:40 by dyl-syzygy       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/ft_printf.h"
-#include "headers/controller.h"
+#include "../../headers/controller.h"
 
 int main(void) {
     void *ptrs[10];
