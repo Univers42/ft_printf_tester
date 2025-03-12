@@ -14,6 +14,15 @@ make_dirs:
 	@# Create program directory with animation
 	@$(call create_dir_with_animation,$(PROGRAM_DIR),"program/")
 	
+	@# Create subdirectories matching source structure
+	@find $(TESTER_DIR) -mindepth 1 -type d | grep -v "src" | sort | while read dir; do \
+		rel_dir=$$(echo $$dir | sed 's|$(TESTER_DIR)/||'); \
+		mkdir -p "$(OBJ_DIR)/tester/$$rel_dir"; \
+		printf "  $(CYAN)➤ Creating obj/tester/$$rel_dir $(GREEN)[$(BOLD)✓$(RESET)$(GREEN)]$(RESET)\n"; \
+		mkdir -p "$(PROGRAM_DIR)/$$rel_dir"; \
+		printf "  $(CYAN)➤ Creating program/$$rel_dir $(GREEN)[$(BOLD)✓$(RESET)$(GREEN)]$(RESET)\n"; \
+	done
+	
 	@echo ""
 	@echo "$(GREEN)$(CHECK) Build environment ready!$(RESET)"
 	@echo ""

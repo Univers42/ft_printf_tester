@@ -8,29 +8,35 @@ define print_compilation_header
 	fi
 endef
 
-# Ensure utility files are compiled with priority
-$(OBJ_DIR)/tester/%_utils.o $(OBJ_DIR)/tester/%_ft_printf.o: $(TESTER_DIR)/%.c
-	$(call print_compilation_header,test,$(PINK)UTILITY COMPONENTS COMPILATION)
-	@mkdir -p $(dir $@)
-	@printf "  $(BOLD_CYAN)▶ Building Utility:$(RESET) $(YELLOW)%-25s$(RESET) " "$(notdir $<)"
-	@$(CC) $(CFLAGS) $(INCLUDES) -I. -c $< -o $@
-	@printf "$(GREEN)$(CHECK)$(RESET)\n"
+# Check for function duplication before building
+utils-check:
+	@if [ -f "$(TESTER_DIR)/ft_printf_test_utils.c" ] && [ -d "$(TESTER_DIR)/utils" ]; then \
+		echo "$(YELLOW)Warning: Both ft_printf_test_utils.c and utils/ directory exist.$(RESET)"; \
+		echo "$(YELLOW)Checking for duplicate functions...$(RESET)"; \
+		FUNCS_IN_MONOLITH=$$(grep -o "^[a-z_]* [a-z_0-9]*(" "$(TESTER_DIR)/ft_printf_test_utils.c" | sed 's/(.*//' | sort); \
+		FUNCS_IN_UTILS=""; \
+		for util_file in $$(find "$(TESTER_DIR)/utils" -name "*.c"); do \
+			FUNCS_IN_UTILS="$$FUNCS_IN_UTILS $$(grep -o "^[a-z_]* [a-z_0-9]*(" "$$util_file" | sed 's/(.*//' | sort)"; \
+		done; \
+		echo "$(CYAN)Modular utility files will take precedence over monolithic file.$(RESET)"; \
+	fi
 
-# Generic compilation rule for all source files in tester directory
+# All tester files compilation rule with universal pattern matching - exclude ft_printf_test_utils.c if modular versions exist
 $(OBJ_DIR)/tester/%.o: $(TESTER_DIR)/%.c
 	$(call print_compilation_header,test,$(PINK)TEST COMPONENTS COMPILATION)
-	@mkdir -p $(dir $@)
-	@printf "  $(BOLD_CYAN)▶ Building:$(RESET) $(YELLOW)%-25s$(RESET) " "$(notdir $<)"
-	@$(CC) $(CFLAGS) $(INCLUDES) -I. -c $< -o $@
-	@printf "$(GREEN)$(CHECK)$(RESET)\n"
-
-# Generic utility and source detection for compilation
-$(OBJ_DIR)/tester/%/%.o: $(TESTER_DIR)/%/%.c
-	$(call print_compilation_header,test,$(PINK)TEST COMPONENTS COMPILATION)
-	@mkdir -p $(dir $@)
-	@printf "  $(BOLD_CYAN)▶ Building:$(RESET) $(YELLOW)%-25s$(RESET) " "$(notdir $<) ($(shell dirname $(subst $(TESTER_DIR)/,,$<)))"
-	@$(CC) $(CFLAGS) $(INCLUDES) -I. -c $< -o $@
-	@printf "$(GREEN)$(CHECK)$(RESET)\n"
+	@if [ -d "$(TESTER_DIR)/utils" ] && [ "$*" = "ft_printf_test_utils" ]; then \
+		echo "$(YELLOW)⚠ Skipping monolithic $(notdir $<) since modular files exist$(RESET)"; \
+		mkdir -p $(dir $@); \
+		echo "// Empty placeholder - modular files used instead" > $(dir $@)/empty_placeholder.c; \
+		$(CC) $(CFLAGS) $(INCLUDES) -c $(dir $@)/empty_placeholder.c -o $@; \
+		rm -f $(dir $@)/empty_placeholder.c; \
+	else \
+		mkdir -p $(dir $@); \
+		printf "  $(BOLD_CYAN)▶ Building:$(RESET) $(YELLOW)%-40s$(RESET) " "$(subst $(TESTER_DIR)/,,$<)"; \
+		$(CC) $(CFLAGS) $(INCLUDES) -I. -I$(TESTER_DIR) -I$(TESTER_DIR)/utils -c $< -o $@ || \
+			{ printf "$(RED)Failed to compile %s$(RESET)\n" "$<"; exit 1; }; \
+		printf "$(GREEN)$(CHECK)$(RESET)\n"; \
+	fi
 
 # Compile ft_printf source files
 $(OBJ_DIR)/printf/%.o: $(PRINTF_DIR)/%.c
@@ -40,4 +46,6 @@ $(OBJ_DIR)/printf/%.o: $(PRINTF_DIR)/%.c
 	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@ || \
 		{ printf "$(RED)Failed to compile %s$(RESET)\n" "$<"; exit 1; }
 	@printf "$(GREEN)$(CHECK) Compiled$(RESET)\n"
+
+.PHONY: utils-check
 

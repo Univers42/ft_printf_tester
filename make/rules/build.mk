@@ -7,9 +7,11 @@ define print_status
 	@printf "  %b%b %b\n" "$(CYAN)" "$(1)" "$(2)$(RESET)"
 endef
 
-# Build utility files first to ensure they're available for linking
-build_utilities: $(UTILITY_OBJS)
-	@printf "\033[0;32mUtility objects built successfully\033[0m\n"
+# Build utility files and modules first to ensure they're available for linking
+build_utilities: utils-check $(UTILITY_OBJS) $(MODULE_OBJS)
+	@printf "\033[0;32mUtility and module objects built successfully\033[0m\n"
+	@echo "Built utilities: $(notdir $(UTILITY_OBJS))"
+	@echo "Built modules: $(notdir $(MODULE_OBJS))"
 
 # Main target that depends on all subtasks
 build_root_project: build_printf check_missing_functions sync_objects build_utilities
