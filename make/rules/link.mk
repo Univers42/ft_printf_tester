@@ -72,7 +72,7 @@ define link_with_animation
 	@sleep 0.05
 endef
 
-# Generic linking rule for test executables - handle subdirectories
+# Generic linking rule for test executables - now handles both flat and structured paths
 $(PROGRAM_DIR)/%: $(OBJ_DIR)/tester/%.o
 	$(call link_with_animation,$@,$<)
 
@@ -86,6 +86,16 @@ endef
 # Create linking rules for all subdirectories
 SUBDIRS := $(sort $(dir $(shell find $(TESTER_DIR) -mindepth 2 -type f -name "*.c" | sed -e 's|$(TESTER_DIR)/||' -e 's|/[^/]*$$|/|')))
 $(foreach dir,$(SUBDIRS),$(eval $(call link_recursive_rules,$(patsubst %/,%,$(dir)))))
+
+# Special rule for flattening directory structure for executables
+define flatten_executable_rule
+$(PROGRAM_DIR)/$(notdir $(1)): $(OBJ_DIR)/tester/$(1).o
+	$$(call link_with_animation,$$@,$$<)
+endef
+
+# Apply the flattening rule to each executable that's in a subdirectory
+$(foreach exec,$(filter-out $(notdir $(TEST_EXECUTABLES)),$(TEST_EXECUTABLES)),\
+	$(eval $(call flatten_executable_rule,$(exec))))
 
 # Special linking rule for ultimate tester with extra animations
 $(PROGRAM_DIR)/ft_printf_ultimate_tester: $(OBJ_DIR)/tester/ft_printf_ultimate_tester.o
@@ -103,3 +113,13 @@ $(PROGRAM_DIR)/ft_printf_ultimate_controller: $(OBJ_DIR)/tester/ft_printf_ultima
 	$(call link_with_libs,$@,$<)
 	@printf "\r  $(BOLD_PURPLE)▶ Linking Controller:$(RESET) $(WHITE)%-25s $(GREEN)[$(BOLD)✓$(RESET)$(GREEN)]$(RESET)\n" "$(notdir $@)"
 	@sleep 0.05
+
+# Add special targets for executables in srcs/ directory
+controller: $(PROGRAM_DIR)/ft_printf_ultimate_controller
+	@echo "$(GREEN)$(CHECK) Controller built successfully!$(RESET)"
+
+tester: $(PROGRAM_DIR)/ft_printf_ultimate_tester
+	@echo "$(GREEN)$(CHECK) Tester built successfully!$(RESET)"
+
+# Make these targets phony so they always run
+.PHONY: controller tester

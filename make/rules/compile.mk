@@ -21,10 +21,11 @@ utils-check:
 		echo "$(CYAN)Modular utility files will take precedence over monolithic file.$(RESET)"; \
 	fi
 
-# All tester files compilation rule with universal pattern matching - exclude ft_printf_test_utils.c if modular versions exist
+# Universal compilation rule for all tester source files
 $(OBJ_DIR)/tester/%.o: $(TESTER_DIR)/%.c
 	$(call print_compilation_header,test,$(PINK)TEST COMPONENTS COMPILATION)
-	@if [ -d "$(TESTER_DIR)/utils" ] && [ "$*" = "ft_printf_test_utils" ]; then \
+	@if [ -d "$(TESTER_DIR)/utils" ] && echo "$<" | grep -q "ft_printf_test_utils.c" && \
+	   find "$(TESTER_DIR)/utils" -name "*.c" | grep -q "." ; then \
 		echo "$(YELLOW)⚠ Skipping monolithic $(notdir $<) since modular files exist$(RESET)"; \
 		mkdir -p $(dir $@); \
 		echo "// Empty placeholder - modular files used instead" > $(dir $@)/empty_placeholder.c; \
@@ -33,10 +34,36 @@ $(OBJ_DIR)/tester/%.o: $(TESTER_DIR)/%.c
 	else \
 		mkdir -p $(dir $@); \
 		printf "  $(BOLD_CYAN)▶ Building:$(RESET) $(YELLOW)%-40s$(RESET) " "$(subst $(TESTER_DIR)/,,$<)"; \
-		$(CC) $(CFLAGS) $(INCLUDES) -I. -I$(TESTER_DIR) -I$(TESTER_DIR)/utils -c $< -o $@ || \
+		$(CC) $(CFLAGS) $(INCLUDES) -I. -I$(TESTER_DIR) -I$(dir $(GLOBALS_FILE)) -c $< -o $@ || \
 			{ printf "$(RED)Failed to compile %s$(RESET)\n" "$<"; exit 1; }; \
 		printf "$(GREEN)$(CHECK)$(RESET)\n"; \
 	fi
+
+# Special rule for files requiring additional include paths
+$(OBJ_DIR)/tester/%/%.o:
+	@mkdir -p $(dir $@)
+	@printf "  $(BOLD_CYAN)▶ Building:$(RESET) $(YELLOW)%-40s$(RESET) " "$(subst $(OBJ_DIR)/tester/,,$@)"
+	@$(CC) $(CFLAGS) $(INCLUDES) -I. -I$(TESTER_DIR) -I$(dir $(GLOBALS_FILE)) -c $(subst $(OBJ_DIR)/tester/,$(TESTER_DIR)/,$(patsubst %.o,%.c,$@)) -o $@ || \
+		{ printf "$(RED)Failed to compile %s$(RESET)\n" "$<"; exit 1; }
+	@printf "$(GREEN)$(CHECK)$(RESET)\n"
+
+# Explicitly handle files in srcs/ directory
+$(OBJ_DIR)/tester/srcs/%.o: $(TESTER_DIR)/srcs/%.c
+	$(call print_compilation_header,src,$(PINK)SOURCE COMPONENTS COMPILATION)
+	@mkdir -p $(dir $@)
+	@printf "  $(BOLD_CYAN)▶ Building:$(RESET) $(YELLOW)%-40s$(RESET) " "srcs/$(notdir $<)"
+	@$(CC) $(CFLAGS) $(INCLUDES) -I. -I$(TESTER_DIR) -I$(TESTER_DIR)/utils -c $< -o $@ || \
+		{ printf "$(RED)Failed to compile %s$(RESET)\n" "$<"; exit 1; }
+	@printf "$(GREEN)$(CHECK)$(RESET)\n"
+
+# Special rule for controller and tester objects - handle direct linkage of srcs/ executables
+$(OBJ_DIR)/tester/%.o: $(TESTER_DIR)/srcs/%.c
+	$(call print_compilation_header,src,$(PINK)EXECUTABLE COMPONENTS COMPILATION)
+	@mkdir -p $(dir $@)
+	@printf "  $(BOLD_CYAN)▶ Building Root Executable:$(RESET) $(YELLOW)%-40s$(RESET) " "srcs/$(notdir $<)"
+	@$(CC) $(CFLAGS) $(INCLUDES) -I. -I$(TESTER_DIR) -I$(TESTER_DIR)/utils -c $< -o $@ || \
+		{ printf "$(RED)Failed to compile %s$(RESET)\n" "$<"; exit 1; }
+	@printf "$(GREEN)$(CHECK)$(RESET)\n"
 
 # Compile ft_printf source files
 $(OBJ_DIR)/printf/%.o: $(PRINTF_DIR)/%.c

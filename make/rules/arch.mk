@@ -6,21 +6,19 @@ make_dirs:
 	@echo ""
 	@printf "$(YELLOW)$(GEAR) Creating system directories:$(RESET)\n"
 	
-	@# Create obj directory with animation
+	@# Create primary directories
 	@$(call create_dir_with_animation,$(OBJ_DIR),"obj/")
 	@$(call create_dir_with_animation,$(OBJ_DIR)/tester,"obj/tester/")
 	@$(call create_dir_with_animation,$(OBJ_DIR)/printf,"obj/printf/")
-	
-	@# Create program directory with animation
 	@$(call create_dir_with_animation,$(PROGRAM_DIR),"program/")
 	
-	@# Create subdirectories matching source structure
-	@find $(TESTER_DIR) -mindepth 1 -type d | grep -v "src" | sort | while read dir; do \
-		rel_dir=$$(echo $$dir | sed 's|$(TESTER_DIR)/||'); \
-		mkdir -p "$(OBJ_DIR)/tester/$$rel_dir"; \
-		printf "  $(CYAN)➤ Creating obj/tester/$$rel_dir $(GREEN)[$(BOLD)✓$(RESET)$(GREEN)]$(RESET)\n"; \
-		mkdir -p "$(PROGRAM_DIR)/$$rel_dir"; \
-		printf "  $(CYAN)➤ Creating program/$$rel_dir $(GREEN)[$(BOLD)✓$(RESET)$(GREEN)]$(RESET)\n"; \
+	@# Create subdirectories for all source files
+	@for src in $(TESTER_C_FILES); do \
+		dir=$$(dirname "$$src" | sed 's|$(TESTER_DIR)/||'); \
+		if [ "$$dir" != "." ]; then \
+			mkdir -p "$(OBJ_DIR)/tester/$$dir"; \
+			printf "  $(CYAN)➤ Creating obj/tester/$$dir $(GREEN)[$(BOLD)✓$(RESET)$(GREEN)]$(RESET)\n"; \
+		fi; \
 	done
 	
 	@echo ""
