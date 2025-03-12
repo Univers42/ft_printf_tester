@@ -6,7 +6,7 @@
 /*   By: dyl-syzygy <dyl-syzygy@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/02 01:17:28 by dyl-syzygy        #+#    #+#             */
-/*   Updated: 2025/03/07 01:51:00 by dyl-syzygy       ###   ########.fr       */
+/*   Updated: 2025/03/12 16:02:55 by dyl-syzygy       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 Test tests[] = {
     {1, "Mandatory Part", "All required conversions (cspdiuxX%)", "./program/ft_printf_mandatory_test", ""},
-    {2, "Character Tests", "Basic character conversion tests", "./program/char_tests", ""},
+    {2, "Character Tests", "Basic character conversion tests", "./program/char_tests_extended", ""},
     {3, "Extended Character Tests", "Comprehensive character tests", "./program/char_tests_extended", ""},
     {4, "String Tests", "Extended string conversion tests", "./program/string_tests_extended", ""},
     {5, "Integer Tests", "Extended integer conversion tests", "./program/int_tests_extended", ""},
@@ -23,9 +23,8 @@ Test tests[] = {
     {8, "Pointer Tests", "Pointer conversion tests", "./program/ptr_tests_extended", ""},
     {9, "Flag Combinations", "Tests various flag combinations", "./program/flag_combinations_tester", ""},
     {10, "Special Flags", "Tests special flag behavior", "./program/special_flags_tester", ""},
-    {11, "Debug Tester", "Full debug tester", "./program/ft_printf_tester", ""},
-    {12, "Simple Debug", "Simple debug tester", "./program/ft_printf_debug_tester_simple", ""},
-    {13, "Stress Tests", "Performance and edge case tests", "./program/ft_printf_stress_tester", ""},
+    {11, "Simple Debug", "Simple debug tester", "./program/ft_printf_debug_tester_simple", ""},
+    {12, "Stress Tests", "Performance and edge case tests", "./program/ft_printf_stress_tester", ""},
     {0, "Run All Tests", "Run all test programs in sequence", "", ""}
 };
 
