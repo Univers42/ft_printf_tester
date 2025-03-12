@@ -7,8 +7,12 @@ define print_status
 	@printf "  %b%b %b\n" "$(CYAN)" "$(1)" "$(2)$(RESET)"
 endef
 
+# Build utility files first to ensure they're available for linking
+build_utilities: $(UTILITY_OBJS)
+	@printf "\033[0;32mUtility objects built successfully\033[0m\n"
+
 # Main target that depends on all subtasks
-build_root_project: build_printf check_missing_functions sync_objects
+build_root_project: build_printf check_missing_functions sync_objects build_utilities
 	@printf "\033[0;33mRoot project build complete\033[0m\n"
 
 # Build the main printf project
@@ -108,4 +112,4 @@ ensure_libft_dir:
 		printf "\033[0;32mCreated empty libft.a stub\033[0m\n"; \
 	fi
 
-.PHONY: build_root_project build_printf check_missing_functions sync_objects ensure_libft_dir
+.PHONY: build_root_project build_printf check_missing_functions sync_objects ensure_libft_dir build_utilities

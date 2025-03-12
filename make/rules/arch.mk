@@ -8,6 +8,8 @@ make_dirs:
 	
 	@# Create obj directory with animation
 	@$(call create_dir_with_animation,$(OBJ_DIR),"obj/")
+	@$(call create_dir_with_animation,$(OBJ_DIR)/tester,"obj/tester/")
+	@$(call create_dir_with_animation,$(OBJ_DIR)/printf,"obj/printf/")
 	
 	@# Create program directory with animation
 	@$(call create_dir_with_animation,$(PROGRAM_DIR),"program/")
@@ -26,7 +28,6 @@ define create_dir_with_animation
 		printf "\r  $(CYAN)➤ Initializing $(2) directory...   $(RESET)" ; \
 		sleep 0.1 ; \
 		printf "\r  $(CYAN)➤ Initializing $(2) directory.     $(RESET)" ; \
-		sleep 0.1 ; \
 	done
 	@printf "\r  $(CYAN)➤ Initializing $(2) directory $(GREEN)[$(BOLD)✓$(RESET)$(GREEN)]$(RESET)\n"
 endef

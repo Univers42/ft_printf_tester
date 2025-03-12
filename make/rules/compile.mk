@@ -8,11 +8,27 @@ define print_compilation_header
 	fi
 endef
 
-# Compilation rule to include source directory in includes
-$(OBJ_DIR)/tester/ft_printf_test_utils.o: ft_printf_test_utils.c
+# Ensure utility files are compiled with priority
+$(OBJ_DIR)/tester/%_utils.o $(OBJ_DIR)/tester/%_ft_printf.o: $(TESTER_DIR)/%.c
+	$(call print_compilation_header,test,$(PINK)UTILITY COMPONENTS COMPILATION)
+	@mkdir -p $(dir $@)
+	@printf "  $(BOLD_CYAN)▶ Building Utility:$(RESET) $(YELLOW)%-25s$(RESET) " "$(notdir $<)"
+	@$(CC) $(CFLAGS) $(INCLUDES) -I. -c $< -o $@
+	@printf "$(GREEN)$(CHECK)$(RESET)\n"
+
+# Generic compilation rule for all source files in tester directory
+$(OBJ_DIR)/tester/%.o: $(TESTER_DIR)/%.c
 	$(call print_compilation_header,test,$(PINK)TEST COMPONENTS COMPILATION)
 	@mkdir -p $(dir $@)
 	@printf "  $(BOLD_CYAN)▶ Building:$(RESET) $(YELLOW)%-25s$(RESET) " "$(notdir $<)"
+	@$(CC) $(CFLAGS) $(INCLUDES) -I. -c $< -o $@
+	@printf "$(GREEN)$(CHECK)$(RESET)\n"
+
+# Generic utility and source detection for compilation
+$(OBJ_DIR)/tester/%/%.o: $(TESTER_DIR)/%/%.c
+	$(call print_compilation_header,test,$(PINK)TEST COMPONENTS COMPILATION)
+	@mkdir -p $(dir $@)
+	@printf "  $(BOLD_CYAN)▶ Building:$(RESET) $(YELLOW)%-25s$(RESET) " "$(notdir $<) ($(shell dirname $(subst $(TESTER_DIR)/,,$<)))"
 	@$(CC) $(CFLAGS) $(INCLUDES) -I. -c $< -o $@
 	@printf "$(GREEN)$(CHECK)$(RESET)\n"
 
@@ -24,12 +40,4 @@ $(OBJ_DIR)/printf/%.o: $(PRINTF_DIR)/%.c
 	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@ || \
 		{ printf "$(RED)Failed to compile %s$(RESET)\n" "$<"; exit 1; }
 	@printf "$(GREEN)$(CHECK) Compiled$(RESET)\n"
-
-# Compile other test source files (excluding the special ft_printf_test_utils.c)
-$(OBJ_DIR)/tester/%.o: $(TESTER_DIR)/%.c
-	$(call print_compilation_header,test,$(PINK)TEST COMPONENTS COMPILATION)
-	@mkdir -p $(dir $@)
-	@printf "  $(BOLD_CYAN)▶ Building:$(RESET) $(YELLOW)%-25s$(RESET) " "$(notdir $<)"
-	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
-	@printf "$(GREEN)$(CHECK)$(RESET)\n"
 

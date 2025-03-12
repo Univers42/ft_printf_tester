@@ -27,14 +27,15 @@ PRINTF_OBJS = $(patsubst $(PRINTF_DIR)/%.c,$(OBJ_DIR)/printf/%.o,$(PRINTF_SRCS))
 # All object files
 ALL_OBJS = $(TESTER_OBJS) $(PRINTF_OBJS)
 
-# Extract test names for executables
+# Identify utility files and executables dynamically - more specific patterns
+UTILITY_PATTERNS = "*_utils.c" "*_ft_printf.c" "ft_printf_test_utils.c" "simple_ft_printf.c"
+UTILITY_FILES = $(shell find $(TESTER_DIR) -type f \( -name "*_utils.c" -o -name "*_ft_printf.c" -o -name "ft_printf_test_utils.c" -o -name "simple_ft_printf.c" \))
+UTILITY_BASES = $(notdir $(basename $(UTILITY_FILES)))
+UTILITY_OBJS = $(patsubst $(TESTER_DIR)/%.c,$(OBJ_DIR)/tester/%.o,$(UTILITY_FILES))
+
+# Extract test names for executables (excluding utilities)
 TEST_NAMES = $(patsubst $(TESTER_DIR)/%.c,%,$(TESTER_SRCS))
-TEST_UTILS = ft_printf_test_utils
-SIMPLE_PRINTF = simple_ft_printf
-TEST_UTILS_OBJ = $(OBJ_DIR)/tester/$(TEST_UTILS).o
-SIMPLE_PRINTF_OBJ = $(OBJ_DIR)/tester/$(SIMPLE_PRINTF).o
-# Properly exclude the test utils from executables
-TEST_EXECUTABLES = $(filter-out $(TEST_UTILS) $(SIMPLE_PRINTF),$(TEST_NAMES))
+TEST_EXECUTABLES = $(filter-out $(UTILITY_BASES),$(TEST_NAMES))
 
 # Define explicit list of testers for the program directory
 TESTERS = $(addprefix $(PROGRAM_DIR)/,$(TEST_EXECUTABLES))
