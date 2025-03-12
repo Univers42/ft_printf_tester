@@ -6,7 +6,7 @@
 /*   By: dyl-syzygy <dyl-syzygy@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/02 01:16:11 by dyl-syzygy        #+#    #+#             */
-/*   Updated: 2025/03/06 18:25:58 by dyl-syzygy       ###   ########.fr       */
+/*   Updated: 2025/03/12 23:26:50 by dyl-syzygy       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,11 @@ void test_multiple_chars_extended(const char *format, const char *test_name, ...
 
 int main(void)
 {
-    printf("=== FT_PRINTF EXTENDED CHAR TESTS ===\n\n");
+    ft_printf("=== FT_PRINTF EXTENDED CHAR TESTS ===\n\n");
     initialize_test_counters();
     
-    printf("\n=== Basic character test ===\n");
-    printf("%s=== FT_PRINTF EXTENDED CHARACTER STRESS TESTS ===%s\n", MAGENTA, RESET);
+    ft_printf("\n=== Basic character test ===\n");
+    ft_printf("%s=== FT_PRINTF EXTENDED CHARACTER STRESS TESTS ===%s\n", MAGENTA, RESET);
     run_category("ASCII Character Range Tests");
     for (char c = 32; c < 127; c++)
     {
@@ -95,7 +95,7 @@ int main(void)
     test_char('A', "%1c", "Width 1 (exact fit)");
     test_char('A', "%0c", "Width 0");
     
-    printf("\n=== Multiple Characters Test ===\n");
+    ft_printf("\n=== Multiple Characters Test ===\n");
     // Use our enhanced function for the multiple character tests
     test_multiple_chars_extended("%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c", 
                                "25 consecutive %c conversions", 
@@ -111,10 +111,10 @@ int main(void)
                                "Mixed width and alignment",
                                'A', 'B', 'C', 'D', 'E', 'F', 'G');
     
-    printf("\n=== CHAR TESTS COMPLETED ===\n");
+    ft_printf("\n=== CHAR TESTS COMPLETED ===\n");
     print_summary();
-    printf("\n%s=== TEST SUMMARY ===%s\n", BLUE, RESET);
-    printf("Total tests: %d\n", test_count);
+    ft_printf("\n%s=== TEST SUMMARY ===%s\n", BLUE, RESET);
+    ft_printf("Total tests: %d\n", test_count);
     printf("Passed: %s%d (%.1f%%)%s\n", GREEN, pass_count, (float)pass_count/test_count*100, RESET);
     printf("Failed: %s%d (%.1f%%)%s\n", fail_count > 0 ? RED : GREEN, fail_count, (float)fail_count/test_count*100, RESET);
     return (fail_count > 0 ? 1 : 0);

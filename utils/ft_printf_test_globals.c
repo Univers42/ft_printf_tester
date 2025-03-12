@@ -1,4 +1,4 @@
-#include "ft_printf_test_globals.h"
+#include "../headers/ft_printf_test_globals.h"
 
 /* Global test counters used across multiple test files */
 int test_count = 0;     /* Total number of tests run */
