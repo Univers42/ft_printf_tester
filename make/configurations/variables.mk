@@ -8,9 +8,13 @@ OBJ_DIR = Objects
 PROGRAM_DIR = program
 TESTER_DIR = .
 PRINTF_DIR = ..
-LIBFT_DIR = ../libft
+
+# Check for libft directory properly
+LIBFT_DIR = $(shell if [ -d "../libft" ]; then echo "../libft"; else echo "../.libft_placeholder"; fi)
 ROOT_OBJ_DIR = ../Object
-MK_DIR = make
+
+# Make sure these directories exist
+$(shell mkdir -p $(OBJ_DIR) $(PROGRAM_DIR) $(dir $(LIBFT_DIR)))
 
 # Source files - completely dynamic discovery in any directory
 # Exclude specific system directories and object directories

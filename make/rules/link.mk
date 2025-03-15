@@ -28,36 +28,42 @@ define link_with_libs
 		echo "$(CYAN)➤ Using monolithic utils: Found $$(echo $$MODULES | wc -w) modules$(RESET)"; \
 	fi; \
 	\
-	if [ -f "$(PRINTF_DIR)/libftprintf_supp.a" ]; then \
-		if ! $(CC) $(CFLAGS) -o $(1) $(2) $$MODULES -L$(PRINTF_DIR) -lftprintf -lftprintf_supp -L$(LIBFT_DIR) -lft 2>/tmp/ft_printf_error.log; then \
-			printf "\r$(BOLD_RED)▶ Error:$(RESET) $(RED)Linking failed for $(notdir $(1))$(RESET)\n"; \
-			echo "$(RED)Link error details:$(RESET)"; \
-			cat /tmp/ft_printf_error.log; \
-			echo "$(YELLOW)Debug information:$(RESET)"; \
-			echo "  - Main object: $(2)"; \
-			echo "  - Module objects: $$MODULES"; \
-			echo "  - Printf libraries: $(PRINTF_DIR)/libftprintf.a $(PRINTF_DIR)/libftprintf_supp.a"; \
-			echo "  - Libft library: $(LIBFT_DIR)/libft.a"; \
-			echo "  - Library status:"; \
-			ls -la $(PRINTF_DIR)/libftprintf.a $(PRINTF_DIR)/libftprintf_supp.a $(LIBFT_DIR)/libft.a 2>/dev/null || echo "  $(RED)ERROR: libraries not found!$(RESET)"; \
-			echo "$(RED)$(CROSS) Build failed.$(RESET)"; \
-			exit 1; \
+	LINK_CMD=""; \
+	HAS_LIBFT=$$([ -f "$(LIBFT_DIR)/libft.a" ] && [ -s "$(LIBFT_DIR)/libft.a" ] && echo "true" || echo "false"); \
+	HAS_SUPP=$$([ -f "$(PRINTF_DIR)/libftprintf_supp.a" ] && echo "true" || echo "false"); \
+	\
+	if [ "$$HAS_SUPP" = "true" ]; then \
+		if [ "$$HAS_LIBFT" = "true" ]; then \
+			echo "$(GREEN)➤ Linking with: libftprintf + libftprintf_supp + libft$(RESET)"; \
+			LINK_CMD="$(CC) $(CFLAGS) -o $(1) $(2) $$MODULES -L$(PRINTF_DIR) -lftprintf -lftprintf_supp -L$(LIBFT_DIR) -lft"; \
+		else \
+			echo "$(YELLOW)➤ Linking with: libftprintf + libftprintf_supp (no libft)$(RESET)"; \
+			LINK_CMD="$(CC) $(CFLAGS) -o $(1) $(2) $$MODULES -L$(PRINTF_DIR) -lftprintf -lftprintf_supp"; \
 		fi; \
 	else \
-		if ! $(CC) $(CFLAGS) -o $(1) $(2) $$MODULES -L$(PRINTF_DIR) -lftprintf -L$(LIBFT_DIR) -lft 2>/tmp/ft_printf_error.log; then \
-			printf "\r$(BOLD_RED)▶ Error:$(RESET) $(RED)Linking failed for $(notdir $(1))$(RESET)\n"; \
-			echo "$(RED)Link error details:$(RESET)"; \
-			cat /tmp/ft_printf_error.log; \
-			echo "$(YELLOW)Debug information:$(RESET)"; \
-			echo "  - Main object: $(2)"; \
-			echo "  - Module objects: $$MODULES"; \
-			echo "  - Printf library: $(PRINTF_DIR)/libftprintf.a"; \
-			echo "  - Libft library: $(LIBFT_DIR)/libft.a"; \
-			echo "  - Library status:"; \
-			ls -la $(PRINTF_DIR)/libftprintf.a $(LIBFT_DIR)/libft.a 2>/dev/null || echo "  $(RED)ERROR: libraries not found!$(RESET)"; \
-			echo "$(RED)$(CROSS) Build failed.$(RESET)"; \
-			exit 1; \
+		if [ "$$HAS_LIBFT" = "true" ]; then \
+			echo "$(GREEN)➤ Linking with: libftprintf + libft$(RESET)"; \
+			LINK_CMD="$(CC) $(CFLAGS) -o $(1) $(2) $$MODULES -L$(PRINTF_DIR) -lftprintf -L$(LIBFT_DIR) -lft"; \
+		else \
+			echo "$(YELLOW)➤ Linking with: libftprintf only (no libft)$(RESET)"; \
+			LINK_CMD="$(CC) $(CFLAGS) -o $(1) $(2) $$MODULES -L$(PRINTF_DIR) -lftprintf"; \
 		fi; \
+	fi; \
+	\
+	if ! eval $$LINK_CMD 2>/tmp/ft_printf_error.log; then \
+		printf "\r$(BOLD_RED)▶ Error:$(RESET) $(RED)Linking failed for $(notdir $(1))$(RESET)\n"; \
+		echo "$(RED)Link error details:$(RESET)"; \
+		cat /tmp/ft_printf_error.log; \
+		echo "$(YELLOW)Debug information:$(RESET)"; \
+		echo "  - Main object: $(2)"; \
+		echo "  - Module objects: $$MODULES"; \
+		echo "  - Link command: $$LINK_CMD"; \
+		echo "  - Library status:"; \
+		ls -la $(PRINTF_DIR)/libftprintf.a 2>/dev/null; \
+		if [ "$$HAS_SUPP" = "true" ]; then ls -la $(PRINTF_DIR)/libftprintf_supp.a 2>/dev/null; fi; \
+		if [ "$$HAS_LIBFT" = "true" ]; then ls -la $(LIBFT_DIR)/libft.a 2>/dev/null; fi; \
+		echo "$(RED)$(CROSS) Build failed.$(RESET)"; \
+		exit 1; \
 	fi
 endef
 
