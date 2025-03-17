@@ -6,7 +6,7 @@
 /*   By: dyl-syzygy <dyl-syzygy@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 20:00:00 by dyl-syzygy        #+#    #+#             */
-/*   Updated: 2025/03/12 23:41:06 by dyl-syzygy       ###   ########.fr       */
+/*   Updated: 2025/03/17 19:17:22 by dyl-syzygy       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,12 +38,12 @@ void run_robust_mixed_format_tests(void);
 void run_rapid_stress_test(int iterations);
 
 // Include the actual implementations
-#include "../utils/ft_printf_stress_core.c"
-#include "../utils/ft_printf_stress_format.c"
-#include "../utils/ft_printf_stress_basic.c"
-#include "../utils/ft_printf_stress_width_precision.c"
-#include "../utils/ft_printf_stress_edge_cases.c"
-#include "../utils/ft_printf_stress_pointer_rapid.c"
+#include "../utils/stress/ft_printf_stress_core.c"
+#include "../utils/stress/ft_printf_stress_format.c"
+#include "../utils/stress/ft_printf_stress_basic.c"
+#include "../utils/stress/ft_printf_stress_width_precision.c"
+#include "../utils/stress/ft_printf_stress_edge_cases.c"
+#include "../utils/stress/ft_printf_stress_pointer_rapid.c"
 #include "../utils/ft_printf_mixed_tests.c"
 
 /* Main function to run the stress tester */

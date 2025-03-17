@@ -2,29 +2,29 @@
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   ft_printf_ultimate_controller.c                    :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
+/*                                                    +:+ +:+         +:+    :+:   */
 /*   By: dyl-syzygy <dyl-syzygy@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/02 01:17:28 by dyl-syzygy        #+#    #+#             */
-/*   Updated: 2025/03/12 23:42:15 by dyl-syzygy       ###   ########.fr       */
+/*   Updated: 2025/03/17 19:47:20 by dyl-syzygy       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../headers/controller.h"
 
 Test tests[] = {
-    {1, "Mandatory Part", "All required conversions (cspdiuxX%)", "./program/srcs/tests/ft_printf_mandatory_test", ""},
-    {2, "Character Tests", "Basic character conversion tests", "./program/srcs/tests/char_tests_extended", ""},
-    {3, "Extended Character Tests", "Comprehensive character tests", "./program/srcs/tests/char_tests_extended", ""},
-    {4, "String Tests", "Extended string conversion tests", "./program/srcs/tests/string_tests_extended", ""},
-    {5, "Integer Tests", "Extended integer conversion tests", "./program/srcs/tests/int_tests_extended", ""},
-    {6, "Unsigned Tests", "Unsigned integer conversion tests", "./program/srcs/tests/unsigned_tests_extended", ""},
-    {7, "Hexadecimal Tests", "Hex conversion tests", "./program/srcs/tests/hex_tests_extended", ""},
-    {8, "Pointer Tests", "Pointer conversion tests", "./program/srcs/tests/ptr_tests_extended", ""},
-    {9, "Flag Combinations", "Tests various flag combinations", "./program/srcs/tests/flag_combinations_tester", ""},
-    {10, "Special Flags", "Tests special flag behavior", "./program/srcs/tests/special_flags_tester", ""},
-    {11, "Simple Debug", "Simple debug tester", "./program/srcs/tests/ft_printf_debug_tester_simple", ""},
-    {12, "Stress Tests", "Performance and edge case tests", "./program/srcs/tests/ft_printf_stress_tester", ""},
+    {1, "Mandatory Part", "All required conversions (cspdiuxX%)", "./program/tests/ft_printf_mandatory_test", ""},
+    {2, "Character Tests", "Basic character conversion tests", "./program/tests/char_tests_extended", ""},
+    {3, "Extended Character Tests", "Comprehensive character tests", "./program/tests/char_tests_extended", ""},
+    {4, "String Tests", "Extended string conversion tests", "./program/tests/string_tests_extended", ""},
+    {5, "Integer Tests", "Extended integer conversion tests", "./program/tests/int_tests_extended", ""},
+    {6, "Unsigned Tests", "Unsigned integer conversion tests", "./program/tests/unsigned_tests_extended", ""},
+    {7, "Hexadecimal Tests", "Hex conversion tests", "./program/tests/hex_tests_extended", ""},
+    {8, "Pointer Tests", "Pointer conversion tests", "./program/tests/ptr_tests_extended", ""},
+    {9, "Flag Combinations", "Tests various flag combinations", "./program/tests/flag_combinations_tester", ""},
+    {10, "Special Flags", "Tests special flag behavior", "./program/tests/special_flags_tester", ""},
+    {11, "Simple Debug", "Simple debug tester", "./program/tests/ft_printf_debug_tester_simple", ""},
+    {12, "Stress Tests", "Performance and edge case tests", "./program/tests/ft_printf_stress_tester", ""},
     {0, "Run All Tests", "Run all test programs in sequence", "", ""}
 };
 
