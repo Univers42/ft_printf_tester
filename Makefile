@@ -17,7 +17,7 @@
 # ║  █████╗     ██║       ██████╔╝██████╔╝██║██╔██╗ ██║   ██║   █████╗         ║
 # ║  ██╔══╝     ██║       ██╔═══╝ ██╔══██╗██║██║╚██╗██║   ██║   ██╔══╝         ║
 # ║  ██║        ██║       ██║     ██║  ██║██║██║ ╚████║   ██║   ██║            ║
-# ║  ╚═╝        ╚═╝       ╚═╝     ╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝   ╚═╝   ╚═╝            ║
+# ║  ╚═╝        ╚═╝       ╚═╝     ╚═╝  ╚═╝╚═╝╚═╝  ╚═╝   ╚═╝   ╚═╝            ║
 # ║                                                                            ║
 # ║                      ✧ ULTIMATE TESTER ✧                                  ║
 # ║                                                                            ║
@@ -31,7 +31,7 @@ include make/utils.mk
 # Include main.mk last since we want to override its targets
 include make/targets.mk
 
-.PHONY: all clean fclean re run programs controller help visuals gui-3d build-monitor install-3d-deps visual-showcase progress-demo text-demo animation-demo error-demo interactive-help
+.PHONY: all clean fclean re run programs controller help visuals gui-3d build-monitor install-3d-deps visual-showcase progress-demo text-demo animation-demo error-demo interactive-help ensure_testers
 .DEFAULT_GOAL := all
 
 # Define core targets here instead of including from main.mk to avoid conflicts
@@ -47,11 +47,26 @@ init:
 	@$(call print_banner)
 	@sleep 0.3
 
-programs: prepare_dirs $(NAME)
+# Add a specific target to ensure all test programs are built
+ensure_testers: prepare_dirs $(NAME) make_libft make_libprintf
+	@printf "${GRADIENT1}┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓${RST}\n"
+	@printf "${GRADIENT1}┃${RST}   ${ACCENT_GOLD}✧${RST}  ${BRIGHT_FG}${BOLD}BUILDING TEST PROGRAMS${RST}  ${ACCENT_GOLD}✧${RST}       ${GRADIENT1}┃${RST}\n"
+	@printf "${GRADIENT1}┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛${RST}\n\n"
+	@mkdir -p $(PROGRAM_DIR)/tests
+	@ls -la $(SRCS_DIR)/tests/
+	@for prog in $(TEST_PROGRAMS); do \
+		$(MAKE) -s $$prog || printf "${ERROR}Failed to build $$prog${RST}\n"; \
+	done
+	@ls -la $(PROGRAM_DIR)/tests/
+	@printf "\n${SUCCESS}✓${RST} ${BOLD}Test programs ready${RST}\n\n"
+
+programs: ensure_testers $(NAME)
 	@$(MAKE) -s make_libft
 	@$(MAKE) -s make_libprintf
 	@printf "\n${BCYN}▶ Building Test Suite${RST}\n\n"
+	@mkdir -p $(PROGRAM_DIR)/tests
 	@$(call build_tests)
+	@echo "Programs built successfully in $(PROGRAM_DIR)/tests"
 
 controller: make_libft make_libprintf $(NAME) prepare_dirs
 	@printf "${MAG}⚡${RST} ${DIM}Creating controller module...${RST}\n"

@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    sources.mk                                         :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: dyl-syzygy <dyl-syzygy@student.42.fr>      +#+  +:+       +#+         #
+#    By: syzygy <syzygy@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/03/17 20:30:00 by dyl-syzygy        #+#    #+#              #
-#    Updated: 2025/03/18 01:07:42 by dyl-syzygy       ###   ########.fr        #
+#    Updated: 2025/03/22 20:18:03 by syzygy           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,10 +26,10 @@ OBJS := $(SRCS:%.c=$(OBJ_DIR)/%.o)
 # ┃              Build Rules                          ┃
 # ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-# Rule to build object files
+# Rule to build object files - Modified to show errors
 $(OBJ_DIR)/%.o: %.c
 	@mkdir -p $(dir $@)
-	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@ >/dev/null 2>&1
+	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
 # Rule to build the tester library - Fixed alignment
 $(NAME): $(OBJS)
@@ -38,9 +38,14 @@ $(NAME): $(OBJS)
 	@ar rcs $(NAME) $(OBJS) >/dev/null 2>&1
 	@printf "\r${SUCCESS}✓${RST} ${BOLD}Library successfully created!${RST}        \n\n"
 
-# Rule to create directories
+# Rule to create directories - Made more robust and verbose
 prepare_dirs:
-	@mkdir -p $(BIN_DIR) $(TESTS_DIR) $(PROGRAM_DIR)/utils/stress >/dev/null 2>&1
+	@mkdir -p $(BIN_DIR) $(TESTS_DIR) $(PROGRAM_DIR)/utils/stress
+	@printf "${DIM}Created directory structure:${RST}\n"
+	@printf "  ${DIM}$(BIN_DIR)${RST}\n"
+	@printf "  ${DIM}$(TESTS_DIR)${RST}\n"
+	@printf "  ${DIM}$(PROGRAM_DIR)/utils/stress${RST}\n"
+	@chmod -R 755 $(BIN_DIR) $(TESTS_DIR) $(PROGRAM_DIR) 2>/dev/null || true
 
 # Rule to build libft - Fixed alignment
 make_libft:

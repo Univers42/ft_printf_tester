@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    targets.mk                                         :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: dyl-syzygy <dyl-syzygy@student.42.fr>      +#+  +:+       +#+         #
+#    By: syzygy <syzygy@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/03/17 20:30:00 by dyl-syzygy        #+#    #+#              #
-#    Updated: 2025/03/18 01:32:17 by dyl-syzygy       ###   ########.fr        #
+#    Updated: 2025/03/22 20:27:52 by syzygy           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,16 +22,33 @@ endef
 # ┃              Test Build System                    ┃
 # ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-# Compile test programs targets
+# Compile test programs targets - Fixed to link with the proper implementation files
 .PHONY: $(TEST_PROGRAMS)
-$(TEST_PROGRAMS): %:
+$(TEST_PROGRAMS): %: prepare_dirs
+	@printf "  ${GRADIENT1}┌─${RST} ${BOLD}Building test:   ${GRADIENT3}%s${RST}\n" "$@";
+	@mkdir -p $(TESTS_DIR)
 	@if [ "$@" = "mandatory_test" ] || [ "$@" = "debug_tester_simple" ]; then \
-		$(CC) $(CFLAGS) $(INCLUDES) -o $(TESTS_DIR)/ft_printf_$@ $(SRCS_DIR)/tests/ft_printf_$@.c $(NAME) $(LIBPRINTF) $(LIBFT) >/dev/null 2>&1; \
+		$(CC) $(CFLAGS) $(INCLUDES) -o $(TESTS_DIR)/ft_printf_$@ $(SRCS_DIR)/tests/ft_printf_$@.c $(UTILS_DIR)/ft_test_converters.c $(UTILS_DIR)/ft_test_flag_handlers.c $(NAME) $(LIBPRINTF) $(LIBFT); \
+		if [ -f $(TESTS_DIR)/ft_printf_$@ ]; then \
+			printf "  ${GRADIENT1}└─${RST} ${ACCENT_GOLD}✨${RST} ${NEON_GREEN}✓${RST} ${BOLD}Compiled${RST} - ${SUCCESS}File created${RST}\n"; \
+		else \
+			printf "  ${GRADIENT1}└─${RST} ${ERROR}✗${RST} ${BOLD}Compilation failed${RST} - ${ERROR}File not created${RST}\n"; \
+		fi; \
 	elif [ "$@" = "ft_printf_stress_tester" ]; then \
 		cp $(UTILS_DIR)/ft_printf_stress_*.c $(PROGRAM_DIR)/utils/stress/ 2>/dev/null || :; \
-		$(CC) $(CFLAGS) $(INCLUDES) -o $(TESTS_DIR)/$@ $(SRCS_DIR)/tests/$@.c $(NAME) $(LIBPRINTF) $(LIBFT) >/dev/null 2>&1; \
+		$(CC) $(CFLAGS) $(INCLUDES) -o $(TESTS_DIR)/$@ $(SRCS_DIR)/tests/$@.c $(UTILS_DIR)/ft_test_converters.c $(UTILS_DIR)/ft_test_flag_handlers.c $(NAME) $(LIBPRINTF) $(LIBFT); \
+		if [ -f $(TESTS_DIR)/$@ ]; then \
+			printf "  ${GRADIENT1}└─${RST} ${ACCENT_GOLD}✨${RST} ${NEON_GREEN}✓${RST} ${BOLD}Compiled${RST} - ${SUCCESS}File created${RST}\n"; \
+		else \
+			printf "  ${GRADIENT1}└─${RST} ${ERROR}✗${RST} ${BOLD}Compilation failed${RST} - ${ERROR}File not created${RST}\n"; \
+		fi; \
 	else \
-		$(CC) $(CFLAGS) $(INCLUDES) -o $(TESTS_DIR)/$@ $(SRCS_DIR)/tests/$@.c $(NAME) $(LIBPRINTF) $(LIBFT) >/dev/null 2>&1; \
+		$(CC) $(CFLAGS) $(INCLUDES) -o $(TESTS_DIR)/$@ $(SRCS_DIR)/tests/$@.c $(UTILS_DIR)/ft_test_converters.c $(UTILS_DIR)/ft_test_flag_handlers.c $(NAME) $(LIBPRINTF) $(LIBFT); \
+		if [ -f $(TESTS_DIR)/$@ ]; then \
+			printf "  ${GRADIENT1}└─${RST} ${ACCENT_GOLD}✨${RST} ${NEON_GREEN}✓${RST} ${BOLD}Compiled${RST} - ${SUCCESS}File created${RST}\n"; \
+		else \
+			printf "  ${GRADIENT1}└─${RST} ${ERROR}✗${RST} ${BOLD}Compilation failed${RST} - ${ERROR}File not created${RST}\n"; \
+		fi; \
 	fi
 
 # Print the initial progress bar
@@ -101,13 +118,11 @@ endef
 define build_tests
 	@$(call section_header, "BUILDING TEST MODULES")
 	@printf "${SUBTLE}Preparing directory structure...${RST}\n"
-	@$(MAKE) -s prepare_dirs > /dev/null 2>&1
+	@$(MAKE) -s prepare_dirs
 	@printf "${GRADIENT2}▶${RST} ${BOLD}Compiling test modules${RST}\n\n"
 	
 	@for prog in $(TEST_PROGRAMS); do \
-		printf "  ${GRADIENT1}┌─${RST} ${BOLD}Building test:   ${GRADIENT3}%s${RST}\n" "$$prog"; \
-		$(MAKE) -s $$prog > /dev/null 2>&1; \
-		printf "  ${GRADIENT1}└─${RST} ${ACCENT_GOLD}✨${RST} ${NEON_GREEN}✓${RST} ${BOLD}Compiled${RST}\n"; \
+		$(MAKE) -s $$prog; \
 	done
 	
 	@printf "\n  ${GRADIENT2}┏━━━━━━━━━━━━━━━━━━━━━━━━━━┓${RST}\n"
