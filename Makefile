@@ -17,7 +17,7 @@ LIB_DIR     = $(TESTER_DIR)/lib
 # ---- Files ----
 # Libraries
 LIBFTPRINTF       = $(PRINTF_DIR)/libftprintf.a
-LIBFTPRINTF_BONUS = $(PRINTF_DIR)/libprintf_bonus.a  # Fixed library name - removed 'ft'
+LIBFTPRINTF_BONUS = $(PRINTF_DIR)/libftprintf_bonus.a  # Corrected library name - should include 'ft'
 LIBTESTER         = $(LIB_DIR)/libft_printf_tester.a
 
 # Add verification utility - include it in the utility files instead of building separately
