@@ -1,113 +1,220 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    Makefile                                           :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: dyl-syzygy <dyl-syzygy@student.42.fr>      +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2025/03/08 10:00:00 by dyl-syzygy        #+#    #+#              #
-#    Updated: 2025/03/17 21:00:00 by dyl-syzygy       #+#    #+#              #
-#                                                                              #
-# **************************************************************************** #
-
-# ╔════════════════════════════════════════════════════════════════════════════╗
-# ║                                                                            ║
-# ║  ███████╗████████╗    ██████╗ ██████╗ ██╗███╗   ██╗████████╗███████╗       ║
-# ║  ██╔════╝╚══██╔══╝    ██╔══██╗██╔══██╗██║████╗  ██║╚══██╔══╝██╔════╝       ║
-# ║  █████╗     ██║       ██████╔╝██████╔╝██║██╔██╗ ██║   ██║   █████╗         ║
-# ║  ██╔══╝     ██║       ██╔═══╝ ██╔══██╗██║██║╚██╗██║   ██║   ██╔══╝         ║
-# ║  ██║        ██║       ██║     ██║  ██║██║██║ ╚████║   ██║   ██║            ║
-# ║  ╚═╝        ╚═╝       ╚═╝     ╚═╝  ╚═╝╚═╝╚═╝  ╚═╝   ╚═╝   ╚═╝            ║
-# ║                                                                            ║
-# ║                      ✧ ULTIMATE TESTER ✧                                  ║
-# ║                                                                            ║
-# ╚════════════════════════════════════════════════════════════════════════════╝
-
-# Include all makefiles - ordered to avoid conflicts
+# Include the colors for better visualization
 include make/colors.mk
-include make/config.mk
-include make/sources.mk
-include make/utils.mk
-# Include main.mk last since we want to override its targets
-include make/targets.mk
 
-.PHONY: all clean fclean re run programs controller help visuals gui-3d build-monitor install-3d-deps visual-showcase progress-demo text-demo animation-demo error-demo interactive-help ensure_testers
-.DEFAULT_GOAL := all
+# ---- Paths ----
+PRINTF_DIR  = ..
+TESTER_DIR  = .
+SRC_DIR     = $(TESTER_DIR)/srcs
+TEST_DIR    = $(SRC_DIR)/tests
+OBJ_DIR     = $(TESTER_DIR)/objs
+BIN_DIR     = $(TESTER_DIR)/bin
+PROG_DIR    = $(TESTER_DIR)/program/tests
+INC_DIR     = $(TESTER_DIR)/includes
+UTILS_DIR   = $(TESTER_DIR)/utils
+STRESS_DIR  = $(UTILS_DIR)/stress
+LIB_DIR     = $(TESTER_DIR)/lib
 
-# Define core targets here instead of including from main.mk to avoid conflicts
-all: init $(NAME) programs controller
-	@printf "\n  ${GRADIENT1}┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓${RST}\n"
-	@printf "  ${GRADIENT1}┃${RST}    ${GRADIENT3}✨${RST}  ${BRIGHT_FG}${BOLD}FT_PRINTF ULTIMATE TESTER READY${RST}    ${GRADIENT3}✨${RST}     ${GRADIENT1}┃${RST}\n"
-	@printf "  ${GRADIENT1}┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛${RST}\n"
-	@printf "\n${NEON_GREEN}✓${RST} ${BOLD}Build complete${RST} ${ACCENT_GOLD}✨${RST}\n"
-	@printf "${ACCENT_PURPLE}→${RST} ${BOLD}Run${RST} ${GRADIENT2}./tester${RST} ${BOLD}to launch tests${RST}\n\n"
+# ---- Files ----
+# Libraries
+LIBFTPRINTF       = $(PRINTF_DIR)/libftprintf.a
+LIBFTPRINTF_BONUS = $(PRINTF_DIR)/libprintf_bonus.a  # Fixed library name - removed 'ft'
+LIBTESTER         = $(LIB_DIR)/libft_printf_tester.a
 
-# Initialize with banner display
-init:
+# Add verification utility - include it in the utility files instead of building separately
+VERIFY_SRC = $(UTILS_DIR)/verify_library.c
+# No separate executable needed
+
+# Utils source files - include verify_library.c in the utility sources
+UTILS_SRCS        = $(filter-out $(UTILS_DIR)/ft_printf_test_utils.c, $(wildcard $(UTILS_DIR)/*.c))
+STRESS_SRCS       = $(wildcard $(STRESS_DIR)/*.c)
+ALL_UTILS_SRCS    = $(UTILS_SRCS) $(STRESS_SRCS)
+
+# Utils object files
+UTILS_OBJS        = $(patsubst $(UTILS_DIR)/%.c, $(OBJ_DIR)/utils/%.o, $(UTILS_SRCS))
+STRESS_OBJS       = $(patsubst $(STRESS_DIR)/%.c, $(OBJ_DIR)/utils/stress/%.o, $(STRESS_SRCS))
+ALL_UTILS_OBJS    = $(UTILS_OBJS) $(STRESS_OBJS)
+
+# Source files for all tests
+MANDATORY_TEST_SRC = $(TEST_DIR)/ft_printf_mandatory_test.c
+BONUS_TEST_SRCS    = $(wildcard $(TEST_DIR)/bonus_*.c)
+CONTROLLER_SRC     = $(SRC_DIR)/ft_printf_ultimate_controller.c
+
+# Files that are utilities, not standalone programs (should be compiled to objects only)
+UTIL_TEST_SRCS     = 
+
+# All other test programs (excluding utility files and already categorized files)
+OTHER_TEST_SRCS    = $(filter-out $(BONUS_TEST_SRCS) $(MANDATORY_TEST_SRC), $(wildcard $(TEST_DIR)/*.c))
+ALL_TEST_SRCS      = $(MANDATORY_TEST_SRC) $(OTHER_TEST_SRCS) $(BONUS_TEST_SRCS)
+
+# Object files
+MANDATORY_TEST_OBJ = $(patsubst $(TEST_DIR)/%.c, $(OBJ_DIR)/tests/%.o, $(MANDATORY_TEST_SRC))
+BONUS_TEST_OBJS    = $(patsubst $(TEST_DIR)/%.c, $(OBJ_DIR)/tests/%.o, $(BONUS_TEST_SRCS))
+OTHER_TEST_OBJS    = $(patsubst $(TEST_DIR)/%.c, $(OBJ_DIR)/tests/%.o, $(OTHER_TEST_SRCS))
+UTIL_TEST_OBJS     = $(patsubst $(UTILS_DIR)/%.c, $(OBJ_DIR)/utils/%.o, $(UTIL_TEST_SRCS))  # Updated pattern
+ALL_TEST_OBJS      = $(MANDATORY_TEST_OBJ) $(OTHER_TEST_OBJS) $(BONUS_TEST_OBJS) $(UTIL_TEST_OBJS)
+CONTROLLER_OBJ     = $(OBJ_DIR)/ft_printf_ultimate_controller.o
+
+# Executables
+MANDATORY_TEST_EXEC = $(PROG_DIR)/ft_printf_mandatory_test
+BONUS_TEST_EXECS    = $(patsubst $(TEST_DIR)/%.c, $(PROG_DIR)/%, $(BONUS_TEST_SRCS))
+OTHER_TEST_EXECS    = $(patsubst $(TEST_DIR)/%.c, $(PROG_DIR)/%, $(OTHER_TEST_SRCS))
+ALL_TEST_EXECS      = $(MANDATORY_TEST_EXEC) $(OTHER_TEST_EXECS) $(BONUS_TEST_EXECS)
+CONTROLLER_EXEC     = $(BIN_DIR)/ft_printf_ultimate_controller
+CONTROLLER_BONUS_EXEC = $(BIN_DIR)/ft_printf_ultimate_controller_bonus
+
+# ---- Compiler Options ----
+CC        = gcc
+CFLAGS    = -Wall -Wextra -Werror
+INCLUDES  = -I$(INC_DIR) -I$(PRINTF_DIR) -I$(UTILS_DIR) -I$(STRESS_DIR) -I$(TEST_DIR) -I$(TESTER_DIR)/headers
+
+# ---- Make Rules ----
+all: setup $(LIBFTPRINTF) $(LIBTESTER) $(MANDATORY_TEST_EXEC) $(OTHER_TEST_EXECS) $(CONTROLLER_EXEC)
+	@$(call section_header, "Mandatory Tests Built Successfully")
+
+# Completely separate bonus target that uses the bonus library for everything
+bonus: setup
+	@$(call section_header, "Building Bonus Tests")
+	@$(MAKE) -C $(PRINTF_DIR) bonus
+	@$(call pulse_status, "Completed", "libprintf_bonus.a ready")
+	@$(MAKE) $(LIBTESTER)
+	@$(MAKE) USING_BONUS=1 ensure_testers
+	@$(MAKE) USING_BONUS=1 $(CONTROLLER_BONUS_EXEC)
+	@$(call section_header, "Bonus Tests Built Successfully")
+
+# Comprehensive target that builds everything
+all_tests: all bonus
+	@$(call section_header, "All Tests - Including Bonus - Built Successfully")
+
+# Create necessary directories
+setup:
+	@mkdir -p $(OBJ_DIR)/utils/stress $(OBJ_DIR)/tests $(BIN_DIR) $(PROG_DIR) $(LIB_DIR)
+	@$(call pulse_status, "Setting up", "directories created")
+
+# Build the main printf library
+$(LIBFTPRINTF):
+	@$(call section_header, "Building ft_printf Mandatory Library")
+	@$(MAKE) -C $(PRINTF_DIR)
+	@$(call pulse_status, "Completed", "libftprintf.a ready")
+
+# Build the bonus printf library
+$(LIBFTPRINTF_BONUS):
+	@$(call section_header, "Building ft_printf Bonus Library")
+	@$(MAKE) -C $(PRINTF_DIR) bonus
+	@$(call pulse_status, "Completed", "libftprintf_bonus.a ready")
+
+# Build the tester library from utils and stress testing files - now also include test utilities
+$(LIBTESTER): $(ALL_UTILS_OBJS) $(UTIL_TEST_OBJS)
+	@$(call section_header, "Building Tester Library")
+	@ar rcs $@ $^
+	@$(call pulse_status, "Completed", "libft_printf_tester.a ready")
+
+# Compile all test programs
+ensure_testers: setup 
+	@$(MAKE) $(ALL_TEST_EXECS)
+	@$(call pulse_status, "Test Programs", "compiled successfully")
+
+# Compile controller program (mandatory version)
+$(CONTROLLER_EXEC): $(CONTROLLER_SRC) $(LIBFTPRINTF) $(LIBTESTER)
+	@$(call pulse_status, "Compiling", "ultimate controller - mandatory")
+	@$(CC) $(CFLAGS) $(INCLUDES) $(CONTROLLER_SRC) -o $@ -L$(LIB_DIR) -lft_printf_tester -L$(PRINTF_DIR) -lftprintf
+
+# Compile controller program (bonus version)
+$(CONTROLLER_BONUS_EXEC): $(CONTROLLER_SRC) $(LIBFTPRINTF_BONUS) $(LIBTESTER)
+	@$(call pulse_status, "Compiling", "ultimate controller - bonus")
+	@$(CC) $(CFLAGS) $(INCLUDES) -DUSE_BONUS_LIB $(CONTROLLER_SRC) -o $@ -L$(LIB_DIR) -lft_printf_tester $(LIBFTPRINTF_BONUS)
+	@$(call pulse_status, "Compiled", "$@")
+
+# Compile controller object if needed
+$(CONTROLLER_OBJ): $(CONTROLLER_SRC)
+	@mkdir -p $(dir $@)
+	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+	@printf "${BUILD_ICON} ${SUBTLE}Compiled: ${ACCENT1}$<${RST}\n"
+
+# Compile mandatory test program
+$(MANDATORY_TEST_EXEC): $(MANDATORY_TEST_SRC) $(LIBFTPRINTF) $(LIBTESTER)
+	@mkdir -p $(PROG_DIR)
+	@$(CC) $(CFLAGS) $(INCLUDES) $< -o $@ -L$(LIB_DIR) -lft_printf_tester -L$(PRINTF_DIR) -lftprintf
+	@$(call pulse_status, "Compiled", "$@")
+
+# Compile test programs - uses conditional linking based on USING_BONUS variable
+$(PROG_DIR)/%: $(TEST_DIR)/%.c $(LIBTESTER)
+	@mkdir -p $(PROG_DIR)
+	@if [ "$(USING_BONUS)" = "1" ]; then \
+		$(CC) $(CFLAGS) $(INCLUDES) -DUSE_BONUS_LIB $< -o $@ -L$(LIB_DIR) -lft_printf_tester $(LIBFTPRINTF_BONUS); \
+	else \
+		$(CC) $(CFLAGS) $(INCLUDES) $< -o $@ -L$(LIB_DIR) -lft_printf_tester -L$(PRINTF_DIR) -lftprintf; \
+	fi
+	@$(call pulse_status, "Compiled", "$@")
+
+# Compile utils object files
+$(OBJ_DIR)/utils/%.o: $(UTILS_DIR)/%.c
+	@mkdir -p $(dir $@)
+	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+	@printf "${BUILD_ICON} ${SUBTLE}Compiled: ${ACCENT1}$<${RST}\n"
+
+# Compile stress utils object files
+$(OBJ_DIR)/utils/stress/%.o: $(STRESS_DIR)/%.c
+	@mkdir -p $(dir $@)
+	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+	@printf "${BUILD_ICON} ${SUBTLE}Compiled: ${ACCENT1}$<${RST}\n"
+
+# Compile test object files
+$(OBJ_DIR)/tests/%.o: $(TEST_DIR)/%.c
+	@mkdir -p $(dir $@)
+	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+	@printf "${BUILD_ICON} ${SUBTLE}Compiled: ${ACCENT1}$<${RST}\n"
+
+# Run the test suite
+run: all
 	@$(call print_banner)
-	@sleep 0.3
+	@$(CONTROLLER_EXEC)
 
-# Add a specific target to ensure all test programs are built
-ensure_testers: prepare_dirs $(NAME) make_libft make_libprintf
-	@printf "${GRADIENT1}┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓${RST}\n"
-	@printf "${GRADIENT1}┃${RST}   ${ACCENT_GOLD}✧${RST}  ${BRIGHT_FG}${BOLD}BUILDING TEST PROGRAMS${RST}  ${ACCENT_GOLD}✧${RST}       ${GRADIENT1}┃${RST}\n"
-	@printf "${GRADIENT1}┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛${RST}\n\n"
-	@mkdir -p $(PROGRAM_DIR)/tests
-	@ls -la $(SRCS_DIR)/tests/
-	@for prog in $(TEST_PROGRAMS); do \
-		$(MAKE) -s $$prog || printf "${ERROR}Failed to build $$prog${RST}\n"; \
-	done
-	@ls -la $(PROGRAM_DIR)/tests/
-	@printf "\n${SUCCESS}✓${RST} ${BOLD}Test programs ready${RST}\n\n"
+# Run the bonus test suite
+run_bonus: bonus
+	@$(call print_banner)
+	@$(CONTROLLER_BONUS_EXEC) --bonus
 
-programs: ensure_testers $(NAME)
-	@$(MAKE) -s make_libft
-	@$(MAKE) -s make_libprintf
-	@printf "\n${BCYN}▶ Building Test Suite${RST}\n\n"
-	@mkdir -p $(PROGRAM_DIR)/tests
-	@$(call build_tests)
-	@echo "Programs built successfully in $(PROGRAM_DIR)/tests"
+# Run all tests (both mandatory and bonus)
+run_all: all_tests
+	@$(call print_banner)
+	@$(CONTROLLER_EXEC)
+	@echo "=== Running bonus tests ==="
+	@$(CONTROLLER_BONUS_EXEC) --bonus
 
-controller: make_libft make_libprintf $(NAME) prepare_dirs
-	@printf "${MAG}⚡${RST} ${DIM}Creating controller module...${RST}\n"
-	@$(CC) $(CFLAGS) $(INCLUDES) -o $(BIN_DIR)/$(CONTROLLER) $(SRCS_DIR)/ft_printf_ultimate_controller.c $(NAME) $(LIBPRINTF) $(LIBFT) >/dev/null
-	@ln -sf $(BIN_DIR)/$(CONTROLLER) ./tester
-	@printf "${GRN}✓${RST} ${BOLD}Controller ready${RST}\n\n"
+# Force a complete rebuild of the project
+purge: fclean
+	@rm -f $(PRINTF_DIR)/*.a
+	@rm -rf $(PRINTF_DIR)/objs
+	@$(MAKE) -C $(PRINTF_DIR) fclean
+	@$(call pulse_status, "Purged", "all libraries and object files")
 
-run: controller programs
-	@printf "${BLU}┌─────────${GRN}🧪${RST} ${BOLD}LAUNCHING TEST SUITE${RST} ${GRN}🧪${BLU}─────────┐${RST}\n"
-	@printf "${BLU}│${RST}  ${DIM}Beginning comprehensive ft_printf testing...${RST}\n"
-	@printf "${BLU}└────────────────────────────────────────────────┘${RST}\n\n"
-	@./tester
+# New rebuild targets that ensure complete rebuilds
+rebuild_mandatory: purge
+	@$(MAKE) all
+	@$(call pulse_status, "Rebuilt", "mandatory version from scratch")
 
+rebuild_bonus: purge
+	@$(MAKE) bonus
+	@$(call pulse_status, "Rebuilt", "bonus version from scratch")
+
+# Clean object files
 clean:
-	@$(call cleaning_animation, "Cleaning Project")
-	@printf "  \n${GRADIENT1}  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓${RST}\n"
-	@printf "  ${GRADIENT1}┃${RST} ${ACCENT_GOLD}✧${RST} ${GRADIENT3}Removing object files...${RST}                    ${GRADIENT1}┃${RST}\n"
-	@printf "  ${GRADIENT1}┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛${RST}"
-	@$(MAKE) -C $(LIBFT_PATH) clean >/dev/null
-	@$(MAKE) -C $(LIBPRINTF_PATH) clean >/dev/null
 	@rm -rf $(OBJ_DIR)
-	@printf "\n  ${NEON_GREEN}✓${RST} ${GRADIENT2}${BOLD}Objects successfully removed${RST} ${ACCENT_GOLD}✨${RST}\n\n"
+	@$(MAKE) -C $(PRINTF_DIR) clean
+	@$(call pulse_status, "Cleaned", "object files removed")
 
-fclean:
-	@$(call cleaning_animation, "Deep Cleaning")
-	@printf "  \n  ${GRADIENT1}┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓${RST}\n"
-	@printf "  ${GRADIENT1}┃${RST} ${ACCENT_GOLD}✧${RST} ${GRADIENT3}Removing binaries and libraries...${RST}          ${GRADIENT1}┃${RST}\n"
-	@printf "  ${GRADIENT1}┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛${RST}\n"
-	@$(MAKE) -C $(LIBFT_PATH) clean >/dev/null
-	@$(MAKE) -C $(LIBPRINTF_PATH) fclean >/dev/null
-	@rm -f $(NAME)
-	@rm -f tester
-	@rm -rf $(PROGRAM_DIR)
-	@printf "  ${NEON_GREEN}✓${RST} ${GRADIENT2}${BOLD}Project reset complete${RST} ${ACCENT_GOLD}✨${RST}\n\n"
+# Clean everything
+fclean: clean
+	@rm -rf $(BIN_DIR) $(PROG_DIR) $(LIB_DIR)
+	@$(MAKE) -C $(PRINTF_DIR) fclean
+	@$(call pulse_status, "Full Clean", "all generated files removed")
 
+# Rebuild everything
 re: fclean all
+	@$(call pulse_status, "Rebuilt", "project from scratch")
 
+# Display help
 help:
-	@$(call show_enhanced_help)
+	@$(call show_help)
 
-interactive-help:
-	@$(call interactive_help)
-
-# Visual effect targets remain as defined in make/visual_showcase.mk
+.PHONY: all bonus all_tests setup purge rebuild_mandatory rebuild_bonus ensure_testers run run_bonus run_all clean fclean re help

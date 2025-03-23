@@ -2,15 +2,23 @@
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   ft_printf_ultimate_controller.c                    :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+    :+:   */
-/*   By: dyl-syzygy <dyl-syzygy@student.42.fr>      +#+  +:+       +#+        */
+/*                                                    +:+ +:+         +:+     */
+/*   By: syzygy <syzygy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/02 01:17:28 by dyl-syzygy        #+#    #+#             */
-/*   Updated: 2025/03/17 19:47:20 by dyl-syzygy       ###   ########.fr       */
+/*   Updated: 2025/03/23 16:15:52 by syzygy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../headers/controller.h"
+
+#ifdef USE_BONUS_LIB
+    #define USING_BONUS_IMPLEMENTATION 1
+    #pragma message "Building with BONUS implementation"
+#else
+    #define USING_BONUS_IMPLEMENTATION 0
+    #pragma message "Building with MANDATORY implementation"
+#endif
 
 Test tests[] = {
     {1, "Mandatory Part", "All required conversions (cspdiuxX%)", "./program/tests/ft_printf_mandatory_test", ""},
@@ -232,13 +240,25 @@ void run_all_tests()
     printf("] %.1f%%\n\n", success_percentage);
 }
 
+void print_implementation_info(void) {
+    if (USING_BONUS_IMPLEMENTATION) {
+        printf("=== USING BONUS IMPLEMENTATION (libprintf_bonus.a) ===\n");
+    } else {
+        printf("=== USING MANDATORY IMPLEMENTATION (libftprintf.a) ===\n");
+    }
+}
+
+void verify_linked_library(void);
 
 int main()
 {
-    
     int enable_animations = isatty(STDOUT_FILENO);
     int running, choice;
     char input[10];
+
+    verify_linked_library();
+    
+    print_implementation_info();
 
     if (enable_animations)
         animate_terminal();

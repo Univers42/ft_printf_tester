@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_printf_test_utils.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dyl-syzygy <dyl-syzygy@student.42.fr>      +#+  +:+       +#+        */
+/*   By: syzygy <syzygy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/02 01:17:08 by dyl-syzygy        #+#    #+#             */
-/*   Updated: 2025/03/17 19:25:41 by dyl-syzygy       ###   ########.fr       */
+/*   Updated: 2025/03/23 15:29:33 by syzygy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,10 +26,10 @@ int ft_printf(const char *format, ...);
 /* IMPORTANT: Remove the direct includes of source files that are already
    compiled separately into the library */
 // DO NOT include these files - they're already being compiled separately
-// #include "../../utils/ft_printf_output_format.c"
-// #include "../../utils/ft_printf_test_runner.c"
-// #include "../../utils/ft_printf_capture.c"
-// #include "../../utils/ft_printf_str_char_tests.c"
-// #include "../../utils/ft_printf_num_tests.c"
-// #include "../../utils/ft_printf_ptr_tests.c"
-// #include "../../utils/ft_printf_general_tests.c"
+#include "ft_printf_output_format.c"
+#include "ft_printf_test_runner.c"
+#include "ft_printf_capture.c"
+#include "ft_printf_str_char_tests.c"
+#include "ft_printf_num_tests.c"
+#include "ft_printf_ptr_tests.c"
+#include "ft_printf_general_tests.c"
