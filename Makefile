@@ -17,7 +17,6 @@ LIB_DIR     = $(TESTER_DIR)/lib
 # ---- Files ----
 # Libraries
 LIBFTPRINTF       = $(PRINTF_DIR)/libftprintf.a
-LIBFTPRINTF_BONUS = $(PRINTF_DIR)/libftprintf_bonus.a  # Corrected library name - should include 'ft'
 LIBTESTER         = $(LIB_DIR)/libft_printf_tester.a
 
 # Add verification utility - include it in the utility files instead of building separately
@@ -75,7 +74,7 @@ all: setup $(LIBFTPRINTF) $(LIBTESTER) $(MANDATORY_TEST_EXEC) $(OTHER_TEST_EXECS
 bonus: setup
 	@$(call section_header, "Building Bonus Tests")
 	@$(MAKE) -C $(PRINTF_DIR) bonus
-	@$(call pulse_status, "Completed", "libprintf_bonus.a ready")
+	@$(call pulse_status, "Completed", "libftprintf.a with bonus features")
 	@$(MAKE) $(LIBTESTER)
 	@$(MAKE) USING_BONUS=1 ensure_testers
 	@$(MAKE) USING_BONUS=1 $(CONTROLLER_BONUS_EXEC)
@@ -96,12 +95,6 @@ $(LIBFTPRINTF):
 	@$(MAKE) -C $(PRINTF_DIR)
 	@$(call pulse_status, "Completed", "libftprintf.a ready")
 
-# Build the bonus printf library
-$(LIBFTPRINTF_BONUS):
-	@$(call section_header, "Building ft_printf Bonus Library")
-	@$(MAKE) -C $(PRINTF_DIR) bonus
-	@$(call pulse_status, "Completed", "libftprintf_bonus.a ready")
-
 # Build the tester library from utils and stress testing files - now also include test utilities
 $(LIBTESTER): $(ALL_UTILS_OBJS) $(UTIL_TEST_OBJS)
 	@$(call section_header, "Building Tester Library")
@@ -119,9 +112,9 @@ $(CONTROLLER_EXEC): $(CONTROLLER_SRC) $(LIBFTPRINTF) $(LIBTESTER)
 	@$(CC) $(CFLAGS) $(INCLUDES) $(CONTROLLER_SRC) -o $@ -L$(LIB_DIR) -lft_printf_tester -L$(PRINTF_DIR) -lftprintf
 
 # Compile controller program (bonus version)
-$(CONTROLLER_BONUS_EXEC): $(CONTROLLER_SRC) $(LIBFTPRINTF_BONUS) $(LIBTESTER)
+$(CONTROLLER_BONUS_EXEC): $(CONTROLLER_SRC) $(LIBFTPRINTF) $(LIBTESTER)
 	@$(call pulse_status, "Compiling", "ultimate controller - bonus")
-	@$(CC) $(CFLAGS) $(INCLUDES) -DUSE_BONUS_LIB $(CONTROLLER_SRC) -o $@ -L$(LIB_DIR) -lft_printf_tester $(LIBFTPRINTF_BONUS)
+	@$(CC) $(CFLAGS) $(INCLUDES) -DUSE_BONUS_LIB $(CONTROLLER_SRC) -o $@ -L$(LIB_DIR) -lft_printf_tester -L$(PRINTF_DIR) -lftprintf
 	@$(call pulse_status, "Compiled", "$@")
 
 # Compile controller object if needed
@@ -140,8 +133,10 @@ $(MANDATORY_TEST_EXEC): $(MANDATORY_TEST_SRC) $(LIBFTPRINTF) $(LIBTESTER)
 $(PROG_DIR)/%: $(TEST_DIR)/%.c $(LIBTESTER)
 	@mkdir -p $(PROG_DIR)
 	@if [ "$(USING_BONUS)" = "1" ]; then \
-		$(CC) $(CFLAGS) $(INCLUDES) -DUSE_BONUS_LIB $< -o $@ -L$(LIB_DIR) -lft_printf_tester $(LIBFTPRINTF_BONUS); \
+		$(MAKE) -C $(PRINTF_DIR) bonus; \
+		$(CC) $(CFLAGS) $(INCLUDES) -DUSE_BONUS_LIB $< -o $@ -L$(LIB_DIR) -lft_printf_tester -L$(PRINTF_DIR) -lftprintf; \
 	else \
+		$(MAKE) -C $(PRINTF_DIR); \
 		$(CC) $(CFLAGS) $(INCLUDES) $< -o $@ -L$(LIB_DIR) -lft_printf_tester -L$(PRINTF_DIR) -lftprintf; \
 	fi
 	@$(call pulse_status, "Compiled", "$@")
