@@ -63,7 +63,9 @@ CONTROLLER_BONUS_EXEC = $(BIN_DIR)/ft_printf_ultimate_controller_bonus
 
 # ---- Compiler Options ----
 CC        = gcc
-CFLAGS    = -Wall -Wextra -Werror
+#CFLAGS    = -Wall -Wextra -Werror -fsanitize=address,undefined
+CFLAGS    = -Wall -Wextra -Werror -fsanitize=thread
+
 INCLUDES  = -I$(INC_DIR) -I$(PRINTF_DIR) -I$(UTILS_DIR) -I$(STRESS_DIR) -I$(TEST_DIR) -I$(TESTER_DIR)/headers
 
 # ---- Make Rules ----
