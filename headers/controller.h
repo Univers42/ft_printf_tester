@@ -19,7 +19,7 @@
 #include <inttypes.h>
 # include "../includes/ft_printf_stress.h"
 #include <stddef.h>
-#include "../../include/ft_printf.h"
+#include "../../include/ft_printf_bonus.h"
 /* Function declarations for mixed format tests */
 void run_robust_mixed_format_tests(void);
 int call_ft_printf_with_types(const char *format, va_list args, char *types, int type_count);

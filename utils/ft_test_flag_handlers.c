@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   ft_test_flag_handlers.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: syzygy <syzygy@student.42.fr>              +#+  +:+       +#+        */
+/*   By: dlesieur <dlesieur@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/22 20:10:00 by syzygy            #+#    #+#             */
-/*   Updated: 2025/03/22 20:08:13 by syzygy           ###   ########.fr       */
+/*   Updated: 2025/03/24 17:32:20 by dlesieur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../headers/controller.h"
-#include "../../include/ft_printf.h"
-#include "../../include/ft_types.h"
-#include "../../include/structs.h"
+#include "../../include/ft_printf_bonus.h"
+#include "../../include/ft_types_bonus.h"
+#include "../../include/structs_bonus.h"
 
 /**
  * Test implementation of minus flag handler.
